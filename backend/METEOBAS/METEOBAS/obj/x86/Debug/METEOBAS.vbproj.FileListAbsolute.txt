@@ -1,0 +1,12 @@
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\Interop.MapWinGIS.dll
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.vbproj.ResolveComReference.cache
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.Resources.resources
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.vbproj.GenerateResource.cache
+C:\DotnetSVN\meteobase\METEOBAS\bin\x86\METEOBAS.dll.config
+C:\DotnetSVN\meteobase\METEOBAS\bin\x86\METEOBAS.dll
+C:\DotnetSVN\meteobase\METEOBAS\bin\x86\METEOBAS.pdb
+C:\DotnetSVN\meteobase\METEOBAS\bin\x86\METEOBAS.xml
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.vbproj.CopyComplete
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.dll
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.xml
+C:\DotnetSVN\meteobase\METEOBAS\METEOBAS\obj\x86\Debug\METEOBAS.pdb

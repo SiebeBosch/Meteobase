@@ -1,0 +1,11 @@
+C:\DotnetSVN\meteobase\WIWBTOETSING\bin\x86\WIWBTOETSING.exe.config
+C:\DotnetSVN\meteobase\WIWBTOETSING\bin\x86\WIWBTOETSING.exe
+C:\DotnetSVN\meteobase\WIWBTOETSING\bin\x86\WIWBTOETSING.pdb
+C:\DotnetSVN\meteobase\WIWBTOETSING\bin\x86\WIWBTOETSING.xml
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.vbprojAssemblyReference.cache
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.Resources.resources
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.vbproj.GenerateResource.cache
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.vbproj.CopyComplete
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.exe
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.xml
+C:\DotnetSVN\meteobase\WIWBTOETSING\WIWBTOETSING\obj\x86\Release\WIWBTOETSING.pdb

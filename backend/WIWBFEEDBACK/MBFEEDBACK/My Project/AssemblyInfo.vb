@@ -1,0 +1,35 @@
+﻿Imports System
+Imports System.Reflection
+Imports System.Runtime.InteropServices
+
+' General Information about an assembly is controlled through the following 
+' set of attributes. Change these attribute values to modify the information
+' associated with an assembly.
+
+' Review the values of the assembly attributes
+
+<Assembly: AssemblyTitle("WIWBFEEDBACK")>
+<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyProduct("WIWBFEEDBACK")>
+<Assembly: AssemblyCopyright("Copyright ©  2019")>
+<Assembly: AssemblyTrademark("")> 
+
+<Assembly: ComVisible(False)>
+
+'The following GUID is for the ID of the typelib if this project is exposed to COM
+<Assembly: Guid("1b317554-ac73-4e8c-88b7-5d75ae2ffe50")>
+
+' Version information for an assembly consists of the following four values:
+'
+'      Major Version
+'      Minor Version 
+'      Build Number
+'      Revision
+'
+' You can specify all the values or you can default the Build and Revision Numbers 
+' by using the '*' as shown below:
+' <Assembly: AssemblyVersion("1.0.*")> 
+
+<Assembly: AssemblyVersion("1.62.0.*")>
+<Assembly: AssemblyFileVersion("1.62.0.0")>

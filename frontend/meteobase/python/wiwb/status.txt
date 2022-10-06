@@ -1,0 +1,2 @@
+{"time": "2019-07-23 11:09:02", "status": "getting rainfall from wiwb"}
+{"time": "2019-07-23 11:09:12", "status": "ready"}

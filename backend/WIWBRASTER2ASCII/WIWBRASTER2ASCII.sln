@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WIWBRASTER2ASCII", "WIWBRASTER2ASCII\WIWBRASTER2ASCII.vbproj", "{9399EEE9-4246-41E1-A975-93E75E5DA00C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D} = {4E98C23A-FC2B-4A42-AD83-2CA16568684D}
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "METEOBAS", "..\METEOBAS\METEOBAS\METEOBAS.vbproj", "{4E98C23A-FC2B-4A42-AD83-2CA16568684D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|x64.ActiveCfg = Debug|x64
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|x64.Build.0 = Debug|x64
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|x86.ActiveCfg = Debug|x86
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Debug|x86.Build.0 = Debug|x86
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|x64.ActiveCfg = Release|x64
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|x64.Build.0 = Release|x64
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|x86.ActiveCfg = Release|x86
+		{9399EEE9-4246-41E1-A975-93E75E5DA00C}.Release|x86.Build.0 = Release|x86
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|x64.ActiveCfg = Debug|x64
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|x64.Build.0 = Debug|x64
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|x86.ActiveCfg = Debug|x86
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Debug|x86.Build.0 = Debug|x86
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|x64.ActiveCfg = Release|x64
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|x64.Build.0 = Release|x64
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|x86.ActiveCfg = Release|x86
+		{4E98C23A-FC2B-4A42-AD83-2CA16568684D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71BE7A00-2F37-4F14-AF1B-FE9FE3522B13}
+	EndGlobalSection
+EndGlobal

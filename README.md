@@ -5,7 +5,7 @@ Meteobase is een webapplicatie en -service die wordt gefinancierd en onderhouden
 #### Doel en doelgroep ####
 De applicatie en service zijn in het leven geroepen om medewerkers van waterschappen en adviesbureaus in de watersector te ondersteunen bij het uitvoeren van modelstudies waarvoor meteorologische gegevens nodig zijn. De applicatie ontsluit Nederlandse historische neerslag- en verdampingsgegevens en presenteert die in een kant-en-klaar bestandsformaat ten behoeve van veelgebruikte modellen (SOBEK, SIMGRO, MODFLOW). Daarnaast ontsluit Meteobase statistische data omtrent neerslag in Nederland en heeft het een uitgebreide literatuursectie.
 
-####Ontwikkelteam####
+#### Ontwikkelteam ####
 Bouw van de applicatie en beheer & onderhoud is vanaf het begin in handen van:
 
 * Siebe Bosch (Hydroconsult, https://github.com/SiebeBosch)
@@ -16,8 +16,9 @@ met bijdragen van:
 * Maxim Bureac: front-end
 * Daniël Tollenaar (D2Hydro, https://github.com/d2hydro): python-script regenduurlijnen
 * Jacques Doeleman (Iconica, https://github.com/JacquesDIconica): front-end
+* Stefan Koopmanschap (Ingewikkeld.net): implementatie cookies
 
-####Architectuur####
+#### Architectuur ####
 De architectuur bestaat uit:
 * een front-end, geschreven in PHP
 * een backend, bestaande uit:
@@ -36,12 +37,12 @@ De architectuur bestaat uit:
   * Een Apache webserver
 * installatiescripts voor de executables, geschreven in Inno Script Studio
 
-####Herkomst van gegevens####
+#### Herkomst van gegevens ####
 Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk is. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door WIWB is gewhitelist.
 
 Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staan opgeslagen op de server van Meteobase zelf en worden rechtstreeks bevraagd door de daarvoor ontwikkelde executables.  
 
-####keys en wachtwoorden####
+#### keys en wachtwoorden ####
 Om de applicatie operationeel te krijgen zijn de volgende wachtwoorden en keys benodigd:
 * licentie op Gembox Spreadsheets
 * de connection-string voor de backend-database (SQLite) met neerslagstatistieken

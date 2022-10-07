@@ -21,8 +21,8 @@ met bijdragen van:
 #### Architectuur ####
 De architectuur bestaat uit:
 * een front-end, bestaande uit:
- * de website, geschreven in PHP
- * Een python-script voor de in-app regenduurlijnen-applicatie
+  * de website, geschreven in PHP
+  * Een python-script voor de in-app regenduurlijnen-applicatie
 * een backend, bestaande uit:
   * Een negental executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft:
      * WIWBBASIS: levert meetreeksen van de neerslagstations van het KNMI: uursommen, etmaalsommen, neerslag en verdamping

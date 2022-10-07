@@ -1,6 +1,6 @@
 # Meteobase
 
-Meteobase is een webapplicatie en -service die wordt gefinancierd en onderhouden door Het Waterschapshuis (https://www.hetwaterschapshuis.nl/).
+Meteobase is een webapplicatie en -service die wordt gefinancierd door de Nederlandse waterschappen, in opdracht van Het Waterschapshuis (https://www.hetwaterschapshuis.nl/).
 
 #### Doel en doelgroep ####
 De applicatie en service zijn in het leven geroepen om medewerkers van waterschappen en adviesbureaus in de watersector te ondersteunen bij het uitvoeren van modelstudies waarvoor meteorologische gegevens nodig zijn. De applicatie ontsluit Nederlandse historische neerslag- en verdampingsgegevens en presenteert die in een kant-en-klaar bestandsformaat ten behoeve van veelgebruikte modellen (SOBEK, SIMGRO, MODFLOW). Daarnaast ontsluit Meteobase statistische data omtrent neerslag in Nederland en heeft het een uitgebreide literatuursectie.

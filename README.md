@@ -6,7 +6,7 @@ Meteobase is een webapplicatie en -service die wordt gefinancierd en onderhouden
 De applicatie en service zijn in het leven geroepen om medewerkers van waterschappen en adviesbureaus in de watersector te ondersteunen bij het uitvoeren van modelstudies waarvoor meteorologische gegevens nodig zijn. De applicatie ontsluit Nederlandse historische neerslag- en verdampingsgegevens en presenteert die in een kant-en-klaar bestandsformaat ten behoeve van veelgebruikte modellen (SOBEK, SIMGRO, MODFLOW). Daarnaast ontsluit Meteobase statistische data omtrent neerslag in Nederland en heeft het een uitgebreide literatuursectie.
 
 #### Ontwikkelteam ####
-Bouw van de applicatie en beheer & onderhoud is vanaf het begin in handen van:
+Bouw van de applicatie en beheer & onderhoud is vanaf de start in 2011 in handen van:
 
 * Siebe Bosch (Hydroconsult, https://github.com/SiebeBosch)
 

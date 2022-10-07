@@ -18,8 +18,16 @@ met bijdragen van:
 De architectuur bestaat uit:
 * een front-end, geschreven in PHP
 * een backend, bestaande uit:
-  * Diverse executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft:
-     * WIWBBASIS.EXE: het programma wat meetreeksen van de neerslagstations van het KNMI levert: uursommen, etmaalsommen, neerslag en verdamping  
+  * Een negental executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft:
+     * WIWBBASIS: levert meetreeksen van de neerslagstations van het KNMI: uursommen, etmaalsommen, neerslag en verdamping
+     * WIWBRASTER2ASCI: levert geijkte radarneerslagsommen en ruimtelijk verdeelde verdamping in ASCII-rasterformaat
+     * WIWBRASTERBYPOLY: levert geijke radarneerslag en ruimtelijk verdeelde verdamping, geaggregeerd naar polygonen
+     * WIWBNATIVERASTER: levert de geijkte radarneerslag en ruimtelijk verdeelde verdamping in het oorspronkelijke formaat (HDF5)
+     * WIWBSTEDELIJK: levert de stedelijke neerslaggebeurtenissen
+     * WIWBSTOCHASTEN: levert kansen bij neerslagvolumes, voor huidig klimaat en diverse klimaatprojecties
+     * WIWBTOETSING: levert langjarige klimaatgecorrigeerde neerslagreeksen voor diverse klimaatregio's in Nederland
+     * WIWBHERHALINGSTIJD: genereert een kaart met de terugkeertijd in jaren voor de neerslag op gegeven dag en met gegeven duur
+     * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar inf-at-meteobase.nl. Momenteel niet in gebruik
   * Een python-script voor de in-app regenduurlijnen-applicatie
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver

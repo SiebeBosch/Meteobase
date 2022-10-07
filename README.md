@@ -20,7 +20,9 @@ met bijdragen van:
 
 #### Architectuur ####
 De architectuur bestaat uit:
-* een front-end, geschreven in PHP
+* een front-end, bestaande uit:
+ * de website, geschreven in PHP
+ * Een python-script voor de in-app regenduurlijnen-applicatie
 * een backend, bestaande uit:
   * Een negental executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft:
      * WIWBBASIS: levert meetreeksen van de neerslagstations van het KNMI: uursommen, etmaalsommen, neerslag en verdamping
@@ -32,7 +34,6 @@ De architectuur bestaat uit:
      * WIWBTOETSING: levert langjarige klimaatgecorrigeerde neerslagreeksen voor diverse klimaatregio's in Nederland
      * WIWBHERHALINGSTIJD: genereert een kaart met de terugkeertijd in jaren voor de neerslag op gegeven dag en met gegeven duur
      * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar inf-at-meteobase.nl. Momenteel niet in gebruik
-  * Een python-script voor de in-app regenduurlijnen-applicatie
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver
 * installatiescripts voor de executables, geschreven in Inno Script Studio

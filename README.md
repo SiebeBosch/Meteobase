@@ -40,7 +40,10 @@ De architectuur bestaat uit:
 #### Herkomst van gegevens ####
 Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk is. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door WIWB is gewhitelist.
 
-Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staan opgeslagen op de server van Meteobase zelf en worden rechtstreeks bevraagd door de daarvoor ontwikkelde executables.  
+Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staan opgeslagen op de server van Meteobase zelf en worden rechtstreeks bevraagd door de daarvoor ontwikkelde executables. 
+
+### Permanente bestanden en literatuur ###
+Op de server staat naast de applicatie zelf een groot aantal forse bestanden die niet in Gitub zijn ondergebracht. Het gaat onder meer om langjarige neerslagreeksen, de SATDATA 2.0-datasets en alle literatuur. Deze bestanden staan op de server in de directory meteobase\downloads\fixed\. Wij hebben ze eveneens beschikbaar gesteld via de volgende dropbox-link: https://www.dropbox.com/sh/clv1ex9w0waed5j/AABnhel0QY2Uf7v2rLZUxSt4a?dl=0
 
 #### keys en wachtwoorden ####
 Om de applicatie operationeel te krijgen zijn de volgende wachtwoorden en keys benodigd:

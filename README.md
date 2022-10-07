@@ -39,7 +39,7 @@ De architectuur bestaat uit:
 * installatiescripts voor de executables, geschreven in Inno Script Studio
 
 #### Herkomst van gegevens ####
-Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk is. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door WIWB is gewhitelist.
+Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk is. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door de beheerder van WIWB is gewhitelist.
 
 Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staan opgeslagen op de server van Meteobase zelf en worden rechtstreeks bevraagd door de daarvoor ontwikkelde executables. 
 
@@ -57,7 +57,7 @@ Om de applicatie operationeel te krijgen zijn de volgende wachtwoorden en keys b
 * het wachtwoord voor de uitgaande mails die geautomatiseerd naar gebruikrers worden gestuurd
 * de host, poortnummer, username, wachtwoord voor de PostgreSQL-database met gebruikersstatistieken
 
-All deze keys en wachtwoorden zijn opgeslagen in losse tekstbestanden in .gitignore en dus niet publiekelijk beschikbaar. Ze worden uitsluitend gedeeld met de eigenaar/financier van Meteobase: Het Waterschapshuis. Mocht u zelf een werkende afgeleide van Meteobase willen vervaardigen, dan is het de eigen verantwoordelijkheid om een licentie op Gembox Spreadsheets te nemen en een IP-whitelisting aan te vragen bij Hydrologic.
+All deze keys en wachtwoorden zijn opgeslagen in losse tekstbestanden in .gitignore en dus niet publiekelijk beschikbaar. Ze worden uitsluitend gedeeld met de eigenaar/financier van Meteobase: Het Waterschapshuis. Mocht u zelf een werkende afgeleide van Meteobase willen vervaardigen, dan is het de eigen verantwoordelijkheid om een licentie op Gembox Spreadsheets te nemen en een IP-whitelisting aan te vragen bij de beheerder van WIWB (momenteel Hydrologic).
 
 De verantwoordelijkheid voor het beheer en onderhoud van Meteobase ligt tot en met Q3 van 2023 bij Hydroconsult.
 

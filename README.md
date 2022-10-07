@@ -16,13 +16,15 @@ met bijdragen van:
 * Jacques Doeleman (Iconica, https://github.com/JacquesDIconica): front-end
 
 De architectuur bestaat uit:
-* een Front-End, geschreven in PHP
+* een front-end, geschreven in PHP
 * een backend, bestaande uit:
   * Diverse executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft
   * Een python-script voor de in-app regenduurlijnen-applicatie
-  * Een PostgreSQL-database
-  
-Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door WIWB is gewhitelist.
+  * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
+  * Een Apache webserver
+* installatiescripts voor de executables, geschreven in Inno Script Studio
+
+Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van de WIWB-server via de WIWB-API (https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf). We merken op dat deze API niet publiekelijk toegankelijk is. Een eigen implementatie van de applicatie of executables zal daarom alleen functioneren vanaf een IP-adres dat door WIWB is gewhitelist.
 
 De verantwoordelijkheid voor het beheer en onderhoud van Meteobase ligt tot en met Q3 van 2023 bij Hydroconsult.
 

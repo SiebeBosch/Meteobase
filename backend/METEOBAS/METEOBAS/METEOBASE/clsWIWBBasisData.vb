@@ -166,7 +166,7 @@ Public Class clsWIWBBasisData
         ' If using GemBox.Spreadsheet Professional, put your serial key below.
         ' Otherwise, if you are using GemBox.Spreadsheet Free, comment out the 
         ' following line (Free version doesn't have SetLicense method). 
-        SpreadsheetInfo.SetLicense(GemboxLicense)
+        SpreadsheetInfo.SetLicense(GemboxLicense.Trim)
         Dim oExcel As ExcelFile = New ExcelFile
         Dim worksheets As ExcelWorksheetCollection = oExcel.Worksheets
 

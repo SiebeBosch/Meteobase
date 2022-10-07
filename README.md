@@ -43,6 +43,10 @@ Historische neerslag- en verdampingsgegevens worden door Meteobase betrokken van
 
 Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staan opgeslagen op de server van Meteobase zelf en worden rechtstreeks bevraagd door de daarvoor ontwikkelde executables. 
 
+#### Installatie van de server ####
+Een map met installatiebestanden van programma's die nodig zijn om een server in te richten voor het hosten van Meteobase staat onder deze Dropbox-link:
+https://www.dropbox.com/sh/na6rjqd2wv1h4wq/AABxVYapjquKOfKcmHimZdfta?dl=0
+
 #### Permanente bestanden en literatuur ####
 Op de server staat naast de applicatie zelf een groot aantal forse bestanden die niet in Gitub zijn ondergebracht. Het gaat onder meer om langjarige neerslagreeksen, de SATDATA 2.0-datasets en alle literatuur. Deze bestanden staan op de server in de directory meteobase\downloads\fixed\. Wij hebben ze eveneens beschikbaar gesteld via de volgende dropbox-link: https://www.dropbox.com/sh/mq409bff8y0v5xk/AACxMnYdCAQmiiX_SVcju0z-a?dl=0
 

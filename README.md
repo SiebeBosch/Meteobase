@@ -49,7 +49,7 @@ Om de applicatie operationeel te krijgen zijn de volgende wachtwoorden en keys b
 * het wachtwoord voor de uitgaande mails die geautomatiseerd naar gebruikrers worden gestuurd
 * het wachtwoord voor de PostgreSQL-database met gebruikersstatistieken
 
-All deze keys en wachtwoorden zijn opgeslagen in losse tekstbestanden in .gitignore en dus niet publiekelijk beschikbaar. Ze worden uitsluitend gedeeld met de eigenaar/financier van Meteobase: Het Waterschapshuis. Mocht u zelf een werkende afgeleide van Meteobase willen vervaardigen, dan is het de eigen verantwoordelijkheid om een licentie op Gembox Spreadsheets te nemen. 
+All deze keys en wachtwoorden zijn opgeslagen in losse tekstbestanden in .gitignore en dus niet publiekelijk beschikbaar. Ze worden uitsluitend gedeeld met de eigenaar/financier van Meteobase: Het Waterschapshuis. Mocht u zelf een werkende afgeleide van Meteobase willen vervaardigen, dan is het de eigen verantwoordelijkheid om een licentie op Gembox Spreadsheets te nemen en een IP-whitelisting aan te vragen bij Hydrologic.
 
 De verantwoordelijkheid voor het beheer en onderhoud van Meteobase ligt tot en met Q3 van 2023 bij Hydroconsult.
 

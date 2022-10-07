@@ -19,7 +19,7 @@ De architectuur bestaat uit:
 * een front-end, geschreven in PHP
 * een backend, bestaande uit:
   * Diverse executables, geschreven in VB.NET en bijgehouden in Visual Studio 2022 van Microsoft:
-   * WIWBBASIS.EXE: het programma wat meetreeksen van de neerslagstations van het KNMI levert: uursommen, etmaalsommen, neerslag en verdamping  
+     * WIWBBASIS.EXE: het programma wat meetreeksen van de neerslagstations van het KNMI levert: uursommen, etmaalsommen, neerslag en verdamping  
   * Een python-script voor de in-app regenduurlijnen-applicatie
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver

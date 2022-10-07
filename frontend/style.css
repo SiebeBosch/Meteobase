@@ -1,0 +1,286 @@
+@charset "utf-8";
+body, html {
+	margin: 0px;
+	padding: 0px;
+}
+span {
+    font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	margin: 0px;
+}
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	margin: 0px;
+	padding-bottom: 10px;
+}
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	margin: 0px;
+	padding-bottom: 10px;
+}
+
+h4 {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px;
+	padding: 0px;
+	font-weight: normal;
+	font-size: 12px;
+	color: #000000;
+}
+h5 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #666666;
+	margin: 0px;
+	padding: 0px;
+}
+h5:hover {
+	color:#000000;
+}
+
+a {
+	text-decoration:none;
+}
+ul {
+	margin: 0px;
+	padding: 0px;
+}
+li {
+	list-style-type: none;
+	height: 21px;
+	width: 118px;
+	border: 1px solid #333333;
+	margin-bottom: 1px;
+	padding-top: 7px;
+	padding-left: 10px;
+}
+li:hover {
+	background-color:#f2f2f2;
+}
+.li_sub {
+	border: 1px solid #999;
+	height:115px;
+}
+
+#container {
+	background-color: white;
+	width: 980px;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	box-shadow: 5px 3px 10px rgba(0,0,0,0.3), 5px -3px 10px rgba(0,0,0,0.3), -5px -3px 10px rgba(0,0,0,0.3), -5px 3px 10px rgba(0,0,0,0.3);
+}
+
+#cont_header {
+	position:relative;
+	width:960px;
+	height:110px;
+	padding-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	overflow:hidden;
+}
+
+#kaartenpaneel {
+	float: left;
+	height: 574px;
+	width: 440px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	background: url(http://62.148.170.210/meteobase/images/loader.gif) no-repeat center;
+}
+
+#coordinaten {
+	opacity:0;
+	filter:alpha(opacity=0);
+	position:absolute;
+	width:440px;
+	margin-left:10px;
+	margin-top:590px;
+}
+
+#content {
+	float: left;
+	min-height: 500px;
+	width: 510px;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+#uploadbox {
+	display:none;
+	position: absolute;
+	height: 60px;
+	width: 308px;
+	top: 111px;
+	left: 110px;
+}
+
+#gegevenspaneel {
+	width: 510px;
+	margin-bottom: 10px;
+}
+#gegevenspaneel_menu {
+	height: 29px;
+	width: 510px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #333333;
+	position: relative;
+}
+.gegevenspaneel_menu {
+	float: left;
+	height: 21px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 7px;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-top-color: #333333;
+	border-right-color: #333333;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #333333;
+	background-image: url(images/shadow_top-menu.png);
+	background-repeat: repeat-x;
+	background-position: bottom;
+}
+.gegevenspaneel_menu_inactive {
+	display:block;
+	float: left;
+	height: 21px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 7px;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-top-color: #333333;
+	border-right-color: #333333;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #333333;
+	background-image: url(images/shadow_top-menu.png);
+	background-repeat: repeat-x;
+	background-position: bottom;
+}
+.gegevenspaneel_menu:hover {
+	background-color:#f2f2f2;
+}
+.gegevenspaneel_main {
+	float: left;
+	height: 21px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 7px;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-top-color: #333333;
+	border-right-color: #333333;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #FFFFFF;
+}
+#gegevenspaneel_content {
+	width: 508px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-right-color: #333333;
+	border-bottom-color: #333333;
+	border-left-color: #333333;
+	position: relative;
+}
+#gegevenspaneel_aanmelden {
+	padding: 20px;
+}
+.gegevenspaneel_btn {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	padding-top: 5px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border: 1px solid #333333;
+	padding-bottom: 5px;
+	float: right;
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+.gegevenspaneel_btn:hover {
+	background-color:#f2f2f2;
+}
+#gegevenspaneel_help {
+	position:absolute;
+	right:8px;
+	top:8px
+}
+
+#documentatiepaneel {
+	height: 320px;
+	width: 510px;
+	margin-bottom: 15px;
+}
+#documentatiepaneel_menu {
+	height: 320px;
+	width: 130px;
+	float: left;
+}
+#documentatiepaneel_content {
+	height: 310px;
+	width: 360px;
+	float: left;
+	margin-top: 10px;
+	margin-left: 20px;
+}
+#lightbox {
+	background-color: #000000;
+	opacity:0.6;
+	filter:alpha(opacity=60);
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width:100%;
+	height:100%;
+	z-index: 500;
+}
+#content_lightbox {
+	position:absolute;
+	width:800px;
+	left:50%;
+	margin-left: -425px;
+	margin-top:0px;
+	background-color:#FFFFFF;
+	z-index:600;
+	padding:30px;
+}
+#bg-img { position: absolute; bottom: 0; right: 0; z-index:-2; }
+.bgwidth { width: 100%; }
+.bgheight { height: 100%; }
+.fullBg {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+}

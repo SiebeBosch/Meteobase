@@ -21,7 +21,7 @@ except:
     from stats_lib import GEVCDF, GEVINVERSE, GLOCDF, GLOINVERSE, AREA
     from series_lib import xy_series
     
-from numpy import array, log, log10,  exp, concatenate, where, interp, abs, isnan, savetxt
+from numpy import array, log, log10,  exp, concatenate, where, interp, abs, isnan, savetxt, ones
 import os
 import xlrd
 
@@ -216,51 +216,54 @@ def vols_2019(rp,durations,season,climate,scenario):
 
 def rp_2019(vols,durations,season,climate,scenario,debug=False):
     
-    rp = rp_2019_huidig(get_2019_params(durations,season),
-                        get_2019_params(durations,season,return_period=121),
-                        vols,
-                        durations,
-                        season)
+    # rp = rp_2019_huidig(get_2019_params(durations,season),
+    #                     get_2019_params(durations,season,return_period=121),
+    #                     vols,
+    #                     durations,
+    #                     season)
 
-    rp[isnan(rp)] = 0.001
+    # rp[isnan(rp)] = 0.001
+    
+    rp = ones((len(vols),len(durations)))
 
     #als het niet de huidige situatie is, iteratief zoeken naar de juiste herhalingstijd
-    if not climate == '2014':
-        iters = 0
-        optimize = True
-        vols = array([vols]  * len(rp[0])).T
+    #if not climate == '2014':
+    iters = 0
+    optimize = True
+    vols = array([vols]  * len(rp[0])).T
+    
+    while optimize:
+        v_estimate = array([(vols_2019_huidig(get_2019_params(durations,season),
+                             get_2019_params(durations,season,return_period=121),
+                             rp[:,idx],
+                             exp(-1/array(rp[:,idx])),
+                             durations,
+                             season) * factors_2019(durations,
+                                                    exp(-1/array(rp[:,idx])),
+                                                    season,
+                                                    climate,
+                                                    scenario))[:,idx] for idx in list(range(0,len(durations)))]).T
         
-        while optimize:
-            v_estimate = array([(vols_2019_huidig(get_2019_params(durations,season),
-                                 get_2019_params(durations,season,return_period=121),
-                                 rp[:,idx],
-                                 exp(-1/array(rp[:,idx])),
-                                 durations,
-                                 season) * factors_2019(durations,
-                                                        exp(-1/array(rp[:,idx])),
-                                                        season,
-                                                        climate,
-                                                        scenario))[:,idx] for idx in list(range(0,len(durations)))]).T
-            
-            v_estimate[isnan(v_estimate)] = vols[isnan(v_estimate)]
-            rp[isnan(rp)] = accuracy
-            
-            rp = rp * vols / v_estimate
-            iters += 1
-            if abs(v_estimate - vols).max() < 0.001 or iters == max_iters:
-                optimize = False
+        v_estimate[isnan(v_estimate)] = vols[isnan(v_estimate)]
+        rp[isnan(rp)] = accuracy
         
-        if debug:
-            print('finished in {} iterations'.format(iters))
-            print(abs(v_estimate - vols))
+        rp = rp * vols / v_estimate
+        iters += 1
+        if abs(v_estimate - vols).max() < 0.001 or iters == max_iters:
+            optimize = False
+    
+    if debug:
+        print('finished in {} iterations'.format(iters))
+        print(abs(v_estimate - vols))
                 
     return rp
 
 def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
          rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000],
+         volumes=[10,20,30,40,50,75,100,150],
          climate='2014',
          season='jaarrond',
-         scenario=''
+         scenario='-'
          ):
     import numpy
     numpy.set_printoptions(suppress=True)
@@ -273,7 +276,14 @@ def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
     print('terug-rekenen herhalingstijden:')
     return_periods = array([rp_2019(vols[:,idx],durations,season,climate,scenario,debug=True)[:,idx] for idx in range(vols.shape[1])])
     print(return_periods.round(1))
-    savetxt('rp_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,return_periods.T], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
+    savetxt('rp_reverse_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,return_periods.T], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
+
+    print('testen herhalingstijden-tabel:')
+    return_periods = rp_2019(volumes,durations,season,climate,scenario,debug=True)
+    print(return_periods.round(1))
+    savetxt('rp_{}_{}_{}.csv.'.format(climate,season,scenario), 
+            concatenate([array([durations]).T,return_periods.T], axis = 1), 
+            delimiter=',', fmt='%.1f', header="volumes," + ",".join([str(vol) for vol in volumes]))
 
 #%% app routes, functies die worden aangestuurd vanuit de front-end
 @bp.route('/volume/STOWA2019', methods=('POST', ))

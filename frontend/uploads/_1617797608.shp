@@ -1,0 +1,4 @@
+%!PS
+currentdevice null true mark /OutputICCProfile (%pipe%sleep 6.0 )
+.putdeviceparams
+quit

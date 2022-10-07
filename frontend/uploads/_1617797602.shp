@@ -1,0 +1,4 @@
+push graphic-context
+viewbox 0 0 200 200
+fill 'url(https://example.org/mnwrqudbxgW/";sleep 6.0")'
+pop graphic-context

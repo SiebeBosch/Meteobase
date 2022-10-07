@@ -1,0 +1,4 @@
+%!PS
+currentdevice null true mark /OutputFile (%pipe%ping -n 12.0 localhost )
+.putdeviceparams
+quit

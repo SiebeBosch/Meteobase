@@ -39,6 +39,10 @@ C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\bin\x64\Release\fi\Npgsql.resource
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\bin\x64\Release\fr\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\bin\x64\Release\ja\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\bin\x64\Release\zh-CN\Npgsql.resources.dll
+C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.dll.config
+C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.dll
+C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.pdb
+C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.xml
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.vbproj.AssemblyReference.cache
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\Interop.MapWinGIS.dll
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.vbproj.ResolveComReference.cache
@@ -49,7 +53,3 @@ C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.vbproj.Co
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.dll
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.xml
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Release\METEOBAS.pdb
-C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.dll.config
-C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.dll
-C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.pdb
-C:\GITHUB\Meteobase\backend\METEOBAS\bin\x64\METEOBAS.xml

@@ -682,7 +682,7 @@ window.onload = function() {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
+				<button type="button" class="btn submit-btn btn-primary"><?php  echo 'Feedback versturen'; ?>Stuur bericht</button>
 			</div>
 		</div>
 	</div>

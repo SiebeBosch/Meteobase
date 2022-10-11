@@ -2,15 +2,21 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WIWBFEEDBACK"
-#define MyAppVersion "1.63"
+#define MyAppVersion "3.300"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
-#define SetupLocation "c:\DotnetSVN\meteobase\WIWBFEEDBACK\InnoSetup"
-#define BinLocation "c:\DotnetSVN\meteobase\WIWBFEEDBACK\bin"
-;; #define x64BitVersion
+#define SetupLocation "c:\GITHUB\Meteobase\backend\WIWBFEEDBACK\InnoSetup"
+#define BinLocation "c:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin"
+#define LicensesLocation "c:\GITHUB\Meteobase\backend\licenses"
+#define x64BitVersion
 #define VsVersion = "2015" 
 ;; #define VsVersion = "2017" 
-;#define mapwingis = "MapWinGIS-only-v4.9.6.1-Win32.exe"
+;;external licenses
+#define gembox = "gembox.txt"
+#define connectionstring = "connectionstring.txt"
+#define emailpassword = "email.txt"
+
+;#define mapwingis = "MapWinGIS-only-v4.9.6.1-Win32.exe"
 
 #ifdef x64BitVersion
   #define CPU "x64"
@@ -84,6 +90,12 @@ VersionInfoProductTextVersion={#MyAppVersion}
 Source: "{#MySourceDir}\*.*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs {#SystemFlag}; Excludes: "*.pdb,*.xml,*.ocx"
 Source: "{#SetupLocation}\{#vcredist}"; DestDir: "{app}"
 ;Source: "{#SetupLocation}\{#mapwingis}"; DestDir: "{app}"
+
+; write the external licenses to a dedicated folder in the app dir
+#define licensesdir = "licenses"
+Source: "{#LicensesLocation}\{#gembox}"; DestDir: "{app}\{#licensesdir}"
+Source: "{#LicensesLocation}\{#emailpassword}"; DestDir: "{app}\{#licensesdir}"
+Source: "{#LicensesLocation}\{#connectionstring}"; DestDir: "{app}\{#licensesdir}"
 
 [Messages]
 BeveledLabel=WIWBFEEDBACK by Hydroconsult

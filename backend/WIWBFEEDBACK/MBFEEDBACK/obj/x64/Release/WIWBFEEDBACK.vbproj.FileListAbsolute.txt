@@ -12,8 +12,8 @@ C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\System.Runti
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\System.Text.Encoding.CodePages.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\MailKit.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\GemBox.Spreadsheet.dll
-C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\Npgsql.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\Ionic.Zip.dll
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\Npgsql.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\Newtonsoft.Json.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\System.Threading.Tasks.Extensions.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\Mono.Security.dll
@@ -48,3 +48,7 @@ C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.exe
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.xml
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.pdb
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe.config
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.pdb
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.xml

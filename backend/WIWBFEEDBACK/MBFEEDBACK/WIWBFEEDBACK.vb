@@ -19,14 +19,21 @@ Friend Module WIWBFEEDBACK
     Private Name As String
     Private Setup As New clsSetup
 
+    Dim EmailPassword As String
+    Public FeedbackMail As clsEmail
+
+
     Public Sub Main()
         Dim CommandLineArgs As String = ""
         Try
+            Setup = New clsSetup
             Console.WriteLine("This program sends the contents of a feedback-form to info@meteobase.nl")
+            EmailPassword = Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
+            FeedbackMail = New clsEmail(Setup)
 
             If Debugger.IsAttached Then
                 Name = "Siebe Bosch"
-                MailTo = "siebe@watercommunicatie.nl"
+                MailTo = "siebe@hydroconsult.nl"
                 QuestionType = "vraag"
                 Question = "Yooo tell me what I want, wat I really really want! http://www.google.com"
             Else
@@ -68,7 +75,7 @@ Friend Module WIWBFEEDBACK
             MailBody &= vbCrLf
             MailBody &= "Wij zullen uw vraag zo spoedig mogelijk beantwoorden." & vbCrLf
             MailBody &= "Met vriendelijke groet," & vbCrLf
-            MailBody &= "namens STOWA:" & vbCrLf
+            MailBody &= "namens Het Waterschapshuis:" & vbCrLf
             MailBody &= "het meteobase-team." & vbCrLf
             MailBody &= vbCrLf
             MailBody &= "--------------------------------------------" & vbCrLf
@@ -83,46 +90,33 @@ Friend Module WIWBFEEDBACK
             MailBody &= "HKV-Lijn in water     | www.hkv.nl" & vbCrLf
             MailBody &= "Hydroconsult          | www.hydroconsult.nl" & vbCrLf
             MailBody &= "--------------------------------------------" & vbCrLf
-
-            'initialiseer de email
-            Dim Feedback As New clsEmail(Setup)
-            Dim MailIntro As String
-            Dim ReturnCode As enmReturnCode = WIWBFEEDBACK.enmReturnCode.ok
-            If ValidMail(Name, MailTo, Question, MailBody, ReturnCode) Then
-                Feedback.Message.Subject = "Feedbackformulier Meteobase ingevuld: " & QuestionType
-                Feedback.SetBodyContent(MailBody)
-                Feedback.SetMessageBody()
-                Feedback.Send(MailTo, Name)                 'send to the recipient
-                Feedback.Send("info@meteobase.nl", Name)    'send a copy to meteobase
-            Else
-                'send a copy with additional data to meteobase
-                Feedback.Message.Subject = "Feedbackformulier ongeldig ingevuld: " & QuestionType
-                If ReturnCode = enmReturnCode.invalidrecipient Then
-                    MailIntro = "Ongeldig mailadres geadresseerde: " & MailTo & vbCrLf
-                Else
-                    MailIntro = "Geadresseerde: " & MailTo & vbCrLf
-                End If
-                MailIntro &= "Return code: " & ReturnCode.ToString & "." & vbCrLf
-                MailIntro &= "Command line arguments: " & CommandLineArgs & vbCrLf
-                MailIntro &= "Bericht werd NIET afgeleverd." & vbCrLf
-                MailBody = MailIntro & MailBody
-                Feedback.SetBodyContent(MailBody)
-                Feedback.SetMessageBody()
-                Feedback.Send("info@meteobase.nl", Name)    'send a copy to meteobase
-            End If
+            SendEmail("Feedbackformulier Meteobase ingevuld: " & QuestionType, MailBody)
 
         Catch ex As Exception
-            Dim Feedback As New clsEmail(Setup)
-            Feedback.Message.Subject = "Feedbackformulier ongeldig ingevuld." & vbCrLf
-            MailBody = "Error: " & ex.Message & vbCrLf
-            MailBody &= "Command line args: " & CommandLineArgs & vbCrLf
-            Feedback.SetBodyContent(MailBody)
-            Feedback.SetMessageBody()
-            Feedback.Send("info@meteobase.nl", "Meteobase")    'send a copy to meteobase
+
         End Try
 
 
     End Sub
+
+    Public Function SendEmail(header As String, body As String) As Boolean
+        Try
+            'eerst naar de aanvrager zelf
+            If Not FeedbackMail.Send(EmailPassword, MailTo, Name, header, body) Then
+                Setup.Log.AddError("Verzenden e-mail is niet gelukt. Neem a.u.b. contact met ons op via info@meteobase.nl.")
+            End If
+
+            'dan naar onszelf
+            If Not FeedbackMail.Send(EmailPassword, "info@meteobase.nl", "Meteobase", header, body) Then
+                Setup.Log.AddError("Verzenden e-mail is niet gelukt. Neem a.u.b. contact met ons op via info@meteobase.nl.")
+            End If
+            Return True
+        Catch ex As Exception
+            Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+
+    End Function
 
     Public Enum enmReturnCode
         ok = 1

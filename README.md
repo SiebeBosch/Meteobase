@@ -54,7 +54,7 @@ Op de server staat naast de applicatie zelf een groot aantal forse bestanden die
 Om de applicatie operationeel te krijgen zijn de volgende wachtwoorden en keys benodigd:
 * licentie op Gembox Spreadsheet (https://www.gemboxsoftware.com/spreadsheet)
 * de connection-string voor de backend-database (SQLite) met neerslagstatistieken
-* het wachtwoord voor de uitgaande mails die geautomatiseerd naar gebruikrers worden gestuurd
+* het wachtwoord voor de uitgaande mails die geautomatiseerd naar gebruikers worden gestuurd
 * de host, poortnummer, username, wachtwoord voor de PostgreSQL-database met gebruikersstatistieken
 
 All deze keys en wachtwoorden zijn opgeslagen in losse tekstbestanden in .gitignore en dus niet publiekelijk beschikbaar. Ze worden uitsluitend gedeeld met de eigenaar van Meteobase: Het Waterschapshuis. Mocht u zelf een werkende afgeleide van Meteobase willen vervaardigen, dan is het de eigen verantwoordelijkheid om een licentie op Gembox Spreadsheet te nemen, op de server een PostgreSQL-database te installeren en configureren en een IP-whitelisting aan te vragen bij de beheerder van WIWB (momenteel Hydrologic).

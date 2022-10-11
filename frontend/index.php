@@ -2570,14 +2570,10 @@ $(function(){
 		});
 
 		$('#feedbackModal .submit-btn').click( function () {
-			console.log("hit");
-
 			grecaptcha.ready( function() {
          	grecaptcha.execute('6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG', {action : ""}).then(function(token) {	
 				$("#feedbackModalForm").submit();
 			});
-	
-			console.log("done");
         }); 
 		});
 		$('.disabled-menu-link').click(function (e) {

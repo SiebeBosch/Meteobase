@@ -33,7 +33,7 @@ De architectuur bestaat uit:
      * WIWBSTOCHASTEN: levert kansen bij neerslagvolumes, voor huidig klimaat en diverse klimaatprojecties
      * WIWBTOETSING: levert langjarige klimaatgecorrigeerde neerslagreeksen voor diverse klimaatregio's in Nederland
      * WIWBHERHALINGSTIJD: genereert een kaart met de terugkeertijd in jaren voor de neerslag op gegeven dag en met gegeven duur
-     * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar inf-at-meteobase.nl. Momenteel niet in gebruik
+     * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar info-at-meteobase.nl
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver
 * installatiescripts voor de executables, geschreven in Inno Script Studio

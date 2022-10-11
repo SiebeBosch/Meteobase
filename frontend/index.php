@@ -651,7 +651,7 @@ window.onload = function() {
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="feedbackModalLabel">Dit feedback-formulier is om veiligheidsredenen onklaar gemaakt en zal op termijn worden herzien. Neem bij vragen contact op met Meteobase op het adres info-apenstaartje-meteobase-punt-nl</h4>
+				<h4 class="modal-title" id="feedbackModalLabel"></h4>
 			</div>
 			<div class="modal-body">
 				<form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
@@ -682,7 +682,7 @@ window.onload = function() {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-				<button type="button" class="btn submit-btn btn-primary"><?php  echo 'Feedback versturen'; ?>Stuur bericht</button>
+				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
 			</div>
 		</div>
 	</div>

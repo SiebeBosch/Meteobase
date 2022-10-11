@@ -36,6 +36,12 @@ De architectuur bestaat uit:
      * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar info-at-meteobase.nl
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver
+* Opslag van:
+  * Literatuur
+  * Langjarige reeksen met neerslagsommen (de zogeheten toetsingsreeksen)
+  * Statistieken van neerslagvolumes
+  * Stedelijke neerslaggebeurtenissen
+  * De SATDATA 2.0 dataset (voorloper van de nu operationele SATDATA 3.0 dataset) 
 * installatiescripts voor de executables, geschreven in Inno Script Studio
 
 #### Herkomst van gegevens ####

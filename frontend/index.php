@@ -251,6 +251,9 @@ $docu_menu = array(
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	
 	<![endif]-->
+
+<script src="https://www.google.com/recaptcha/api.js?render=6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG"></script>
+	
 <script type="text/javascript">
 function melding() { document.getElementById('dl').innerHTML='<p>Uw bestelling wordt verwerkt. U ontvangt binnen een enkele uren een e-mail<br />met een downloadlink. U mag dit tabblad verlaten.</p>'; $('#downloadbutton').fadeOut('fast'); }
 function check() {
@@ -678,8 +681,8 @@ window.onload = function() {
 				</form>
 			</div>
 			<div class="modal-footer">
-				<!--button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button-->
+				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
 			</div>
 		</div>
 	</div>
@@ -2566,8 +2569,16 @@ $(function(){
 			}
 		});
 
-		$('#feedbackModal .submit-btn').click(function () {
-			$("#feedbackModalForm").submit();
+		$('#feedbackModal .submit-btn').click( function () {
+			console.log("hit");
+
+			grecaptcha.ready( function() {
+         	grecaptcha.execute('6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG', {action : ""}).then(function(token) {	
+				$("#feedbackModalForm").submit();
+			});
+	
+			console.log("done");
+        }); 
 		});
 		$('.disabled-menu-link').click(function (e) {
 			e.preventDefault();

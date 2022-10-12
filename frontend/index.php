@@ -252,7 +252,7 @@ $docu_menu = array(
 	
 	<![endif]-->
 
-<script src="https://www.google.com/recaptcha/api.js?render=6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG"></script>
+<script src='https://www.google.com/recaptcha/api.js' async defer></script>
 	
 <script type="text/javascript">
 function melding() { document.getElementById('dl').innerHTML='<p>Uw bestelling wordt verwerkt. U ontvangt binnen een enkele uren een e-mail<br />met een downloadlink. U mag dit tabblad verlaten.</p>'; $('#downloadbutton').fadeOut('fast'); }
@@ -677,6 +677,10 @@ window.onload = function() {
 						<label for="feedbackMessage">Vul hieronder uw vraag, bug, probleem of opmerking in:</label>
 						<textarea id="feedbackMessage" name="feedbackMessage" class="form-control" rows="3">
 						</textarea>
+					</div>
+					<div class="form-group col-md-12 col-sm-12 col-xs-12">
+					<div class="g-recaptcha" data-sitekey="6Lf1lHQiAAAAAPhNBL1Ue4Q14RU744b-OzHgEtq1"></div>
+					<span id="error-captcha"></span>
 					</div>
 				</form>
 			</div>
@@ -2570,11 +2574,7 @@ $(function(){
 		});
 
 		$('#feedbackModal .submit-btn').click( function () {
-			grecaptcha.ready( function() {
-         	grecaptcha.execute('6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG', {action : ""}).then(function(token) {	
-				$("#feedbackModalForm").submit();
-			});
-        }); 
+ 			$("#feedbackModalForm").submit();	
 		});
 		$('.disabled-menu-link').click(function (e) {
 			e.preventDefault();
@@ -3082,7 +3082,14 @@ $(function(){
 				}
 			},
 			submitHandler: function(form) {
-				form.submit();
+				var response = grecaptcha.getResponse();
+			
+				if(response) {
+					form.submit();
+				} else {
+					$('#error-captcha').empty()
+     				$('#error-captcha').append("Verifieer dat u geen robot bent.");
+				}
 			},
 			messages: {
 				userFullNameFeedback: {

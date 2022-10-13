@@ -90,7 +90,21 @@ Friend Module WIWBFEEDBACK
             MailBody &= "HKV-Lijn in water     | www.hkv.nl" & vbCrLf
             MailBody &= "Hydroconsult          | www.hydroconsult.nl" & vbCrLf
             MailBody &= "--------------------------------------------" & vbCrLf
-            SendEmail("Feedbackformulier Meteobase ingevuld: " & QuestionType, MailBody)
+
+            If MailValid(MailBody) Then
+                SendEmail("Feedbackformulier Meteobase ingevuld: " & QuestionType, MailBody, True)
+            Else
+                Dim BadBody As String = "L.S." & vbCrLf
+                BadBody &= vbCrLf
+                BadBody &= "Uw bericht aan Meteobase voldeed niet aan de voorwaarden en werd als spam afgehandeld en automatisch verwijderd."
+                BadBody &= vbCrLf
+                BadBody &= "Met vriendelijke groet,"
+                BadBody &= "namens Het Waterschapshuis:" & vbCrLf
+                BadBody &= "het meteobase-team." & vbCrLf
+                BadBody &= vbCrLf
+                SendEmail("Ongeldige inhoud feedbackformulier Meteobase.", BadBody, False)
+            End If
+
 
         Catch ex As Exception
 
@@ -99,16 +113,29 @@ Friend Module WIWBFEEDBACK
 
     End Sub
 
-    Public Function SendEmail(header As String, body As String) As Boolean
+    Public Function MailValid(body As String) As Boolean
+        'een functie om de ergste spam eruit te filteren
+        If body.Trim.Length = 0 Then Return False
+        If MailTo.Trim.Length = 0 Then Return False
+        If Strings.Right(MailTo, 2) = "ru" Then Return False
+        If InStr(body, "sex", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "wealth", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "telegram", CompareMethod.Text) > 0 Then Return False
+        Return True
+    End Function
+
+    Public Function SendEmail(header As String, body As String, CopyToMeteobase As Boolean) As Boolean
         Try
             'eerst naar de aanvrager zelf
             If Not FeedbackMail.Send(EmailPassword, MailTo, Name, header, body) Then
                 Setup.Log.AddError("Verzenden e-mail is niet gelukt. Neem a.u.b. contact met ons op via info@meteobase.nl.")
             End If
 
-            'dan naar onszelf
-            If Not FeedbackMail.Send(EmailPassword, "info@meteobase.nl", "Meteobase", header, body) Then
-                Setup.Log.AddError("Verzenden e-mail is niet gelukt. Neem a.u.b. contact met ons op via info@meteobase.nl.")
+            'dan naar onszelf, indien geldig
+            If CopyToMeteobase Then
+                If Not FeedbackMail.Send(EmailPassword, "info@meteobase.nl", "Meteobase", header, body) Then
+                    Setup.Log.AddError("Verzenden e-mail is niet gelukt. Neem a.u.b. contact met ons op via info@meteobase.nl.")
+                End If
             End If
             Return True
         Catch ex As Exception

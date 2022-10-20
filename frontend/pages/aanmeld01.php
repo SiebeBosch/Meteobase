@@ -36,7 +36,7 @@
                 <p class="section-text">
                     Welkom bij Meteobase.nl: een open data online service voor meteorologische informatie; ontwikkeld voor en door waterprofessionals.<br>
 					Meteobase werd oorspronkelijk ontwikkeld door de <a href="http://www.stowa.nl">STOWA</a><br> 
-					en valt sinds 1-1-2018 onder <a href="https://www.hetwaterschapshuis.nl/pagina/producten/waterveiligheid/weer-informatie-waterbeheer-wiwb.html">WIWB</a> (Weer Informatie Waterbeheer).<br><br> 
+					en valt sinds 1-1-2018 onder <a href="https://www.hetwaterschapshuis.nl/neerslag-weer-informatie-waterbeheer">WIWB</a> (Weer Informatie Waterbeheer).<br><br> 
 					Vanaf de Meteobase-website kunt u historische neerslag- en verdampingsgegevens<br>
 					voor heel Nederland downloaden.<br><br>
 					<font color="blue">Vanaf heden  zijn nieuwe neerslagstatistiek en –reeksen hier op Meteobase te verkrijgen. Deze zijn te vinden onder Statistiek - Toetsingsdata. Voor achtergrondinformatie verwijzen we u naar dit <a href="https://www.stowa.nl/publicaties/neerslagstatistiek-en-reeksen-voor-het-waterbeheer-2019">rapport</a> van STOWA.</font>

@@ -117,10 +117,37 @@ Friend Module WIWBFEEDBACK
         'een functie om de ergste spam eruit te filteren
         If body.Trim.Length = 0 Then Return False
         If MailTo.Trim.Length = 0 Then Return False
-        If Strings.Right(MailTo, 2) = "ru" Then Return False
         If InStr(body, "sex", CompareMethod.Text) > 0 Then Return False
         If InStr(body, "wealth", CompareMethod.Text) > 0 Then Return False
         If InStr(body, "telegram", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "marijuana", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "health", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "fitness", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, ".club", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "lorazepam", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "herbal", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "digestive", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "parasite", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "http", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "www", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, ".com", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, ".club", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, ".ru", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, " cash ", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "Russian", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "Ukrainian", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "pinterest", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "Photoshop", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "porn", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "prescription", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, " sell ", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, "decoding", CompareMethod.Text) > 0 Then Return False
+        If InStr(body, ".htm", CompareMethod.Text) > 0 Then Return False
+
+        If Strings.Right(MailTo, 2) = "ru" Then Return False
+        If InStr(MailTo, ".club", CompareMethod.Text) > 0 Then Return False
+        If InStr(MailTo, "fitness", CompareMethod.Text) > 0 Then Return False
+
         Return True
     End Function
 

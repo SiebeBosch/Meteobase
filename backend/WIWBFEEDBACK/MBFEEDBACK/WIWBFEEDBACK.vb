@@ -31,67 +31,60 @@ Friend Module WIWBFEEDBACK
             EmailPassword = Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
             FeedbackMail = New clsEmail(Setup)
 
-            If Debugger.IsAttached Then
-                Name = "Siebe Bosch"
-                MailTo = "siebe@hydroconsult.nl"
-                QuestionType = "vraag"
-                Question = "Yooo tell me what I want, wat I really really want! http://www.google.com"
+            If My.Application.CommandLineArgs.Count = 0 Then
+                Console.WriteLine("Enter your name.")
+                Name = Setup.GeneralFunctions.RemoveBoundingQuotes(Console.ReadLine)
+                CommandLineArgs &= Name & " "
+                Console.WriteLine("Enter e-mail address.")
+                MailTo = Setup.GeneralFunctions.RemoveBoundingQuotes(Console.ReadLine)
+                CommandLineArgs &= MailTo & " "
+                Console.WriteLine("Enter the type of question you have: e.g. question/bug/request.")
+                QuestionType = Console.ReadLine
+                CommandLineArgs &= QuestionType & " "
+                Console.WriteLine("Enter your message.")
+                Question = Console.ReadLine
+                CommandLineArgs &= Replace(Replace(Question, "http", "---webaddress removed---"), "www", "---webaddress removed---") & " "
+            ElseIf My.Application.CommandLineArgs.Count <> 4 Then
+                Console.WriteLine("Error: incorrect number of arguments presented")
             Else
-                If My.Application.CommandLineArgs.Count = 0 Then
-                    Console.WriteLine("Enter your name.")
-                    Name = Setup.GeneralFunctions.RemoveBoundingQuotes(Console.ReadLine)
-                    CommandLineArgs &= Name & " "
-                    Console.WriteLine("Enter e-mail address.")
-                    MailTo = Setup.GeneralFunctions.RemoveBoundingQuotes(Console.ReadLine)
-                    CommandLineArgs &= MailTo & " "
-                    Console.WriteLine("Enter the type of question you have: e.g. question/bug/request.")
-                    QuestionType = Console.ReadLine
-                    CommandLineArgs &= QuestionType & " "
-                    Console.WriteLine("Enter your message.")
-                    Question = Console.ReadLine
-                    CommandLineArgs &= Replace(Replace(Question, "http", "---webaddress removed---"), "www", "---webaddress removed---") & " "
-                ElseIf My.Application.CommandLineArgs.Count <> 4 Then
-                    Console.WriteLine("Error: incorrect number of arguments presented")
-                Else
-                    Name = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(0))
-                    MailTo = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(1))
-                    QuestionType = My.Application.CommandLineArgs(2)
-                    Question = My.Application.CommandLineArgs(3)
-                End If
+                Name = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(0))
+                MailTo = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(1))
+                QuestionType = My.Application.CommandLineArgs(2)
+                Question = My.Application.CommandLineArgs(3)
             End If
 
-            'build the content of the e-mail
-            MailBody = "Geachte " & Name & "," & vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "U hebt het feedbackformulier op de website www.meteobase.nl ingevuld. Onderstaand vindt u een afschrift van uw bericht." & vbCrLf
-            MailBody &= "Een kopie van deze e-mail werd verzonden naar info@meteobase.nl." & vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "Naam: " & Name & vbCrLf
-            MailBody &= "E-mailadres: " & MailTo & vbCrLf
-            MailBody &= "Soort bericht: " & QuestionType & vbCrLf
-            MailBody &= "Inhoud bericht:" & vbCrLf
-            MailBody &= Replace(Replace(Question, "http", "---webaddress not allowed---"), "www", "---webaddress not allowed---")
-            MailBody &= vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "Wij zullen uw vraag zo spoedig mogelijk beantwoorden." & vbCrLf
-            MailBody &= "Met vriendelijke groet," & vbCrLf
-            MailBody &= "namens Het Waterschapshuis:" & vbCrLf
-            MailBody &= "het meteobase-team." & vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "--------------------------------------------" & vbCrLf
-            MailBody &= "www.meteobase.nl | het online archief voor de" & vbCrLf
-            MailBody &= "watersector van historische neerslag en" & vbCrLf
-            MailBody &= "verdamping in Nederland" & vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "Aangeboden door Het Waterschapshuis | www.hetwaterschapshuis.nl" & vbCrLf
-            MailBody &= vbCrLf
-            MailBody &= "Mogelijk gemaakt door" & vbCrLf
-            MailBody &= "Hydrologic            | www.hydrologic.nl" & vbCrLf
-            MailBody &= "HKV-Lijn in water     | www.hkv.nl" & vbCrLf
-            MailBody &= "Hydroconsult          | www.hydroconsult.nl" & vbCrLf
-            MailBody &= "--------------------------------------------" & vbCrLf
+            If MailValid(Question) Then
+                'build the content of the e-mail
+                MailBody = "Geachte " & Name & "," & vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "U hebt het feedbackformulier op de website www.meteobase.nl ingevuld. Onderstaand vindt u een afschrift van uw bericht." & vbCrLf
+                MailBody &= "Een kopie van deze e-mail werd verzonden naar info@meteobase.nl." & vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "Naam: " & Name & vbCrLf
+                MailBody &= "E-mailadres: " & MailTo & vbCrLf
+                MailBody &= "Soort bericht: " & QuestionType & vbCrLf
+                MailBody &= "Inhoud bericht:" & vbCrLf
+                MailBody &= Replace(Replace(Question, "http", "---webaddress not allowed---"), "www", "---webaddress not allowed---")
+                MailBody &= vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "Wij zullen uw vraag zo spoedig mogelijk beantwoorden." & vbCrLf
+                MailBody &= "Met vriendelijke groet," & vbCrLf
+                MailBody &= "namens Het Waterschapshuis:" & vbCrLf
+                MailBody &= "het meteobase-team." & vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "--------------------------------------------" & vbCrLf
+                MailBody &= "www.meteobase.nl | het online archief voor de" & vbCrLf
+                MailBody &= "watersector van historische neerslag en" & vbCrLf
+                MailBody &= "verdamping in Nederland" & vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "Aangeboden door Het Waterschapshuis | www.hetwaterschapshuis.nl" & vbCrLf
+                MailBody &= vbCrLf
+                MailBody &= "Mogelijk gemaakt door" & vbCrLf
+                MailBody &= "Hydrologic            | www.hydrologic.nl" & vbCrLf
+                MailBody &= "HKV-Lijn in water     | www.hkv.nl" & vbCrLf
+                MailBody &= "Hydroconsult          | www.hydroconsult.nl" & vbCrLf
+                MailBody &= "--------------------------------------------" & vbCrLf
 
-            If MailValid(MailBody) Then
                 SendEmail("Feedbackformulier Meteobase ingevuld: " & QuestionType, MailBody, True)
             Else
                 Dim BadBody As String = "L.S." & vbCrLf
@@ -104,7 +97,6 @@ Friend Module WIWBFEEDBACK
                 BadBody &= vbCrLf
                 SendEmail("Ongeldige inhoud feedbackformulier Meteobase.", BadBody, False)
             End If
-
 
         Catch ex As Exception
 
@@ -211,7 +203,7 @@ Friend Module WIWBFEEDBACK
             Return True
         Catch ex As Exception
             MailBody = "Error in function ValidMail: " & ex.Message & vbCrLf & vbCrLf & MailBody
-        Return False
+            Return False
         End Try
     End Function
 

@@ -574,19 +574,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
             Case Is = "NETCDF"
                 Me.Setup.Log.AddError("Error: export naar NetCDF wordt niet langer ondersteund.")
             Case Is = "HDF5"
-                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
         End Select
 
         Return True
@@ -604,19 +604,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
             Case Is = "NETCDF"
                 'If Not WritePM_NC() Then Return False
             Case Is = "HDF5"
-                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
         End Select
 
         Return True

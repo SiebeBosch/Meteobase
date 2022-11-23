@@ -145,10 +145,11 @@ Public Class clsWIWBRasterData
                 End If
             End If
             If EVT_ACTUAL Then
+                Dim FirstAvailableDate As New Date(2012, 7, 24)
                 Dim StartDate As New Date(Left(FDate.ToString.Trim, 4), Left(Right(FDate.ToString.Trim, 4), 2), Right(FDate.ToString.Trim, 2))
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
-                If Year(StartDate) < 2020 Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare actuele verdampingsgegevens uit SATDATA 3.0. Beschikbaarheid begint op 1 januari 2020.")
-                If EndDate > Now.AddDays(-92) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente actuele verdampingsgegevens uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 3 maanden.")
+                If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare actuele verdampingsgegevens uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
+                If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente actuele verdampingsgegevens uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
                 If Not WriteEVT_ACT() Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de SATDATA 3.0 actuele evapotranspiratie.")
                 Else
@@ -156,11 +157,11 @@ Public Class clsWIWBRasterData
                 End If
             End If
             If EVT_SHORTAGE Then
+                Dim FirstAvailableDate As New Date(2012, 7, 24)
                 Dim StartDate As New Date(Left(FDate.ToString.Trim, 4), Left(Right(FDate.ToString.Trim, 4), 2), Right(FDate.ToString.Trim, 2))
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
-                If Year(StartDate) < 2020 Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare verdampingstekorten uit SATDATA 3.0. Beschikbaarheid begint op 1 januari 2020.")
-                If EndDate > Now.AddDays(-92) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente verdampingstekorten uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 3 maanden.")
-
+                If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare verdampingstekorten uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
+                If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente verdampingstekorten uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
                 If Not WriteEVT_SHO() Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van het SATDATA 3.0 evapotranspiratietekort.")
                 Else
@@ -1688,6 +1689,9 @@ Public Class clsWIWBRasterData
                     myWriter.WriteLine("Acknowledgement: contains modified ESA Copernicus Sentinel data 2015-2020                               ")
                     myWriter.WriteLine("--------------------------------------------------------------------------------------------------------")
                     myWriter.WriteLine("Actuele evapotranspiratie volgens SATDATA 3.0.")
+                    myWriter.WriteLine("Deze gegevensbron werd op 23-11-2022 eind van de avond bijgewerkt naar v2")
+                    myWriter.WriteLine("Databron code WIWB-API: Satdata.Evapotranspiration.Reanalysis.V2")
+                    myWriter.WriteLine("Beschikbaarheid: 24-7-2012 tot heden, met een vertraging van 1 tot 2 maanden.")
                     myWriter.WriteLine("Bestandsformaat: .ASC (Arc/Info-raster)")
                     myWriter.WriteLine("Datum gegenereerd:" & Today)
                     myWriter.WriteLine("Gegenereerd door: www.meteobase.nl")
@@ -1710,6 +1714,9 @@ Public Class clsWIWBRasterData
                     myWriter.WriteLine("Acknowledgement: contains modified ESA Copernicus Sentinel data 2015-2020                               ")
                     myWriter.WriteLine("--------------------------------------------------------------------------------------------------------")
                     myWriter.WriteLine("Verdampingstekort (Epot - Eact) volgens SATDATA 3.0.")
+                    myWriter.WriteLine("Deze gegevensbron werd op 23-11-2022 eind van de avond bijgewerkt naar v2")
+                    myWriter.WriteLine("Databron code WIWB-API: Satdata.Evapotranspiration.Reanalysis.V2")
+                    myWriter.WriteLine("Beschikbaarheid: 24-7-2012 tot heden, met een vertraging van 1 tot 2 maanden.")
                     myWriter.WriteLine("Bestandsformaat: .ASC (Arc/Info-raster)")
                     myWriter.WriteLine("Datum gegenereerd:" & Today)
                     myWriter.WriteLine("Gegenereerd door: www.meteobase.nl")

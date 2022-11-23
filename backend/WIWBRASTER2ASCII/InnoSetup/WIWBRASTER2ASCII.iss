@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "RASTER2ASCII"
-#define MyAppVersion "3.300"
+#define MyAppVersion "3.320"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\Meteobase\backend\WIWBRASTER2ASCII\InnoSetup"

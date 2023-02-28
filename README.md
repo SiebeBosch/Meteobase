@@ -54,7 +54,7 @@ Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staa
 Een map met installatiebestanden van programma's die nodig zijn om een server in te richten voor het hosten van Meteobase staat onder deze Dropbox-link:
 https://www.dropbox.com/sh/na6rjqd2wv1h4wq/AABxVYapjquKOfKcmHimZdfta?dl=0
 
-### AVG Compliance ###
+#### AVG Compliance ####
 Op de server van Meteobase worden iedere eerste van de maand automatisch alle registraties geanonimiseerd. Dit gebeurt door de naam te verwijderen uit de database en alles tot het apenstaartje te verwijderen van het opgegeven e-mailadres. De bedrijfsnaam blijft bestaan zodat Het Waterschapshuis statistieken kan opstellen van categorieën gebruikers. 
 
 #### Permanente bestanden en literatuur ####

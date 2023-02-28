@@ -34,6 +34,7 @@ De architectuur bestaat uit:
      * WIWBTOETSING: levert langjarige klimaatgecorrigeerde neerslagreeksen voor diverse klimaatregio's in Nederland
      * WIWBHERHALINGSTIJD: genereert een kaart met de terugkeertijd in jaren voor de neerslag op gegeven dag en met gegeven duur
      * WIWBFEEDBACK: verstuurt de input van het feedbackformulier op de site naar info-at-meteobase.nl
+     * WIWBANONYMIZE: een executable die op de server is gescheduled om iedere 1e van de maand alle logins ouder dan 1 maand te anonimiseren.
   * Een PostgreSQL-database t.b.v. opslag gebruiksstatistieken
   * Een Apache webserver
 * Opslag van:
@@ -52,6 +53,9 @@ Toetsingsreeksen, neerslagstatistieken en stedelijke neerslaggebeurtenissen staa
 #### Installatie van de server ####
 Een map met installatiebestanden van programma's die nodig zijn om een server in te richten voor het hosten van Meteobase staat onder deze Dropbox-link:
 https://www.dropbox.com/sh/na6rjqd2wv1h4wq/AABxVYapjquKOfKcmHimZdfta?dl=0
+
+### AVG Compliance ###
+Op de server van Meteobase worden iedere eerste van de maand automatisch alle registraties geanonimiseerd. Dit gebeurt door de naam te verwijderen uit de database en alles tot het apenstaartje te verwijderen van het opgegeven e-mailadres. De bedrijfsnaam blijft bestaan zodat Het Waterschapshuis statistieken kan opstellen van categorieën gebruikers. 
 
 #### Permanente bestanden en literatuur ####
 Op de server staat naast de applicatie zelf een groot aantal forse bestanden die niet in Gitub zijn ondergebracht. Het gaat onder meer om langjarige neerslagreeksen, de SATDATA 2.0-datasets en alle literatuur. Deze bestanden staan op de server in de directory meteobase\downloads\fixed\. Wij hebben ze eveneens beschikbaar gesteld via de volgende dropbox-link: https://www.dropbox.com/sh/mq409bff8y0v5xk/AACxMnYdCAQmiiX_SVcju0z-a?dl=0

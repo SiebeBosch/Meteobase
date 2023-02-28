@@ -109,6 +109,10 @@ Friend Module WIWBFEEDBACK
         'een functie om de ergste spam eruit te filteren
         If body.Trim.Length = 0 Then Return False
         If MailTo.Trim.Length = 0 Then Return False
+        If InStr(MailTo, "www", CompareMethod.Text) > 0 Then Return False
+        If InStr(MailTo, "tinyurl", CompareMethod.Text) > 0 Then Return False
+        If InStr(Name, "www", CompareMethod.Text) > 0 Then Return False
+        If InStr(Name, "tinyurl", CompareMethod.Text) > 0 Then Return False
         If InStr(body, "sex", CompareMethod.Text) > 0 Then Return False
         If InStr(body, "wealth", CompareMethod.Text) > 0 Then Return False
         If InStr(body, "telegram", CompareMethod.Text) > 0 Then Return False

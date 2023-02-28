@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "v0ee3jLGPHiz6qMAjwIDg2jPCKpar6l52Pa9nAC6/d1klssl77uRfHZ34L0wJ3mbRd7DsopNyEROYV8BLWnVqg==",
+  "success": true,
+  "projectFilePath": "C:\\GITHUB\\Meteobase\\backend\\MBAnonymize\\MBAnonymize.vbproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\SiebeBosch\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\SiebeBosch\\.nuget\\packages\\npgsql\\7.0.2\\npgsql.7.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

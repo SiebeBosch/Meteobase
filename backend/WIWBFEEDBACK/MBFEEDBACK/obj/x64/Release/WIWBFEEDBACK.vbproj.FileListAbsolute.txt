@@ -39,6 +39,10 @@ C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\fi\Npgsql.re
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\fr\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\ja\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\bin\x64\Release\zh-CN\Npgsql.resources.dll
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe.config
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.pdb
+C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.xml
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.vbproj.AssemblyReference.cache
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.vbproj.SuggestedBindingRedirects.cache
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.Resources.resources
@@ -48,7 +52,3 @@ C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.exe
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.xml
 C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\MBFEEDBACK\obj\x64\Release\WIWBFEEDBACK.pdb
-C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe.config
-C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.exe
-C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.pdb
-C:\GITHUB\Meteobase\backend\WIWBFEEDBACK\bin\x64\WIWBFEEDBACK.xml

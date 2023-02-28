@@ -1,0 +1,5 @@
+C:\GITHUB\Meteobase\backend\MBAnonymize\obj\Debug\net7.0\MBAnonymize.vbproj.AssemblyReference.cache
+C:\GITHUB\Meteobase\backend\MBAnonymize\obj\Debug\net7.0\MBAnonymize.GeneratedMSBuildEditorConfig.editorconfig
+C:\GITHUB\Meteobase\backend\MBAnonymize\obj\Debug\net7.0\MBAnonymize.AssemblyInfoInputs.cache
+C:\GITHUB\Meteobase\backend\MBAnonymize\obj\Debug\net7.0\MBAnonymize.AssemblyInfo.vb
+C:\GITHUB\Meteobase\backend\MBAnonymize\obj\Debug\net7.0\MBAnonymize.vbproj.CoreCompileInputs.cache

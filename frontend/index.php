@@ -663,6 +663,7 @@ window.onload = function() {
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="feedbackModalLabel"></h4>
 			</div>
+			<?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>
 			<div class="modal-body">
 				<form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
 					<div class="form-group col-md-6 col-sm-12 col-xs-12">
@@ -700,6 +701,13 @@ window.onload = function() {
 				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
 				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
 			</div>
+			<?php } else { ?>
+				<div class="model-body">
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+						<label for="feedbackMessage">Stuur een e-mail naar info-apenstaartje-meteobase.nl.</label>
+					</div>
+				</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>

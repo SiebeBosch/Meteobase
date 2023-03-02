@@ -644,7 +644,6 @@ window.onload = function() {
 							<input type="text" id="userEmail" name="userEmail" class="form-control" placeholder="Email" value="<?php if (isset($_COOKIE['gebruiker'])) { echo $_COOKIE['gebruiker']['mail'];} else { echo '';} ?>" aria-describedby="email">
 						</div>
 					</div>	
-					Bij registratie gaat u akkoord met opslag van uw gegevens in een cookie tot u de browser sluit en op de server gedurende maximaal 3 maanden. Lees <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/09022023_HWH_privacyverklaring.pdf" target="_blank">hier</a> de privacyverklaring.
 				</form>
 			</div>
 			<div class="modal-footer">

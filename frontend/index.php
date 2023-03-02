@@ -613,6 +613,7 @@ window.onload = function() {
 				<h4 class="modal-title" id="registerModalLabel">Registreren</h4>
 			</div>
 			<div class="modal-body">
+
 				<form method="POST" id="registerModalForm" action="<?php echo($_SERVER["PHP_SELF"]); ?>" class="register-modal">
 					<div class="form-group col-md-12 col-sm-12 col-xs-12">
 						<label for="userFullName">Naam</label>
@@ -634,7 +635,8 @@ window.onload = function() {
 							<span class="input-group-addon" id="email"><i class="fa fa-envelope-o"></i></span>
 							<input type="text" id="userEmail" name="userEmail" class="form-control" placeholder="Email" value="<?php if (isset($_COOKIE['gebruiker'])) { echo $_COOKIE['gebruiker']['mail'];} else { echo '';} ?>" aria-describedby="email">
 						</div>
-					</div>				
+					</div>	
+					Bij registratie gaat u akkoord met opslag van uw gegevens in een cookie tot u de browser sluit en op de server gedurende maximaal 3 maanden. Lees <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/09022023_HWH_privacyverklaring.pdf" target="_blank">hier</a> de privacyverklaring.
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -967,7 +969,7 @@ window.onload = function() {
 			<div class="modal-body">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<h5>Meteobase</h5>
-					<ul>
+					<ul>					
 						<li>
 							Hakvoort, H., et al., 2013,
 							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Hakvoort2013_Stromingen_Meteobase.pdf" target="_blank">

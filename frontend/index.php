@@ -253,7 +253,9 @@ $docu_menu = array(
 	<![endif]-->
 
 <script src='https://www.google.com/recaptcha/api.js' async defer></script>
-	
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js?forceLang=nl&tracking=1&thirdparty=1&always=1&refreshPage=1&top=1&showNoConsent=1&hideDetailsBtn=1&showPolicyLink=1&privacyPage=https%3A%2F%2Fwww.meteobase.nl%2Fmeteobase%2Fdownloads%2Ffixed%2Fliteratuur%2F20230302_privacyverklaring_Meteobase.pdf"></script>
+
 <script type="text/javascript">
 function melding() { document.getElementById('dl').innerHTML='<p>Uw bestelling wordt verwerkt. U ontvangt binnen een enkele uren een e-mail<br />met een downloadlink. U mag dit tabblad verlaten.</p>'; $('#downloadbutton').fadeOut('fast'); }
 function check() {
@@ -342,6 +344,12 @@ window.onload = function() {
 						<?php  } ?>
 					</div>
 					<!--Ending Map-->
+					<?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>					
+					<div class="g-recaptcha"
+      					data-sitekey="6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG"
+     					data-size="invisible">
+					</div>
+					<?php } ?>
 					<!--Starting Main Content-->
 					<div class="col-md-6 col-sm-12 col-xs-12 main-content pull-left">
 						<!--Starting Header-->
@@ -655,6 +663,7 @@ window.onload = function() {
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="feedbackModalLabel"></h4>
 			</div>
+			<?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>
 			<div class="modal-body">
 				<form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
 					<div class="form-group col-md-6 col-sm-12 col-xs-12">
@@ -680,16 +689,25 @@ window.onload = function() {
 						<textarea id="feedbackMessage" name="feedbackMessage" class="form-control" rows="3">
 						</textarea>
 					</div>
+					<?php if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") { ?>	
 					<div class="form-group col-md-12 col-sm-12 col-xs-12">
-					<div class="g-recaptcha" data-sitekey="6Lf1lHQiAAAAAPhNBL1Ue4Q14RU744b-OzHgEtq1"></div>
-					<span id="error-captcha"></span>
+						<div class="g-recaptcha" data-sitekey="6Lf1lHQiAAAAAPhNBL1Ue4Q14RU744b-OzHgEtq1"></div>
+						<span id="error-captcha"></span>
 					</div>
+					<?php } ?>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
 				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
 			</div>
+			<?php } else { ?>
+				<div class="model-body">
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+						<label for="feedbackMessage">Stuur een e-mail naar info-apenstaartje-meteobase.nl.</label>
+					</div>
+				</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>
@@ -2575,8 +2593,21 @@ $(function(){
 			}
 		});
 
-		$('#feedbackModal .submit-btn').click( function () {
- 			$("#feedbackModalForm").submit();	
+		$('#feedbackModal .submit-btn').click( async function () {
+			try {
+				await grecaptcha.execute();
+			} catch (err) {
+				console.log(err);	
+			}
+
+			var response = grecaptcha.getResponse();
+
+			if(response) {
+				$("#feedbackModalForm").submit();	
+			} else {
+				$('#error-captcha').empty()
+				$('#error-captcha').append("Verifieer dat u geen robot bent.");
+			}
 		});
 		$('.disabled-menu-link').click(function (e) {
 			e.preventDefault();
@@ -3084,14 +3115,7 @@ $(function(){
 				}
 			},
 			submitHandler: function(form) {
-				var response = grecaptcha.getResponse();
-			
-				if(response) {
-					form.submit();
-				} else {
-					$('#error-captcha').empty()
-     				$('#error-captcha').append("Verifieer dat u geen robot bent.");
-				}
+				form.submit();
 			},
 			messages: {
 				userFullNameFeedback: {

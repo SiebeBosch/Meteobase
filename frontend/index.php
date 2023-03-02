@@ -254,7 +254,7 @@ $docu_menu = array(
 
 <script src='https://www.google.com/recaptcha/api.js' async defer></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js?forceLang=nl&tracking=1&thirdparty=1&always=1&refreshPage=1&top=1&showNoConsent=1&hideDetailsBtn=1&showPolicyLink=1&privacyPage=https%3A%2F%2Fwww.meteobase.nl%2Fmeteobase%2Fdownloads%2Ffixed%2Fliteratuur%2F09022023_HWH_privacyverklaring.pdf"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js?forceLang=nl&tracking=1&thirdparty=1&always=1&refreshPage=1&top=1&showNoConsent=1&hideDetailsBtn=1&showPolicyLink=1&privacyPage=https%3A%2F%2Fwww.meteobase.nl%2Fmeteobase%2Fdownloads%2Ffixed%2Fliteratuur%2F20230302_privacyverklaring_Meteobase.pdf"></script>
 
 <script type="text/javascript">
 function melding() { document.getElementById('dl').innerHTML='<p>Uw bestelling wordt verwerkt. U ontvangt binnen een enkele uren een e-mail<br />met een downloadlink. U mag dit tabblad verlaten.</p>'; $('#downloadbutton').fadeOut('fast'); }

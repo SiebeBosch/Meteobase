@@ -11,7 +11,11 @@ __email__ = "daniel@d2hydro.nl"
 __status__ = "Development"
 
 import numpy as np
+import subprocess
+import json
 
+R_exe = r'c:\Program Files\R\R-3.6.3\bin\Rscript.exe'
+R_script = r'c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\R\Gebiedsreductie.R'
 
 def GEVCDF(mu, sigma, Zeta,X):
     """
@@ -86,3 +90,20 @@ def GLOINVERSE(mu, sigma, Teta, X):
             else:t[idx,idy] = mu[idy] + sigma[idy] * ((1 - (1 / x - 1) ** teta) / teta)
             
     return t
+
+def AREA(area):
+    '''
+    Datum: 06-06-2020
+    Auteur: Aart Overeem (in samenwerking met Siebe Bosch)
+    '''
+
+    command = [R_exe,R_script,area]
+    if type(area) == int:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        stdout = process.communicate()[0]
+        
+        try:
+            result = json.loads(stdout.decode('ascii').replace('\\',''))
+            return result
+        except:
+            pass

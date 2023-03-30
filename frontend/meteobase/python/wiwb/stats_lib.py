@@ -98,7 +98,8 @@ def AREA(area):
     '''
 
     command = [R_exe,R_script,area]
-    if type(area) == int:
+    try:
+        int(area)
         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         stdout = process.communicate()[0]
         
@@ -107,3 +108,5 @@ def AREA(area):
             return result
         except:
             pass
+    except ValueError:
+        pass

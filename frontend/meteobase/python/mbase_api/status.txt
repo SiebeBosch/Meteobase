@@ -1,4 +1,0 @@
-{"time": "2018-11-16 13:13:33", "status": "getting rainfall from wiwb"}
-{"time": "2018-11-16 13:13:47", "status": "getting evaporation from wiwb"}
-{"time": "2018-11-16 13:13:47", "status": "converting data to hydromedah-format"}
-{"time": "2018-11-16 13:14:16", "status": "ready"}

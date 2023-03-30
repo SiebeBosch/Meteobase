@@ -350,11 +350,14 @@ def returnperiod():
 def area():
     """ return the Google Data Table in JSON from a html form set of parameters """
     area = request.form['area']
-    result = AREA(area)
-    
-    reductions = array([list(res.values())[1:] for res in result])
-    y_labels = ['{} jr'.format(res['T_series_Langbein']) for res in result]
-    
-    result = xy_series(array(duren['oppervlaktereductie']),reductions, x_label="duur (uren)", y_labels=y_labels,decimals=3).toGDT()
-    
-    return dumps(result), 200
+    if type(area) == int:
+        result = AREA(area)
+        
+        reductions = array([list(res.values())[1:] for res in result])
+        y_labels = ['{} jr'.format(res['T_series_Langbein']) for res in result]
+        
+        result = xy_series(array(duren['oppervlaktereductie']),reductions, x_label="duur (uren)", y_labels=y_labels,decimals=3).toGDT()
+        
+        return dumps(result), 200
+    else:
+        return "Invalid input for parameter 'area'", 422

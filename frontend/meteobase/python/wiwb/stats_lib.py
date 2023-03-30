@@ -98,12 +98,12 @@ def AREA(area):
     '''
 
     command = [R_exe,R_script,area]
-
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    stdout = process.communicate()[0]
-    
-    try:
-        result = json.loads(stdout.decode('ascii').replace('\\',''))
-        return result
-    except:
-        pass
+    if type(area) == int:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        stdout = process.communicate()[0]
+        
+        try:
+            result = json.loads(stdout.decode('ascii').replace('\\',''))
+            return result
+        except:
+            pass

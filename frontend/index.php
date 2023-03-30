@@ -1008,6 +1008,13 @@ window.onload = function() {
 							</a>
 							, Meteorologica 2, pp. 15-18.
 						</li>
+						<li>
+							Bosch S.M.,2023,
+							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20230321_Memo_Herkomst_Rasterdata.pdf" target="_blank">
+								“Totstandkoming, toepassingsbereik en herkomst neerslagrasters Meteobase”
+							</a>
+							, Memo Het Waterschapshuis.
+						</li>
 					</ul>
 					<h5>WIWB</h5>
 					<ul>

@@ -121,7 +121,7 @@
                             SAT Data 2.0
                         </h3>
                         <p class="slider-text">
-                            Deze sectie bevat de gegevens van het project SAT DATA 2.0. Klik op de links om de bijbehorende bronbestanden te downloaden. De rapporten staan vermeld in het hoofdstuk Documentatie, maar kunt u ook <a href="./downloads/fixed/literatuur/20171101_Methodiek SAT-DATA_eLEAF_v4.pdf">hier</a> (rapport methodiek) en <a href="./downloads/fixed/literatuur/20171101_Plausibiliteit_SAT-DATA_eLEAF_v4.pdf">hier</a> (rapport plausibiliteit) downloaden.
+                            Deze sectie bevat de gegevens van het project SAT DATA 2.0. Klik op de links om de bijbehorende bronbestanden te downloaden. De rapporten staan vermeld in het hoofdstuk Documentatie, maar kunt u ook <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20171101_Methodiek SAT-DATA_eLEAF_v4.pdf">hier</a> (rapport methodiek) en <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20171101_Plausibiliteit_SAT-DATA_eLEAF_v4.pdf">hier</a> (rapport plausibiliteit) downloaden.
                         </p>
                     </div>
                     <div class="col-md-6 col-sm-12 col-xs-12">

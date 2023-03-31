@@ -1029,6 +1029,13 @@ window.onload = function() {
 							</a>
 							, Handleiding oppervlaktereductie.
 						</li>
+						<li>
+							Meteobase,
+							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Handleiding_SATDATA20.pdf" target="_blank">
+								“Gebruikershandleiding SAT-Data 2.0”
+							</a>
+							, Handleiding SAT Data 2.0.
+						</li>
 					</ul>
 					<h5>WIWB</h5>
 					<ul>

@@ -198,7 +198,7 @@ $docu_menu = array(
 	'algoritmes' => '<p>Informatie over de algoritmes.</p>
 	                <p>Als u geinteresseerd bent in de wijze waarop de ruwe radargegevens werden geijkt aan de meetwaarden van de grondstations, nodigen wij u van harte uit om ' . $linkRapp . ' het rapport van HKV - lijn in water te downloaden.</p>'
 	),
-'toetsingsdata' => '<p>In deze sectie kunt u meteorologische gegevens downloaden ten behoeve van statistische analyses zoals hoogwaterstudies.</p>
+'toetsingsdata' => '<p>In deze sectie kunt uuu meteorologische gegevens downloaden ten behoeve van statistische analyses zoals hoogwaterstudies.</p>
                    <p>Omdat KNMI-station De Bilt beschikt over de langste homogene dataset van Nederland (1906-heden), zijn alle gegevens in deze sectie ontleend aan meetwaarden van dit station.</p>
                    <p>Station De Bilt kan echter niet representatief worden geacht voor heel Nederland. Daarom heeft KNMI een regioverdeling gepubliceerd die bestaat uit vier klassen: Mild, De Bilt, Hevig en Zeer hevig. Voor elk van deze klassen is een eigen langjarige tijdreeks en stochastiek afgeleid.</p>
 				   <p>Download deze regioverdeling in shape-formaat '  . $link . '.</p>
@@ -896,7 +896,7 @@ window.onload = function() {
 			<div class="modal-body">
 				<div class="col-md-12 col-sm-12 col-xs-12">
 					<p>
-						In deze sectie kunt u meteorologische gegevens downloaden ten behoeve van statistische analyses
+						In deze sectie kunt uuu meteorologische gegevens downloaden ten behoeve van statistische analyses
 						zoals hoogwaterstudies.
 					</p>
 					<p>
@@ -1014,6 +1014,20 @@ window.onload = function() {
 								“Totstandkoming, toepassingsbereik en herkomst neerslagrasters Meteobase”
 							</a>
 							, Memo Het Waterschapshuis.
+						</li>
+						<li>
+							Meteobase,
+							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Handleiding_regenduurlijnen.pdf" target="_blank">
+								“Gebruikershandleiding regenduurlijnen-app”
+							</a>
+							, Handleiding regenduurlijnen.
+						</li>
+						<li>
+							Meteobase,
+							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Handleiding_oppervlaktereductie.pdf" target="_blank">
+								“Gebruikershandleiding oppervlaktereductie-app”
+							</a>
+							, Handleiding oppervlaktereductie.
 						</li>
 					</ul>
 					<h5>WIWB</h5>

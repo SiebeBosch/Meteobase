@@ -220,7 +220,7 @@
 							Toetsingsdata
 						</h3>
 						<p class="slider-text">
-							In deze sectie kunt u meteorologische gegevens downloaden ten behoeve van statistische
+							In deze sectie kunt uuu meteorologische gegevens downloaden ten behoeve van statistische
 							analyses zoals hoogwaterstudies.
 							De gegevens zijn beschikbaar in volumes als functie van herhalingstijd en in herhalingstijd als functie van volume
 						</p>

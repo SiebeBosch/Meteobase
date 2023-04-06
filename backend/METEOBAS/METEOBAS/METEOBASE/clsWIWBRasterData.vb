@@ -85,11 +85,8 @@ Public Class clsWIWBRasterData
         ConnectionString = Me.Setup.GeneralFunctions.GetConnectionString("c:\GITHUB\Meteobase\backend\licenses\connectionstring.txt", My.Application.Info.DirectoryPath & "\licenses\connectionstring.txt")
         EmailPassword = Me.Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
         GemboxLicense = Me.Setup.GeneralFunctions.GetGemboxLicenseFromFile("c:\GITHUB\Meteobase\backend\licenses\gembox.txt", My.Application.Info.DirectoryPath & "\licenses\gembox.txt")
-        Dim credFile As String = "c:\GITHUB\Meteobase\backend\licenses\credentials.txt"
-        Using myReader As New StreamReader(credFile)
-            ClientID = myReader.ReadLine
-            ClientSecret = myReader.ReadLine
-        End Using
+        ClientID = Me.Setup.GeneralFunctions.GetClientIDFromFile("c:\GITHUB\Meteobase\backend\licenses\credentials.txt", My.Application.Info.DirectoryPath & "\licenses\credentials.txt")
+        ClientSecret = Me.Setup.GeneralFunctions.GetClientSecretFromFile("c:\GITHUB\Meteobase\backend\licenses\credentials.txt", My.Application.Info.DirectoryPath & "\licenses\credentials.txt")
 
         'first retrieve our access token from the settings
         AccessToken = My.Settings.AccessToken

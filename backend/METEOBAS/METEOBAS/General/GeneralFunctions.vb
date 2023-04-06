@@ -689,6 +689,77 @@ Public Class GeneralFunctions
         End Try
     End Function
 
+    Public Function GetClientIDFromFile(debuggerpath As String, releasepath As String) As String
+        Try
+            Dim myPath As String
+            Dim myKey As String
+
+            If Debugger.IsAttached Then
+                'in debug mode we will retrieve the zip file from our GITHUB directory
+                myPath = debuggerpath
+                Console.WriteLine("Path to credentials set to: " & myPath)
+            Else
+                'in release mode we will retrieve the zip file from within our application directory
+                myPath = releasepath
+                Console.WriteLine("Path to credentials set to: " & myPath)
+            End If
+
+            If System.IO.File.Exists(myPath) Then
+                Using licenseReader As New System.IO.StreamReader(myPath)
+                    myKey = licenseReader.ReadLine
+                End Using
+            Else
+                Me.setup.Log.AddError("No license detected for Client ID: please write your iD in a text file: " & myPath)
+                myKey = "ERROR"
+            End If
+
+            If myKey.Length > 0 Then
+                Return myKey
+            Else
+                Throw New Exception("Error retrieving Client ID from file.")
+            End If
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error in function GetClientIDFromFile: " & ex.Message)
+            Return ""
+        End Try
+    End Function
+
+    Public Function GetClientSecretFromFile(debuggerpath As String, releasepath As String) As String
+        Try
+            Dim MyPath As String
+            Dim MyKey As String
+
+            If Debugger.IsAttached Then
+                'in debug mode we will retrieve the zip file from our GITHUB directory
+                MyPath = debuggerpath
+                Console.WriteLine("Path to credentials set to: " & MyPath)
+            Else
+                'in release mode we will retrieve the zip file from within our application directory
+                MyPath = releasepath
+                Console.WriteLine("Path to credentials set to: " & MyPath)
+            End If
+
+            If System.IO.File.Exists(MyPath) Then
+                Using licenseReader As New System.IO.StreamReader(MyPath)
+                    licenseReader.ReadLine()
+                    MyKey = licenseReader.ReadLine
+                End Using
+            Else
+                Me.setup.Log.AddError("No Client Secret: please write your secret in a text file: " & MyPath)
+                MyKey = "ERROR"
+            End If
+
+            If MyKey.Length > 0 Then
+                Return MyKey
+            Else
+                Throw New Exception("Error retrieving Client Secret from file.")
+            End If
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error in function GetClientSecretFromFile: " & ex.Message)
+            Return ""
+        End Try
+    End Function
+
     Public Function GetGemboxLicenseFromFile(debuggerpath As String, releasepath As String) As String
         Try
             Dim LicensePath As String

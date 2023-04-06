@@ -1,6 +1,10 @@
 ﻿Option Explicit On
 Imports System.Globalization
-Imports MapWinGIS
+Imports System.Net.Http
+Imports System.Net.Http.Headers
+Imports Newtonsoft.Json.Linq
+Imports System.Text
+
 
 Namespace General
     Public Class clsSetup
@@ -38,6 +42,61 @@ Namespace General
             EMail = New clsEmail(Me)
 
         End Sub
+
+        Public Async Function GetAccessToken(clientId As String, clientSecret As String) As Task(Of String)
+            'Dim clientId As String = "api-wiwb-demo"
+            'Dim clientSecret As String = "895269fb-ca52-429e-af0b-96a9f0266e71"
+            Dim tokenEndpoint As String = "https://login.hydronet.com/auth/realms/hydronet/protocol/openid-connect/token"
+
+            Using httpClient As New HttpClient()
+                httpClient.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                Dim content As New FormUrlEncodedContent(New Dictionary(Of String, String) From {
+                    {"grant_type", "client_credentials"},
+                    {"client_id", clientId},
+                    {"client_secret", clientSecret}
+                })
+
+                Dim response As HttpResponseMessage = Await httpClient.PostAsync(tokenEndpoint, content)
+
+                If response.IsSuccessStatusCode Then
+                    Dim jsonResponse As String = Await response.Content.ReadAsStringAsync()
+                    Dim tokenData As JObject = JObject.Parse(jsonResponse)
+                    Dim accessToken As String = tokenData("access_token").ToString()
+                    Return accessToken
+                Else
+                    Throw New Exception($"Error retrieving access token. Status code: {response.StatusCode}")
+                End If
+            End Using
+        End Function
+
+        Function IsAccessTokenValid(accessToken As String, Optional validityBuffer As Integer = 30) As Boolean
+            Dim tokenParts As String() = accessToken.Split("."c)
+            If tokenParts.Length <> 3 Then
+                Return False
+            End If
+
+            Dim payload As String = tokenParts(1)
+            Dim payloadJson As String = Encoding.UTF8.GetString(Base64UrlDecode(payload))
+            Dim payloadData As JObject = JObject.Parse(payloadJson)
+            Dim expirationTime As Long = payloadData("exp").ToObject(Of Long)()
+
+            Dim currentTime As Long = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            Dim bufferInSeconds As Long = validityBuffer * 60 ' Convert minutes to seconds
+            Return currentTime + bufferInSeconds < expirationTime
+        End Function
+
+
+        Private Function Base64UrlDecode(base64Url As String) As Byte()
+            Dim padding As Integer = base64Url.Length Mod 4
+            If padding > 0 Then
+                base64Url += New String("="c, 4 - padding)
+            End If
+            base64Url = base64Url.Replace("-"c, "+"c).Replace("_"c, "/"c)
+            Return Convert.FromBase64String(base64Url)
+        End Function
+
+
 
         Public Sub PassAreaShape(ByVal sfArea As MapWinGIS.Shapefile)
             Me.GISData.SubcatchmentShapeFile.Initialize(sfArea.Filename)

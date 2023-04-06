@@ -5,6 +5,7 @@ Imports MapWinGIS
 Imports GemBox.Spreadsheet
 Imports Npgsql
 Imports Newtonsoft.Json.Linq
+Imports System.IO
 
 Public Class clsWIWBBasisData
 
@@ -37,15 +38,38 @@ Public Class clsWIWBBasisData
     Friend EmailPassword As String               'password for the mailserver
     Friend GemboxLicense As String               'license key for the gembox library
 
+    Friend ClientID As String                    'client ID voor authenticatie op de WIWB API
+    Friend ClientSecret As String                'client secret voor authenticatie op de 
+    Friend AccessToken As String                      'the access token we receive from WIWB API
+
     Private Setup As General.clsSetup
 
     Public Sub New(ByRef mySetup As General.clsSetup)
+
+        'v3.3.3: switch from username+password+IP whitelisting to OpenID Connect
+        'this means we request an access token using a clientID and ClientSecret
         Setup = mySetup
 
         ConnectionString = Me.Setup.GeneralFunctions.GetConnectionString("c:\GITHUB\Meteobase\backend\licenses\connectionstring.txt", My.Application.Info.DirectoryPath & "\licenses\connectionstring.txt")
         EmailPassword = Me.Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
         GemboxLicense = Me.Setup.GeneralFunctions.GetGemboxLicenseFromFile("c:\GITHUB\Meteobase\backend\licenses\gembox.txt", My.Application.Info.DirectoryPath & "\licenses\gembox.txt")
         SpreadsheetInfo.SetLicense(GemboxLicense)
+
+        Dim credFile As String = "c:\GITHUB\Meteobase\backend\licenses\credentials.txt"
+        Using myReader As New StreamReader(credFile)
+            ClientID = myReader.ReadLine
+            ClientSecret = myReader.ReadLine
+        End Using
+
+        'first retrieve our access token from the settings
+        AccessToken = My.Settings.AccessToken
+        If Not Setup.IsAccessTokenValid(AccessToken) Then
+            'request our token
+            AccessToken = Me.Setup.GetAccessToken(ClientID, ClientSecret).Result
+        End If
+
+        My.Settings.AccessToken = AccessToken
+        My.Settings.Save()
 
     End Sub
 
@@ -207,7 +231,7 @@ Public Class clsWIWBBasisData
     Public Function processNeerslagBasisDaily(ByVal worksheets As ExcelWorksheetCollection) As Boolean
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.IrisValidated", "P", Stations, FDate, TDate, "hydronet.csv", 1440)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.IrisValidated", "P", Stations, FDate, TDate, "hydronet.csv", 1440, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double
@@ -276,7 +300,7 @@ Public Class clsWIWBBasisData
 
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Evaporation", "Evaporation", Stations, FDate, TDate, "hydronet.csv", 1440)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Evaporation", "Evaporation", Stations, FDate, TDate, "hydronet.csv", 1440, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double
@@ -343,7 +367,7 @@ Public Class clsWIWBBasisData
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             'Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.AwsTenMinutes", "P", Stations, FDate, TDate, "hydronet.csv", 60)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Synops", "P", Stations, FDate, TDate, "hydronet.csv", 60)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Synops", "P", Stations, FDate, TDate, "hydronet.csv", 60, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double

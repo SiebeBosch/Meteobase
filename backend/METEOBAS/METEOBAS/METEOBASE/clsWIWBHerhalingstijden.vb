@@ -36,16 +36,40 @@ Public Class clsWIWBHerhalingstijden
     Friend EmailPassword As String               'password for the mailserver
     Friend GemboxLicense As String               'license key for the gembox library
 
+    Friend ClientID As String                    'client ID voor authenticatie op de WIWB API
+    Friend ClientSecret As String                'client secret voor authenticatie op de 
+    Friend AccessToken As String                      'the access token we receive from WIWB API
+
     'lokale instellingen
     Public TempDir As String       'directory voor tijdelijke bestanden
     Private Setup As General.clsSetup
 
     Public Sub New(ByRef mySetup As clsSetup)
+
+        'v3.3.3: switch from username+password+IP whitelisting to OpenID Connect
+        'this means we request an access token using a clientID and ClientSecret
         Setup = mySetup
 
         ConnectionString = Me.Setup.GeneralFunctions.GetConnectionString("c:\GITHUB\Meteobase\backend\licenses\connectionstring.txt", My.Application.Info.DirectoryPath & "\licenses\connectionstring.txt")
         EmailPassword = Me.Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
         GemboxLicense = Me.Setup.GeneralFunctions.GetGemboxLicenseFromFile("c:\GITHUB\Meteobase\backend\licenses\gembox.txt", My.Application.Info.DirectoryPath & "\licenses\gembox.txt")
+        Dim credFile As String = "c:\GITHUB\Meteobase\backend\licenses\credentials.txt"
+        Using myReader As New StreamReader(credFile)
+            ClientID = myReader.ReadLine
+            ClientSecret = myReader.ReadLine
+        End Using
+
+        'first retrieve our access token from the settings
+        AccessToken = My.Settings.AccessToken
+        If Not Setup.IsAccessTokenValid(AccessToken) Then
+            'request our token
+            AccessToken = Me.Setup.GetAccessToken(ClientID, ClientSecret).Result
+        End If
+
+        My.Settings.AccessToken = AccessToken
+        My.Settings.Save()
+
+
         'SpreadsheetInfo.SetLicense(GemboxLicense)
 
     End Sub
@@ -84,10 +108,10 @@ Public Class clsWIWBHerhalingstijden
             'handle the pre-2019 orders
             If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing pre-january 2019 data.")
-                If Not WIWB.GetRasters("Meteobase.Precipitation", "P", 10000, 305000, 280000, 625000, FDatePre2019, TDatePre2019, "geotiff", VolTIF, True) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.GetRasters("Meteobase.Precipitation", "P", 10000, 305000, 280000, 625000, FDatePre2019, TDatePre2019, "geotiff", VolTIF, accessToken, True) Then Throw New Exception("Error retrieving rasterdata from API.")
             ElseIf FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing post-january 2019 data.")
-                If Not WIWB.GetRasters("Knmi.International.Radar.Composite.Final.Reanalysis", "P", 10000, 305000, 280000, 625000, FDatePost2019, TDatePost2019, "geotiff", VolTIF, True) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.GetRasters("Knmi.International.Radar.Composite.Final.Reanalysis", "P", 10000, 305000, 280000, 625000, FDatePost2019, TDatePost2019, "geotiff", VolTIF, accessToken, True) Then Throw New Exception("Error retrieving rasterdata from API.")
             Else
                 Throw New Exception("Start en einddatum mogen niet de jaarwisseling van 2018/2019 overlappen ivm verschillende databronnen.")
             End If

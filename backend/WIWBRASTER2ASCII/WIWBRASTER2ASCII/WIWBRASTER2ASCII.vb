@@ -66,8 +66,8 @@ Module WIWBRASTER2ASCII
             RasterData.EVT_SHORTAGE = Setup.GeneralFunctions.BooleanFromText(Console.ReadLine)
             Console.WriteLine("Specify the export format (ASCII/MODFLOW/SIMGRO)")
             RasterData.FORMAAT = Console.ReadLine
-            Console.WriteLine("Aggregate to daily values? (TRUE/FALSE)")
-            RasterData.Aggregate24H = Setup.GeneralFunctions.BooleanFromText(Console.ReadLine)
+            'Console.WriteLine("Aggregate to daily values? (TRUE/FALSE)")
+            'RasterData.Aggregate24H = Setup.GeneralFunctions.BooleanFromText(Console.ReadLine)
             Console.WriteLine("Enter the session ID")
             RasterData.SessionID = Console.ReadLine
             Console.WriteLine("Enter the order number")
@@ -97,7 +97,7 @@ Module WIWBRASTER2ASCII
             RasterData.EVT_ACTUAL = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(9))
             RasterData.EVT_SHORTAGE = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(10))
             RasterData.FORMAAT = My.Application.CommandLineArgs(11).Trim.ToUpper
-            RasterData.Aggregate24H = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(12))
+            'RasterData.AggregatePrecipitation24H = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(12))
             RasterData.SessionID = My.Application.CommandLineArgs(13)
             RasterData.OrderNum = My.Application.CommandLineArgs(14)
             RasterData.Naam = My.Application.CommandLineArgs(15)

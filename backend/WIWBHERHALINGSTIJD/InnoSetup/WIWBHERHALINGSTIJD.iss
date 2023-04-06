@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WIWBHERHALINGSTIJD"
-#define MyAppVersion "3.300"
+#define MyAppVersion "3.330"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\Meteobase\backend\WIWBHERHALINGSTIJD\InnoSetup"

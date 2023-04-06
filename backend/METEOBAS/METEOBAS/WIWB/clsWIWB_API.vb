@@ -14,11 +14,10 @@ Public Class clsWIWB_API
         Setup = mySetup
     End Sub
 
-    Public Function GetDatasources(request As JObject) As JObject
+    Public Function GetDatasources(request As JObject, accessToken As String) As JObject
         Try
 
             Dim baseUrl As String = "https://wiwb.hydronet.com"
-            'Dim url__1 As String = Url.Combine(baseUrl, "entity", "dataSources", "get")
             Dim url__1 As String = baseUrl & "/api/entity/datasources/get"
 
             Dim webRequest As HttpWebRequest = TryCast(HttpWebRequest.Create(url__1), HttpWebRequest)
@@ -26,13 +25,7 @@ Public Class clsWIWB_API
             webRequest.ContentType = "application/json"
             webRequest.Accept = "application/json"
 
-            Dim authInfo As String = "siebe.bosch:" + "iY0Hofot3zaZWxyCOxPX"
-            authInfo = Convert.ToBase64String(Encoding.[Default].GetBytes(authInfo))
-            webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
-
-            'If request Is Nothing Then
-            '    request = New TRequest()
-            'End If
+            webRequest.Headers("Authorization") = "Bearer " & accessToken
 
             Dim body As String = JsonConvert.SerializeObject(request)
             Using sw As New StreamWriter(webRequest.GetRequestStream())
@@ -54,7 +47,8 @@ Public Class clsWIWB_API
         End Try
     End Function
 
-    Public Function GetTimeSeries(DataSourceCode As String, Parameter As String, ByRef Stations As clsMeteoStations, StartDate As Integer, EndDate As Integer, DataFormatCode As String, IntervalMinutes As Integer) As List(Of String) ' JObject
+
+    Public Function GetTimeSeries(DataSourceCode As String, Parameter As String, ByRef Stations As clsMeteoStations, StartDate As Integer, EndDate As Integer, DataFormatCode As String, IntervalMinutes As Integer, accessToken As String) As List(Of String)
 
         '------------------------------------------------------------------------------------------------------------------------
         '  THIS FUNCTION REQUESTS TIMESERIES FOR GIVEN METEO STATIONS FROM THE WIWB API
@@ -130,10 +124,8 @@ Public Class clsWIWB_API
             webRequest.ContentType = "application/json"
             webRequest.Accept = "application/json"
 
-            Dim authInfo As String = "siebe.bosch:" + "iY0Hofot3zaZWxyCOxPX"
-            authInfo = Convert.ToBase64String(Encoding.[Default].GetBytes(authInfo))
-            webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
-
+            'Replace the username and password with the accessToken
+            webRequest.Headers("Authorization") = "Bearer " & accessToken
             Dim body As String = JsonConvert.SerializeObject(request)
             Me.Setup.Log.AddMessage("JSON POST: " & body)
             Using sw As New StreamWriter(webRequest.GetRequestStream())
@@ -160,7 +152,7 @@ Public Class clsWIWB_API
         End Try
     End Function
 
-    Public Function GetRasters(DataSourceCode As String, Parameter As String, XMin As Double, YMin As Double, XMax As Double, YMax As Double, StartDate As Integer, EndDate As Integer, DataFormatCode As String, ByRef Path As String, Optional ByVal Accumulated As Boolean = False) As Boolean ' JObject
+    Public Function GetRasters(DataSourceCode As String, Parameter As String, XMin As Double, YMin As Double, XMax As Double, YMax As Double, StartDate As Integer, EndDate As Integer, DataFormatCode As String, ByRef Path As String, accessToken As String, Optional ByVal Accumulated As Boolean = False) As Boolean ' JObject
         '------------------------------------------------------------------------------------------------------------------------
         '  THIS FUNCTION REQUESTS RASTERS FOR GIVEN SPATIAL EXTENT & TIMESPAN FROM THE WIWB API
         '  IT THEN WRITES A ZIPFILE CONTAINING ALL RESULTING GRIDS
@@ -223,7 +215,6 @@ Public Class clsWIWB_API
             DownloadOptions.Add("DataFlowTypeCode", "Download")
 
             Dim baseUrl As String = "https://wiwb.hydronet.com"
-            'Dim url__1 As String = Url.Combine(baseUrl, "entity", "dataSources", "get")
             Dim url__1 As String = baseUrl & "/api/grids/get"
 
             Dim webRequest As HttpWebRequest = TryCast(HttpWebRequest.Create(url__1), HttpWebRequest)
@@ -231,9 +222,7 @@ Public Class clsWIWB_API
             webRequest.ContentType = "application/json"
             webRequest.Accept = "application/json"
 
-            Dim authInfo As String = "siebe.bosch:" + "iY0Hofot3zaZWxyCOxPX"
-            authInfo = Convert.ToBase64String(Encoding.[Default].GetBytes(authInfo))
-            webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
+            webRequest.Headers("Authorization") = "Bearer " & accessToken
             webRequest.Timeout = 20 * 60 * 1000 'set the timeout at 20 minutes
 
             Dim body As String = JsonConvert.SerializeObject(request)
@@ -243,7 +232,6 @@ Public Class clsWIWB_API
             End Using
 
             Dim WebResponse As HttpWebResponse = DirectCast(webRequest.GetResponse(), HttpWebResponse)
-
 
             'write the response to the logfile. This should contain the 
             Me.Setup.Log.AddMessage("Webresponse received. Length= " & WebResponse.ContentLength)
@@ -267,15 +255,6 @@ Public Class clsWIWB_API
             s.Close()
             WebResponse.Close()
 
-            'For i = 1 To 10
-            '    System.Threading.Thread.Sleep(10000)
-
-            '    Using fs As New FileStream(Path, FileMode.Create)
-            '        WebResponse.GetResponseStream.CopyTo(fs)
-            '    End Using
-            '    Return True
-            'Next
-
             Return True
 
         Catch ex As Exception
@@ -286,10 +265,11 @@ Public Class clsWIWB_API
     End Function
 
 
-    Public Function DownloadRasters(DataSourceCode As String, Parameter As String, XMin As Double, YMin As Double, XMax As Double, YMax As Double, StartDate As Integer, EndDate As Integer, DataFormatCode As String, ByRef Path As String, Optional ByVal Accumulated As Boolean = False, Optional ByVal Aggregate24H As Boolean = False) As Boolean ' JObject
+    Public Function DownloadRasters(accessToken As String, DataSourceCode As String, Parameter As String, XMin As Double, YMin As Double, XMax As Double, YMax As Double, StartDate As Integer, EndDate As Integer, DataFormatCode As String, ByRef Path As String, Optional ByVal Accumulated As Boolean = False, Optional ByVal Aggregate24H As Boolean = False) As Boolean ' JObject
         '------------------------------------------------------------------------------------------------------------------------
         '  THIS FUNCTION REQUESTS RASTERS FOR GIVEN SPATIAL EXTENT & TIMESPAN FROM THE WIWB API
         '  IT USES THE DOWNLOAD-OPTION, WHICH IS MEANT FOR LARGE ORDERS
+        '  v3.3.3: implemented the new authentication method via OpenID Connect
         '------------------------------------------------------------------------------------------------------------------------
 
         Try
@@ -365,8 +345,6 @@ Public Class clsWIWB_API
             body = JsonConvert.SerializeObject(request)
             Me.Setup.Log.AddMessage("JSON query: " & body)
 
-
-
             Dim baseUrl As String = "https://wiwb.hydronet.com"
             'Dim url__1 As String = Url.Combine(baseUrl, "entity", "dataSources", "get")
             'Dim url__1 As String = baseUrl & "/api/grids/get"
@@ -376,16 +354,17 @@ Public Class clsWIWB_API
             Dim downloadURL As String = baseUrl & "/api/entity/dataflows/get"
 
             'set the authentication header
-            Dim authInfo As String = "siebe.bosch:" + "iY0Hofot3zaZWxyCOxPX"
-            authInfo = Convert.ToBase64String(Encoding.[Default].GetBytes(authInfo))
+            'Dim authInfo As String = "siebe.bosch:" + "iY0Hofot3zaZWxyCOxPX"
+            'authInfo = Convert.ToBase64String(Encoding.[Default].GetBytes(authInfo))
 
-            'create a webrequest
+            ' Create a webrequest
             webRequest = TryCast(HttpWebRequest.Create(createDownloadURL), HttpWebRequest)
             webRequest.Method = "POST"
             webRequest.ContentType = "application/json"
             webRequest.Accept = "application/json"
-            webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
-            webRequest.Timeout = 10 * 60 * 1000 'set the timeout at 10 minutes
+            'webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
+            webRequest.Headers("Authorization") = $"Bearer {accessToken}"
+            webRequest.Timeout = 10 * 60 * 1000 ' Set the timeout at 10 minutes
             Using sw As New StreamWriter(webRequest.GetRequestStream())
                 sw.Write(body)
             End Using
@@ -418,7 +397,7 @@ Public Class clsWIWB_API
             Me.Setup.Log.AddMessage("JSON query: " & body)
 
 
-            'wait until the State of our response is "Finished"
+            ' Wait until the State of our response is "Finished"
             Dim Sleeping As Boolean = True
             Dim Slept As Integer = 0
             While Sleeping
@@ -426,8 +405,9 @@ Public Class clsWIWB_API
                 webRequest.Method = "POST"
                 webRequest.ContentType = "application/json"
                 webRequest.Accept = "application/json"
-                webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
-                webRequest.Timeout = 10 * 60 * 1000 'set the timeout at 10 minutes
+                'webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
+                webRequest.Headers("Authorization") = $"Bearer {accessToken}"
+                webRequest.Timeout = 10 * 60 * 1000 ' Set the timeout at 10 minutes
                 Using sw As New StreamWriter(webRequest.GetRequestStream())
                     sw.Write(body)
                 End Using
@@ -464,8 +444,9 @@ Public Class clsWIWB_API
             webRequest.Method = "GET"
             webRequest.ContentType = "application/json"
             webRequest.Accept = "application/json"
-            webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
-            webRequest.Timeout = 10 * 60 * 1000 'set the timeout at 10 minutes
+            'webRequest.Headers("Authorization") = Convert.ToString("Basic ") & authInfo
+            webRequest.Headers("Authorization") = $"Bearer {accessToken}"
+            webRequest.Timeout = 10 * 60 * 1000 ' Set the timeout at 10 minutes
 
             Dim response As HttpWebResponse = Nothing
             response = DirectCast(webRequest.GetResponse(), HttpWebResponse)

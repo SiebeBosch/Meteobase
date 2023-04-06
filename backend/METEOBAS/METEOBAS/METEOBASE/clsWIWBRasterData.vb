@@ -24,7 +24,7 @@ Public Class clsWIWBRasterData
     Public EVT_SHORTAGE As Boolean 'SAT DATA 3.0 tekort evapotranspiratie exporteren?
 
     'naar welk formaat exporteren?
-    Public Aggregate24H As Boolean 'aggregeren naar etmaalsom?
+    'Public AggregatePrecipitation24H As Boolean 'aggregeren naar etmaalsom?
     Public FORMAAT As String      'ASCII/MODFLOW/SIMGRO/NETCDF/WAGMOD/SOBEK/CSV
 
     'bestelgegevens
@@ -48,6 +48,7 @@ Public Class clsWIWBRasterData
     Public GoodMail As clsEmail                       'the e-mail with good news
     Public BadMail As clsEmail                        'the e-mail with bad news
 
+
     Friend FileCollectionNSL As New List(Of String)   'een verzameling met paden naar files die straks gezipped moeten worden
     Friend FileCollectionPEN As New List(Of String)   'een verzameling met paden naar files die straks gezipped moeten worden
     Friend FileCollectionMAK As New List(Of String)   'een verzameling met paden naar files die straks gezipped moeten worden
@@ -68,15 +69,38 @@ Public Class clsWIWBRasterData
     Friend EmailPassword As String               'password for the mailserver
     Friend GemboxLicense As String               'license key for the gembox library
 
+    Friend ClientID As String                    'client ID voor authenticatie op de WIWB API
+    Friend ClientSecret As String                'client secret voor authenticatie op de 
+    Friend AccessToken As String                      'the access token we receive from WIWB API
+
 
     Private Setup As General.clsSetup
 
     Public Sub New(ByRef mySetup As clsSetup)
+
+        'v3.3.3: switch from username+password+IP whitelisting to OpenID Connect
+        'this means we request an access token using a clientID and ClientSecret
         Setup = mySetup
 
         ConnectionString = Me.Setup.GeneralFunctions.GetConnectionString("c:\GITHUB\Meteobase\backend\licenses\connectionstring.txt", My.Application.Info.DirectoryPath & "\licenses\connectionstring.txt")
         EmailPassword = Me.Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
         GemboxLicense = Me.Setup.GeneralFunctions.GetGemboxLicenseFromFile("c:\GITHUB\Meteobase\backend\licenses\gembox.txt", My.Application.Info.DirectoryPath & "\licenses\gembox.txt")
+        Dim credFile As String = "c:\GITHUB\Meteobase\backend\licenses\credentials.txt"
+        Using myReader As New StreamReader(credFile)
+            ClientID = myReader.ReadLine
+            ClientSecret = myReader.ReadLine
+        End Using
+
+        'first retrieve our access token from the settings
+        AccessToken = My.Settings.AccessToken
+        If Not Setup.IsAccessTokenValid(AccessToken) Then
+            'request our token
+            AccessToken = Me.Setup.GetAccessToken(ClientID, ClientSecret).Result
+        End If
+
+        My.Settings.AccessToken = AccessToken
+        My.Settings.Save()
+
         'SpreadsheetInfo.SetLicense(GemboxLicense)
 
     End Sub
@@ -462,7 +486,7 @@ Public Class clsWIWBRasterData
             Dim CurDate As New DateTime(Left(FDate, 4), Left(Right(FDate, 4), 2), Right(FDate, 2))
 
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
-            If Not WIWB.DownloadRasters("Meteobase.Evaporation.Makkink", "Evaporation", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Evaporation.Makkink", "Evaporation", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath,, True) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -545,19 +569,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
             Case Is = "NETCDF"
                 Me.Setup.Log.AddError("Error: export naar NetCDF wordt niet langer ondersteund.")
             Case Is = "HDF5"
-                If Not Write_HDF5("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not Write_HDF5("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not WriteEVP_POLY("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN) Then Return False
+                If Not WriteEVP_POLY("Meteobase.Evaporation.PennmanMonteith", "Evaporation", "MB_PM", FileCollectionPEN, True) Then Return False
         End Select
 
         Return True
@@ -575,19 +599,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
             Case Is = "NETCDF"
                 Me.Setup.Log.AddError("Error: export naar NetCDF wordt niet langer ondersteund.")
             Case Is = "HDF5"
-                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationActual", "EVT_ACT", FileCollectionEVT, True) Then Return False
         End Select
 
         Return True
@@ -605,19 +629,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
             Case Is = "NETCDF"
                 'If Not WritePM_NC() Then Return False
             Case Is = "HDF5"
-                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_HDF5("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not Write_ASC("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO) Then Return False
+                If Not WriteEVP_POLY("Satdata.Evapotranspiration.Reanalysis.V2", "EvapotranspirationShortage", "EVT_SHO", FileCollectionSHO, True) Then Return False
         End Select
 
         Return True
@@ -634,7 +658,7 @@ Public Class clsWIWBRasterData
 
         'corrigeer de datum voor jaartallen die mogelijk nog niet beschikbaar zijn.
         'Siebe: let op: jaarlijks updaten!!!
-        Dim LastMakkinkDate As Integer = My.Settings.LastMakkinkDate
+        Dim LastMakkinkDate As Integer = 20500101 ' My.Settings.LastMakkinkDate
 
         If TDate > LastMakkinkDate Then
             Setup.Log.AddError("Ongeldige datumselectie. Verdamping volgens Makkink uitsluitend beschikbaar tot " & LastMakkinkDate & ". Einddatum werd automatisch gecorrigeerd.")
@@ -646,19 +670,19 @@ Public Class clsWIWBRasterData
 
         Select Case FORMAAT.Trim.ToUpper
             Case Is = "ASCII"
-                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
             Case Is = "NETCDF"
                 Me.Setup.Log.AddError("Error: export naar NetCDF wordt niet langer ondersteund.")
             Case Is = "HDF5"
-                If Not Write_HDF5("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not Write_HDF5("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
             Case Is = "MODFLOW"
-                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
             Case Is = "SIMGRO"
-                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not Write_ASC("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
             Case Is = "SOBEK"
-                If Not WriteEVP_POLY("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not WriteEVP_POLY("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
             Case Is = "CSV"
-                If Not WriteEVP_POLY("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK) Then Return False
+                If Not WriteEVP_POLY("Meteobase.Evaporation.Makkink", "Evaporation", "MB_MAK", FileCollectionMAK, True) Then Return False
         End Select
 
         Return True
@@ -736,11 +760,11 @@ Public Class clsWIWBRasterData
         Return True
     End Function
 
-    Public Function Write_HDF5(DataSource As String, Parameter As String, FileNameBase As String, ByRef FileCollection As List(Of String))
+    Public Function Write_HDF5(DataSource As String, Parameter As String, FileNameBase As String, ByRef FileCollection As List(Of String), DailySum As Boolean)
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             Dim ZipFilePath As String = TempDir & "\" & FileNameBase & ".Zip"
-            If Not WIWB.DownloadRasters(DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "HDF5", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "HDF5", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
             FileCollection.Add(ZipFilePath)
             Return True
         Catch ex As Exception
@@ -752,7 +776,7 @@ Public Class clsWIWBRasterData
 
 
 
-    Public Function Write_ASC(DataSource As String, DataParameter As String, FileNameBase As String, ByRef FileCollection As List(Of String))
+    Public Function Write_ASC(DataSource As String, DataParameter As String, FileNameBase As String, ByRef FileCollection As List(Of String), DailySum As Boolean)
 
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
@@ -764,7 +788,7 @@ Public Class clsWIWBRasterData
             Dim CurDate As New DateTime(Left(FDate, 4), Left(Right(FDate, 4), 2), Right(FDate, 2))
 
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
-            If Not WIWB.DownloadRasters(DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath,, Aggregate24H) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -861,7 +885,7 @@ Public Class clsWIWBRasterData
 
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
             FileCollectionPEN = New List(Of String)
-            If Not WIWB.DownloadRasters("Meteobase.Evaporation.PennmanMonteith", "Evaporation", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Evaporation.PennmanMonteith", "Evaporation", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -910,7 +934,7 @@ Public Class clsWIWBRasterData
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
             FileCollectionNSL = New List(Of String)
             'If Not WIWB.GetRasters("KNMI.Radar.Uncorrected", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
-            If Not WIWB.DownloadRasters("Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -967,10 +991,10 @@ Public Class clsWIWBRasterData
             Me.Setup.Log.AddMessage("TDatePost2019=" & TDatePost2019)
 
             FileCollectionNSL = New List(Of String)
-            If Not WIWB.DownloadRasters("Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
             FileCollectionNSL.Add(ZipFilePre2019Path)
 
-            If Not WIWB.DownloadRasters("Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
             FileCollectionNSL.Add(ZipFilePost2019Path)
 
             Return True
@@ -1171,14 +1195,14 @@ Public Class clsWIWBRasterData
             'handle the pre-2019 orders
             If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing pre-january 2019 data.")
-                If Not WIWB.DownloadRasters("Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePathPre2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePathPre2019) Then Throw New Exception("Error retrieving rasterdata from API.")
                 If Not ExtractZIP(ZipFilePathPre2019, CurDate, TempResultsDir, MetaFileContent, False, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
             End If
 
             'handle the post-2019 orders
             If FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing post-january 2019 data.")
-                If Not WIWB.DownloadRasters("Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePathPost2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePathPost2019) Then Throw New Exception("Error retrieving rasterdata from API.")
                 If Not ExtractZIP(ZipFilePathPost2019, CurDate, TempResultsDir, MetaFileContent, True, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
             End If
 
@@ -1328,13 +1352,13 @@ Public Class clsWIWBRasterData
 
             If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing pre-january 2019 data.")
-                If Not WIWB.DownloadRasters("Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePathPre2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePathPre2019) Then Throw New Exception("Error retrieving rasterdata from API.")
                 'If Not ExtractZIP(ZipFilePathPre2019, CurDate, TempResultsDir, MetaFileContent, False, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
             End If
 
             If FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing post-january 2019 data.")
-                If Not WIWB.DownloadRasters("Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePathPost2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePathPost2019) Then Throw New Exception("Error retrieving rasterdata from API.")
                 'If Not ExtractZIP(ZipFilePathPost2019, CurDate, TempResultsDir, MetaFileContent, True, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
             End If
 
@@ -1452,7 +1476,7 @@ Public Class clsWIWBRasterData
 
 
 
-    Public Function WriteEVP_POLY(WIWBDataSourceCode As String, WIWBVariableCode As String, FileNameBase As String, ByRef FileCollection As List(Of String)) As Boolean
+    Public Function WriteEVP_POLY(WIWBDataSourceCode As String, WIWBVariableCode As String, FileNameBase As String, ByRef FileCollection As List(Of String), DailySum As Boolean) As Boolean
         'Author: Siebe Bosch
         'Date: 10 july 2020
         'Description: writes file from Meteobase rasterdata, containing SATDATA 3.0 actual evapotranspiration
@@ -1537,7 +1561,7 @@ Public Class clsWIWBRasterData
             ReDim MeteoFile.Values(0 To nTs - 1, 0 To MeteoFile.MeteoStations.MeteoStations.Count - 1)
 
             'now construct the API call, using the shapefile's extent
-            If Not WIWB.DownloadRasters(WIWBDataSourceCode, WIWBVariableCode, Xmin, Ymin, Xmax, Ymax, Convert.ToInt64(Format(StartDate, "yyyyMMdd")), Convert.ToInt64(Format(EndDate, "yyyyMMdd")), "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving SATDATA rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, WIWBDataSourceCode, WIWBVariableCode, Xmin, Ymin, Xmax, Ymax, Convert.ToInt64(Format(StartDate, "yyyyMMdd")), Convert.ToInt64(Format(EndDate, "yyyyMMdd")), "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving SATDATA rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file
             Dim zipMS As New MemoryStream()

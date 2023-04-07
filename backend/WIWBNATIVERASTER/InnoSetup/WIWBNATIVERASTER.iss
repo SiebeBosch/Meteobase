@@ -16,6 +16,7 @@
 #define gembox = "gembox.txt"
 #define connectionstring = "connectionstring.txt"
 #define emailpassword = "email.txt"
+#define credentials = "credentials.txt"
 
 ;#define mapwingis = "MapWinGIS-only-v4.9.6.1-Win32.exe"
 
@@ -97,6 +98,7 @@ Source: "{#SetupLocation}\{#vcredist}"; DestDir: "{app}"
 Source: "{#LicensesLocation}\{#gembox}"; DestDir: "{app}\{#licensesdir}"
 Source: "{#LicensesLocation}\{#emailpassword}"; DestDir: "{app}\{#licensesdir}"
 Source: "{#LicensesLocation}\{#connectionstring}"; DestDir: "{app}\{#licensesdir}"
+Source: "{#LicensesLocation}\{#credentials}"; DestDir: "{app}\{#licensesdir}"
 
 [Messages]
 BeveledLabel=WIWBNATIVERASTER by Hydroconsult

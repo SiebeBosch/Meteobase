@@ -8,8 +8,8 @@ C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\Newtonsoft.Json.
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\MimeKit.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\MailKit.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\GemBox.Spreadsheet.dll
-C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\Npgsql.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\Ionic.Zip.dll
+C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\Npgsql.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\System.Memory.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\BouncyCastle.Crypto.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\x64\Release\System.Buffers.dll

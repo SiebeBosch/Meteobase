@@ -44,17 +44,37 @@ Public Class clsWIWBToetsData
     Friend EmailPassword As String               'password for the mailserver
     Friend GemboxLicense As String               'license key for the gembox library
 
+    Friend ClientID As String                    'client ID voor authenticatie op de WIWB API
+    Friend ClientSecret As String                'client secret voor authenticatie op de 
+    Friend AccessToken As String                  'the access token we receive from WIWB API
+
     Dim FileCollection As New Collection      'all files to ZIP and move to the downloaddir
 
     Private Setup As General.clsSetup
 
     Public Sub New(ByRef mySetup As General.clsSetup)
+
+        'v3.3.3: switch from username+password+IP whitelisting to OpenID Connect
+        'this means we request an access token using a clientID and ClientSecret
         Setup = mySetup
         myZIP = New ZipFile
 
         ConnectionString = Me.Setup.GeneralFunctions.GetConnectionString("c:\GITHUB\Meteobase\backend\licenses\connectionstring.txt", My.Application.Info.DirectoryPath & "\licenses\connectionstring.txt")
         EmailPassword = Me.Setup.GeneralFunctions.GetEmailPasswordFromFile("c:\GITHUB\Meteobase\backend\licenses\email.txt", My.Application.Info.DirectoryPath & "\licenses\email.txt")
         GemboxLicense = Me.Setup.GeneralFunctions.GetGemboxLicenseFromFile("c:\GITHUB\Meteobase\backend\licenses\gembox.txt", My.Application.Info.DirectoryPath & "\licenses\gembox.txt")
+        ClientID = Me.Setup.GeneralFunctions.GetClientIDFromFile("c:\GITHUB\Meteobase\backend\licenses\credentials.txt", My.Application.Info.DirectoryPath & "\licenses\credentials.txt")
+        ClientSecret = Me.Setup.GeneralFunctions.GetClientSecretFromFile("c:\GITHUB\Meteobase\backend\licenses\credentials.txt", My.Application.Info.DirectoryPath & "\licenses\credentials.txt")
+
+        'first retrieve our access token from the settings
+        AccessToken = My.Settings.AccessToken
+        If Not Setup.IsAccessTokenValid(AccessToken) Then
+            'request our token
+            AccessToken = Me.Setup.GetAccessToken(ClientID, ClientSecret).Result
+        End If
+
+        My.Settings.AccessToken = AccessToken
+        My.Settings.Save()
+
         SpreadsheetInfo.SetLicense(GemboxLicense)
 
     End Sub

@@ -1010,7 +1010,7 @@ window.onload = function() {
 						</li>
 						<li>
 							Bosch S.M.,2023,
-							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20230321_Memo_Herkomst_Rasterdata.pdf" target="_blank">
+							<a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20230414_Memo_Herkomst_Rasterdata.pdf" target="_blank">
 								“Totstandkoming, toepassingsbereik en herkomst neerslagrasters Meteobase”
 							</a>
 							, Memo Het Waterschapshuis.

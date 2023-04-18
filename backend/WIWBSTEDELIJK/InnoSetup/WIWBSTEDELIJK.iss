@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WIWBSTEDELIJK"
-#define MyAppVersion "3.300"
+#define MyAppVersion "3.330"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\Meteobase\backend\WIWBSTEDELIJK\InnoSetup"
@@ -16,6 +16,7 @@
 #define gembox = "gembox.txt"
 #define connectionstring = "connectionstring.txt"
 #define emailpassword = "email.txt"
+#define credentials = "credentials.txt"
 ;#define mapwingis = "MapWinGIS-only-v4.9.6.1-Win32.exe"
 
 #ifdef x64BitVersion
@@ -96,6 +97,7 @@ Source: "{#SetupLocation}\{#vcredist}"; DestDir: "{app}"
 Source: "{#LicensesLocation}\{#gembox}"; DestDir: "{app}\{#licensesdir}"
 Source: "{#LicensesLocation}\{#emailpassword}"; DestDir: "{app}\{#licensesdir}"
 Source: "{#LicensesLocation}\{#connectionstring}"; DestDir: "{app}\{#licensesdir}"
+Source: "{#LicensesLocation}\{#credentials}"; DestDir: "{app}\{#licensesdir}"
 
 [Messages]
 BeveledLabel=WIWB Stedelijke events by Hydroconsult

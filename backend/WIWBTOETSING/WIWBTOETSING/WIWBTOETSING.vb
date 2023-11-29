@@ -28,7 +28,7 @@ Module WIWBTOETSING
         Else
             ToetsData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                              'laptop en server
             ToetsData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"  'server
-            ToetsData.FilesDir = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\fixed\"  'server
+            ToetsData.FilesDir = "c:\Apache24\htdocs\meteobase\downloads\fixed\"  'server
         End If
 
         If My.Application.CommandLineArgs.Count = 0 Then

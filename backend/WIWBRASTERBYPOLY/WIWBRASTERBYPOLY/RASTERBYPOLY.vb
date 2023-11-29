@@ -45,27 +45,29 @@ Module RASTERBYPOLY
         'reading the user's arguments
         '----------------------------------------------------------------------------------------------------------------------------
         If Debugger.IsAttached Then
-            RasterData.FDate = 20100101
-            RasterData.TDate = 20101201
+            RasterData.FDate = 20180101
+            RasterData.TDate = 20180301
             RasterData.NSL = True
-            RasterData.MAKKINK = True
+            RasterData.MAKKINK = False
             RasterData.PM = False
             RasterData.EVT_ACTUAL = False
             RasterData.EVT_SHORTAGE = False
-            RasterData.FORMAAT = "CSV"  'switch etween CSV and SOBEK
-            RasterData.SessionID = 594322
-            RasterData.OrderNum = 83422
+            RasterData.FORMAAT = "SOBEK"  'switch etween CSV and SOBEK
+            RasterData.SessionID = 11111
+            RasterData.OrderNum = 11111
             RasterData.Naam = "Siebe Bosch"
             RasterData.MailAdres = "siebe@watercommunicatie.nl"
-            RasterData.ShapeFileZIP = "c:\Dropbox\MeteoBase\DEMODATA\SPIJKSTERPOMPEN_LAYER.zip"
+            RasterData.ShapeFileZIP = "c:\SYNC\SOFTWARE\METEOBASE\Support\20231120_Noortje\gebieden_meteo_stations.zip"
+            'RasterData.ShapeFileZIP = "c:\Dropbox\MeteoBase\DEMODATA\SPIJKSTERPOMPEN_LAYER.zip"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\Exchange\neerslagall.zip"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\VOORNEOOST_GAFIDENT.ZIP"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\SMILDE_GFEIDENT.ZIP"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\FRYSLAN_WATERSYSTE.ZIP"
             'RasterData.ShapeFileZIP = "D:\MeteoBase\DemoData\ARCADIS\afwateringsgebied.zip"
             'RasterData.ShapeFileZIP = "D:\Meteobase\Demodata\HKV\Fishnet.zip"
+            RasterData.ShapeField = "MS_id"
             'RasterData.ShapeField = "WATERSYSTE"    'for FRYSLAN
-            RasterData.ShapeField = "layer"    'for Spijksterpompen
+            'RasterData.ShapeField = "layer"    'for Spijksterpompen
             'RasterData.ShapeField = "subcatchme"    'for IMBER
             'RasterData.ShapeField = "GFEIDENT"    'for SMILDE
             'RasterData.ShapeField = "GPGIDENT"    'for HHNK

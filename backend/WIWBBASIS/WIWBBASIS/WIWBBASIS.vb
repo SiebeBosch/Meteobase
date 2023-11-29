@@ -29,7 +29,7 @@ Module WIWBBASIS
                 BasisData.DownloadDIR = "c:\temp\"  'local
             Else
                 BasisData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                                  'laptop en server
-                BasisData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"  'server
+                BasisData.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"  'server
             End If
 
             If My.Application.CommandLineArgs.Count = 0 Then

@@ -26,7 +26,7 @@ Module WIWBSTEDELIJK
             StochData.FilesDir = "c:\Dropbox\MeteoBase\MBSTOCHASTEN\"
         Else
             StochData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                                  'laptop en server
-            StochData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"      'server
+            StochData.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"      'server
             StochData.FilesDir = "c:\Apache24\htdocs\meteobase\downloads\fixed\"  'server
         End If
 

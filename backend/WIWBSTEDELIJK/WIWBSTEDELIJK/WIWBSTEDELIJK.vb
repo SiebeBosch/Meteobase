@@ -27,7 +27,7 @@ Module WIWBSTEDELIJK
         Else
             StochData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                                  'laptop en server
             StochData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"      'server
-            StochData.FilesDir = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\fixed\"  'server
+            StochData.FilesDir = "c:\Apache24\htdocs\meteobase\downloads\fixed\"  'server
         End If
 
         If My.Application.CommandLineArgs.Count = 0 Then

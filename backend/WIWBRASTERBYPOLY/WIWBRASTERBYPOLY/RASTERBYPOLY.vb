@@ -38,7 +38,7 @@ Module RASTERBYPOLY
             RasterData.TempDir = "c:\Result"
             RasterData.GDALToolsDir = "c:\Program Files\GDAL\"                                                                             'server
             RasterData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"
-            RasterData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"  'server
+            RasterData.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"  'server
         End If
 
         '----------------------------------------------------------------------------------------------------------------------------

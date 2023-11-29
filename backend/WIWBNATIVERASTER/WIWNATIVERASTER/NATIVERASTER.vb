@@ -34,7 +34,7 @@ Module NATIVERASTER
             RasterData.TempDir = "c:\Result"
             RasterData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"
             'RasterData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-Apache\Php\apache\www\meteobase\downloads\" 'server
-            RasterData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"
+            RasterData.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"
         End If
 
 

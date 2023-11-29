@@ -27,7 +27,7 @@ Module WIWBTOETSING
             ToetsData.FilesDir = "v:\PROJECTEN\H0069.Meteobase\01.Klimaatreeksen14\"
         Else
             ToetsData.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                              'laptop en server
-            ToetsData.DownloadDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads\"  'server
+            ToetsData.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"  'server
             ToetsData.FilesDir = "c:\Apache24\htdocs\meteobase\downloads\fixed\"  'server
         End If
 

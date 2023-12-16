@@ -17,6 +17,7 @@ met bijdragen van:
 * Daniël Tollenaar (D2Hydro, https://github.com/d2hydro): python-script regenduurlijnen
 * Jacques Doeleman (Iconica, https://github.com/JacquesDIconica): front-end
 * Stefan Koopmanschap (Ingewikkeld.net): implementatie cookies
+* Mike Doornenbal en Niels Gorter (Iconica): migratie naar nieuwe server, december 2023
 
 #### Architectuur ####
 De architectuur bestaat uit:

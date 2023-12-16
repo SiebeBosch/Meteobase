@@ -14,12 +14,9 @@ from flask import (
     Blueprint, request
 )
 from json import dumps
-try:
-    from wiwb.stats_lib import GEVCDF, GEVINVERSE, GLOCDF, GLOINVERSE, AREA
-    from wiwb.series_lib import xy_series
-except:
-    from stats_lib import GEVCDF, GEVINVERSE, GLOCDF, GLOINVERSE, AREA
-    from series_lib import xy_series
+from wiwb.stats_lib import GEVCDF, GEVINVERSE, GLOCDF, GLOINVERSE, AREA
+from wiwb.series_lib import xy_series
+
     
 from numpy import array, log, log10,  exp, concatenate, where, interp, abs, isnan, savetxt, ones
 import os
@@ -353,7 +350,7 @@ def area():
     try:
         int(area)
         result = AREA(area)
-        
+        print("Name:", area)        
         reductions = array([list(res.values())[1:] for res in result])
         y_labels = ['{} jr'.format(res['T_series_Langbein']) for res in result]
         

@@ -21,13 +21,26 @@
 
 ?>
   <?php
+	if(!empty($makkink)){
+		$ValidatedMakkink = check_input($makkink,"");
+	}else{
+		$makkink = "";
+	    $ValidatedMakkink = NULL;
+	}
+  
+    if(!empty($neerslag)){
+		$ValidatedNeerslag = check_input($neerslag,"");
+	}else{
+		$neerslag = "";
+		$ValidatedNeerslag = NULL;
+	}
+
     // Validating input of the Table Name :
 	$ValidatedGegevenstype = check_input($gegevenstype,"");
 	$ValidatedWaarde = check_input($waarde,"");
 	$ValidatedDatum_van = check_input($datum_van,"");
 	$ValidatedDatum_tot = check_input($datum_tot,"");
 	$ValidatedNeerslag = check_input($neerslag,"");
-	$ValidatedMakkink = check_input($makkink,"");
 //	$ValidatedPenman = check_input($penman,"");
 	$ValidatedMeteostations = $meteostations;
   ?>
@@ -36,7 +49,7 @@
 
 <?php 
 
-	include('..'.DIRECTORY_SEPARATOR.'local_config.php');
+	include('local_config.php');
 
 
 	// Determine which actions are to be taken :
@@ -46,8 +59,8 @@
 	//   - Day- or hourly  (determines the dataset/stations to be exported)
 	
 	test_echo("<b>BESTELLING : </b><br>" );
-	test_echo("neerslag : " . $neerslag . "<br>");
-	test_echo("makkink : " . $makkink . "<br>");
+	//test_echo("neerslag : " . $neerslag . "<br>");
+	//test_echo("makkink : " . $makkink . "<br>");
 //	test_echo("penman : " . $penman . "<br>");
 	test_echo("tijdwaarde : " . $waarde . "<br>");
 	test_echo("vanaf : " . $datum_van . "<br>");
@@ -96,7 +109,7 @@
 	// Next, drop the view 
     	$sKillQuery = "DROP VIEW data.viewmakkink" ;    
     	test_echo("Query : ". $sKillQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sKillQuery);		
+    	//$sResult = pg_query($dbHandle,$sKillQuery);		
 		
     // ** Assemble the String representing the Array with Stations :
 		$strStations = "{";
@@ -153,9 +166,13 @@
     	$sInsertQuery .= " bestellingnr" . ",";
     	$sInsertQuery .= " tijdswaarde" . ",";
     	$sInsertQuery .= " meteostations" . ",";
-    	$sInsertQuery .= " neerslag" . ",";
 		$sInsertQuery .= " penman" . ",";
-		$sInsertQuery .= " makkink" ;
+		if(!empty($ValidatedNeerslag))
+			$sInsertQuery .= " neerslag";
+		if(!empty($ValidatedMakkink) && !empty($ValidatedNeerslag))
+			$sInsertQuery .= ",";
+		if(!empty($ValidatedMakkink))
+			$sInsertQuery .= " makkink" ;
 
     // and add the Values :
     	$sInsertQuery .= ") VALUES (";
@@ -165,9 +182,13 @@
     	$sInsertQuery .= "'" . ($iNumberRows +1) . "'". ",";
     	$sInsertQuery .= "'" . $ValidatedWaarde . "'". ",";
 		$sInsertQuery .= "'" . $strStations  . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedNeerslag . "'". ",";
     	$sInsertQuery .= "'" . "FALSE". "',";
-    	$sInsertQuery .= "'" . $ValidatedMakkink . "'";
+		if(!empty($ValidatedNeerslag))
+			$sInsertQuery .= "'" . $ValidatedNeerslag . "'";
+		if(!empty($ValidatedMakkink) && !empty($ValidatedNeerslag))
+			$sInsertQuery .= ",";
+		if(!empty($ValidatedMakkink))
+			$sInsertQuery .= "'" . $ValidatedMakkink . "'";
     	$sInsertQuery .= ")";
 
     	test_echo($sInsertQuery . "<BR>");
@@ -185,7 +206,7 @@
         	}
 
     // ** Clean-up :
-    	pg_free_result($result);
+    	pg_free_result($bResult);
     	pg_close($dbHandle);
 		test_echo("--------------------------------------------"."<BR>");
 		
@@ -224,7 +245,7 @@
 		$ExportFilePenman = "Bestelling_" . $sessionid . "_" . $NewOrder . "_Basis_Penman.csv" ;
 
 // CONFIGURABLE >>>>>>>>>>
-   $ExportPath = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads";
+   $ExportPath = "c:\Program Files\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads";
 // CONFIGURABLE >>>>>>>>>>
 		
 		test_echo("----------------------------<BR>");
@@ -327,21 +348,20 @@ function createListStationNumbers($StationArray, $pDbHandle, &$pFieldsString, &$
 
 function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pFileCSV , $ExportType, $pNamesString, $pStationsString, $sessionid, $NewOrder, $neerslag, $makkink, $pnaam, $pmail)
 {
-
 	test_echo("--------------------------------------------"."<BR>");
 	test_echo( "<b>Export Precipitation </b>"  . "<BR>");	
 	test_echo( "DatabaseHandle :  <br>" . $pDbHandle . "<BR>");
-	test_echo( "Stations    AS String :  <br>" . $pStations . "<BR>");
+	test_echo( "Stations    AS String :  <br>" . implode(" ", $pStations) . "<BR>");
 	test_echo( "StartDay    AS STRING :  <br>" . $pDay1 . "<BR>");
 	test_echo( "StopDay     AS STRING :  <br>" . $pDay2 . "<BR>");
 	test_echo( "Targetfile    AS STRING :  <br>" . $pFileCSV . "<BR>");
 	test_echo( "Day/Hour    AS STRING :  <br>" . $ExportType . "<BR>");
-	test_echo("Stations: " . $pStations ." <br>");
+	test_echo("Stations: " . implode(" ", $pStations) ." <br>");
 	test_echo("Names: " . $pNamesString ." <br>");		
 	test_echo("StationsString = " . $pStationsString ." <br>");
 
 	
-	$AllStations = explode(",",$pStations);
+	$AllStations = explode(",",implode(" ", $pStations));
 	test_echo("Number of Stations : " . count($AllStations)."<br>");
 	// Loop over all stations to retrieve the station key :
 	$cmd = '';
@@ -403,7 +423,6 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 		$cmd = '"c:\Program Files\Hydroconsult\WIWBBASIS\WIWBBASIS.exe" ' . $cmd;
       
         $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-
 		//var_dump($datum_van, $datum_tot, $cmd);
         pclose(popen($cmd, 'r'));
 	}

@@ -6,10 +6,11 @@ $bericht = '';
 $data = '';
 $waarde_check = '';
 
-include('..'.DIRECTORY_SEPARATOR.'local_config.php');
+include('local_config.php');
+
 
 // CONFIGURABLE >>>>>>>>>>
-   $ExportPath = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads";
+   $ExportPath = "C:\Apache24\htdocs\meteobase\downloads";
 // CONFIGURABLE >>>>>>>>>>
 
 $NewOrder = 0;
@@ -143,7 +144,7 @@ if(isset($_POST['dataType'])){
     $sMasterUser = MASTERUSER;
     $sMasterPassword = MASTERPASSWORD;
     $sHost = HOST;
-    $sPoort =PORT;
+    $sPoort =POORT;
     $sDataBase = DATABASE;
     $sTableName = "tbbasis";
 
@@ -224,7 +225,7 @@ if(isset($_POST['dataType'])){
         	}
 
 		// ** Clean-up :
-    	pg_free_result($result);
+    	pg_free_result($bResult);
     	pg_close($dbHandle);
 		test_echo("--------------------------------------------"."<BR>");
 

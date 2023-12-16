@@ -45,16 +45,16 @@ Module RASTERBYPOLY
         'reading the user's arguments
         '----------------------------------------------------------------------------------------------------------------------------
         If Debugger.IsAttached Then
-            RasterData.FDate = 20180101
-            RasterData.TDate = 20180301
+            RasterData.FDate = 20181201
+            RasterData.TDate = 20181231
             RasterData.NSL = True
             RasterData.MAKKINK = False
             RasterData.PM = False
             RasterData.EVT_ACTUAL = False
             RasterData.EVT_SHORTAGE = False
             RasterData.FORMAAT = "SOBEK"  'switch etween CSV and SOBEK
-            RasterData.SessionID = 11111
-            RasterData.OrderNum = 11111
+            RasterData.SessionID = 20182
+            RasterData.OrderNum = 20182
             RasterData.Naam = "Siebe Bosch"
             RasterData.MailAdres = "siebe@watercommunicatie.nl"
             RasterData.ShapeFileZIP = "c:\SYNC\SOFTWARE\METEOBASE\Support\20231120_Noortje\gebieden_meteo_stations.zip"

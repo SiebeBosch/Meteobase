@@ -243,6 +243,8 @@ $docu_menu = array(
 <link rel="stylesheet" type="text/css" href="css/slick-theme.css">
 <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
+<style></style>
+
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -277,6 +279,8 @@ window.onload = function() {
 //    eraseStations;
 //    initialize();
 <?php //if($initkaart[$tab] == 'stations') { echo '    check();' . "\n"; } ?>
+alert("Beste gebruiker, We zijn momenteel bezig met een belangrijke upgrade! Meteobase.nl wordt overgezet naar een nieuwe, verbeterde server. Gedurende deze migratieperiode kan het zijn dat onze dienst niet volledig functioneel is. We werken hard om de migratie zo snel en soepel mogelijk te laten verlopen. Onze excuses voor eventueel ongemak en we waarderen uw geduld en begrip in deze periode. Met vriendelijke groet, Het Meteobase Team");
+
 }
 </script>
 </head>
@@ -290,7 +294,7 @@ window.onload = function() {
 				<div class="row">
 					<!--Starting Map-->
 					<div class="col-md-6 col-sm-12 col-xs-12 map-container pull-right">
-                        <?php  if ($_GET['tb'] == 'toetsingsdata' && $_GET['dp'] == 'toetsingsdata') { ?>
+                        <?php  if (isset($_GET['tb']) && $_GET['tb'] == 'toetsingsdata' && $_GET['dp'] == 'toetsingsdata') { ?>
                              <div class="row">
                                 <div id="toetsingsdata-toggle">
                                     <input type="radio" name="toetsingsdata-select" checked id="toetsingsdata-year-select"> Hele jaar<br />
@@ -344,7 +348,7 @@ window.onload = function() {
 						<?php  } ?>
 					</div>
 					<!--Ending Map-->
-					<?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>					
+					<?php if (isset($_COOKIE['cookiebar']) && $_COOKIE['cookiebar'] == "CookieAllowed") { ?>					
 					<div class="g-recaptcha"
       					data-sitekey="6LfK6mwiAAAAAD8zxTDZXfvsis9CoxgnoW5rSpdG"
      					data-size="invisible">
@@ -694,12 +698,14 @@ window.onload = function() {
 						<span id="error-captcha"></span>
 					</div>
 					<?php } ?>
+					<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+									<input  class="btn submit-btn btn-primary" type="submit" value="Stuur bericht">
+
+			</div>
 				</form>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-				<button type="button" class="btn submit-btn btn-primary">Stuur bericht</button>
-			</div>
+			
 			<?php } else { ?>
 				<div class="model-body">
 				<div class="form-group col-md-12 col-sm-12 col-xs-12">
@@ -1311,6 +1317,7 @@ window.onload = function() {
 	var vMax = 250;
 	var valMax = 300;
 	function seturl(url){
+		console.log(url);
 	cartServerUrl = url;
 	};
 	function setchart(name){
@@ -1634,12 +1641,12 @@ function checkIE() {
 						<div id="chartTabs">
 							<ul>
 								<li>
-									<!--<a href="#fragment-1" onclick="seturl('https://h2710502:5000/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd_stowa2019'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
-										<span>Herhalingstijd</span>
-									</a>-->
 									<a href="#fragment-1" onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd_stowa2019'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
 										<span>Herhalingstijd</span>
 									</a>
+									<!--<a href="#fragment-1" onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd_stowa2019'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
+										<span>Herhalingstijd</span>
+									</a>-->
 								</li>
 								<!--<li>
 									<a href="#fragment-2" onclick="seturl('https://www.meteobase.nl:5000/api/stats/returnperiod/STOWA2018'); setVMax(300); setchart('herhalingstijd_stowa2018'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 10000, false); $('#input_par_form').trigger('submit');">
@@ -1647,12 +1654,12 @@ function checkIE() {
 									</a>
 								</li>-->
 								<li>
+									<!--<a href="#fragment-3" onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume_stowa2019'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
+										<span>Volume</span>
+									</a>-->
 									<a href="#fragment-3" onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume_stowa2019'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
 										<span>Volume</span>
 									</a>
-									<!--<a href="#fragment-3" onclick="seturl('https://h2710502:5000/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume_stowa2019'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
-										<span>Volume</span>
-									</a>-->
 								</li>
 								<!--<li>
 									<a href="#fragment-4" onclick="seturl('https://www.meteobase.nl:5000/api/stats/volume/STOWA2018'); setVMax(10000); setchart('volume_stowa2018'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 250, false); $('#input_par_form').trigger('submit');">

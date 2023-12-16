@@ -17,7 +17,7 @@ if(isset($_POST['subbg'])){
     $naam = $user['naam'];
 	$voorspellingshorizon = $_POST['voorspellingshorizon'];
 
-    $cmd = '"c:/Program Files (x86)/Hydroconsult/VOORSPELLING/WIWBVOORSPELLING.exe" ' . $gegevenstype . ' ' . $datum_van . ' ' . $harmonieTijd . ' ' . $voorspellingshorizon . ' "' . $naam . '" '  . $mail . ' ' . $fileName . '.png';
+    $cmd = '"c:/Program Files/Hydroconsult/VOORSPELLING/WIWBVOORSPELLING.exe" ' . $gegevenstype . ' ' . $datum_van . ' ' . $harmonieTijd . ' ' . $voorspellingshorizon . ' "' . $naam . '" '  . $mail . ' ' . $fileName . '.png';
 	
     $cmd = 'start /B cmd /C "' . $cmd . '"';
 	$_SESSION['rasterHarmonieImage'] = $fileName . '.png';

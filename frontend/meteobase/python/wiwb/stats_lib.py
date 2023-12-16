@@ -15,7 +15,7 @@ import subprocess
 import json
 
 R_exe = r'c:\Program Files\R\R-3.6.3\bin\Rscript.exe'
-R_script = r'c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\R\Gebiedsreductie.R'
+R_script = r'c:\Apache24\htdocs\meteobase\R\Gebiedsreductie.R'
 
 def GEVCDF(mu, sigma, Zeta,X):
     """
@@ -100,11 +100,17 @@ def AREA(area):
     command = [R_exe,R_script,area]
     try:
         int(area)
+        print("1")
         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         stdout = process.communicate()[0]
-        
+        print("2")
+
         try:
+            print("3")
+
             result = json.loads(stdout.decode('ascii').replace('\\',''))
+            print("4")
+
             return result
         except:
             pass

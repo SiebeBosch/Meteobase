@@ -174,7 +174,7 @@
 		}
 	
 		// CONFIGURABLE >>>>>>>>>>
-		$ExportPath = "C:/Program Files (x86)/PostgreSQL/EnterpriseDB-Apache/Php/apache/www/meteobase/downloads";
+		$ExportPath = "c:/Apache24/htdocs/meteobase/uploads/downloads";
 		$ExportFileNeerslag = "Bestelling_" . $sessionid . "_" . $NewOrder . "_Tijdreeks_ " . $ks . ".csv" ;
 		$FileCsvNeerslag = $ExportPath . "/" . $ExportFileNeerslag ;
 		// CONFIGURABLE >>>>>>>>>>

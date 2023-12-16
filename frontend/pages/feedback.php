@@ -2,8 +2,6 @@
 // Meteo Database
 // Version 6-7
 // April 2012
-
-
 if(isset($_POST['userFullNameFeedback'])) {
 	$naam = strip_tags($_POST['userFullNameFeedback']);
 	$mail = strip_tags($_POST['userEmailFeedback']);

@@ -26,14 +26,15 @@
     // Validating input of the Table Name :
     $ValidatedUser = check_input($naam,"");
     $ValidatedCompany = check_input($org,"");
-    $ValidatedPhone = check_input($tel,"");
+    
     $ValidatedEmail = check_input($mail,"");
+
   ?>
 
   <body>
 
 <?php 
-	include('..'.DIRECTORY_SEPARATOR.'local_config.php');
+	include('local_config.php');
 
     // ****** Login-data *********
     	$sConnectionString="UNSET";
@@ -52,6 +53,7 @@
 
     // ** and connect to the database Server:
     	$dbHandle= pg_connect($sConnectionString);
+		echo($dbHandle);
     // ** Test for access to the database :
     	IF (!pg_ping($dbHandle) )
 		{
@@ -62,6 +64,7 @@
 		}
 	ELSE
 		{
+			var_dump(pg_last_error());
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
 			test_echo("Database-handle     = ".$dbHandle . "<BR>");

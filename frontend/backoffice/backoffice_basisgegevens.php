@@ -22,8 +22,11 @@
 ?>
 
   <?php
+	
 	die('here');
-  
+	echo "ja ik ben hier";
+	 print_r($neerslag);
+	 print_r($datum_van);
     // Validating input of the Table Name :
 	$ValidatedGegevenstype = check_input($gegevenstype,"");
 	$ValidatedWaarde = check_input($waarde,"");
@@ -39,7 +42,7 @@
 
 <?php 
 
-	include('..'.DIRECTORY_SEPARATOR.'local_config.php');
+	include('local_config.php');
 
 	// Determine which actions are to be taken :
 	//   - Neerslag        (historical precipitation)
@@ -226,7 +229,7 @@
 		$ExportFilePenman = "Bestelling_" . $sessionid . "_" . $NewOrder . "_Basis_Penman.csv" ;
 
 // CONFIGURABLE >>>>>>>>>>
-   $ExportPath = "C:/Program Files (x86)/PostgreSQL/EnterpriseDB-Apache/Php/apache/www/meteobase/downloads";
+   $ExportPath = "c:/Apache24/htdocs/meteobase/downloads";
 // CONFIGURABLE >>>>>>>>>>
 		
 		test_echo("----------------------------<BR>");

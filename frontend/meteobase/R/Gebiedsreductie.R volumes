@@ -14,13 +14,13 @@ library("jsonlite")
 if (length(args)==0) {
   #supply default arguments
   #paste("processing script with default arguments")
-  wdir <- "c:/Program Files (x86)/PostgreSQL/EnterpriseDB-ApachePHP/apache/www/meteobase/R/"
+  wdir <- "C:/Apache24/htdocs/meteobase/R/"
   gebiedsoppervlak <- 10
 } else if (length(args)==1) {
   #paste("processing script with one argument")
   gebiedsoppervlak <- as.double(args[1])
   #paste("Arguments passed:",args[1],sep=" ")
-  wdir <- "c:/Program Files (x86)/PostgreSQL/EnterpriseDB-ApachePHP/apache/www/meteobase/R/"
+  wdir <- "C:/Apache24/htdocs/meteobase/R/"
   #paste("Arguments used:", gebiedsoppervlak,sep=" ")
 } else if (length(args)==2) {
   #paste("processing script with one argument")

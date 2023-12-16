@@ -17,12 +17,12 @@ if(isset($_POST['subbg'])){
     $naam = $user['naam'];
 	
     $cmd = '"c:/Program Files/Hydroconsult/WIWBHERHALINGSTIJD/WIWBHERHALINGSTIJD.exe" ' . $datum_van . ' ' . $datum_tot . ' "' . $naam . '" '  . $mail . ' ' . $fileName . '.png';
-	//echo($cmd);
 	
     $cmd = 'start /B cmd /C "' . $cmd . '"';
+
 	$_SESSION['rasterViewImage'] = $fileName . '.png';
 	$_SESSION['feedbackMsg'] = 'Uw bestelling is in goede orde ontvangen en wordt op dit moment verwerkt. U ontvangt een e-mail met download-link.';
-    pclose(popen($cmd, 'r'));
+	pclose(popen($cmd, 'r'));
 
 	sleep(2);
 

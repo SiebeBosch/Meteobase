@@ -4,7 +4,7 @@
 // Version 6-7
 // Meteobase
 
-include('..'.DIRECTORY_SEPARATOR.'local_config.php');
+include('local_config.php');
 
 
 $bericht = '';
@@ -23,7 +23,7 @@ if(isset($_POST['subrd'])){
 //            $file_ext = end(explode('.',$file_name));
 //            if($file_ext !== 'zip') { $valid_file = false; }
 //            if($valid_file) { move_uploaded_file($file_tmp,"$upload_dir".strtolower($_FILES['zipfile']['name'])); }
-//            $locatie_zip = 'c:\Program Files (x86)\PostgreSQL\EnterpriseDB-Apache\Php\apache\www\meteobase2\uploads\\' . $file_name;
+//            $locatie_zip = 'c:\Apache24\htdocs\meteobase\uploads\' . $file_name;
 //            $veldnaam = addslashes($_POST['veldnaam']);
 //        }
 //    }
@@ -53,7 +53,7 @@ if(isset($_POST['subrd'])){
     }
     $formaat = $_POST['fileType'];
     if ($formaat == 'csv' || $formaat == 'sobek') {
-		$locatie_zip = 'c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\uploads\\' . $_COOKIE['ZIPFILE'];
+		$locatie_zip = 'c:\Apache24\htdocs\meteobase\uploads\\' . $_COOKIE['ZIPFILE'];
         $veldnaam = addslashes($_POST['veldnaam']);
     }
     $sommen = $_POST['sommen'];
@@ -122,7 +122,7 @@ if(isset($_POST['subrd'])){
 
     $ExportFileName = '\Bestelling_' . $sessionid . '_' . $NewOrder . '_PENMAN.zip' ;
     //echo('Export File Name:' . $ExportFileName . '<br>');
-    $ResultsZIPFile = chr(34) . 'c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\meteobase\downloads' . $ExportFileName . chr(34);
+    $ResultsZIPFile = chr(34) . 'c:\Apache24\htdocs\meteobase\downloads' . $ExportFileName . chr(34);
     //echo('ResultsZIPFile:' . $ResultsZIPFile . '<br>');
     
     // Compile the insertion-string, start with the Keys :
@@ -173,12 +173,12 @@ if(isset($_POST['subrd'])){
     $adres = 'http://62.148.170.210/meteobase/downloads/';
     
     $cmd_array = array(
-    'ascii' => '"c:/Program Files (x86)/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'hdf5' => '"c:/Program Files (x86)/Hydroconsult/NATIVERASTER/WIWBNATIVERASTER.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'modflow' => '"c:/Program Files (x86)/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'simgro' => '"c:/Program Files (x86)/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail,
-    'sobek' => '"c:/Program Files (x86)/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' SOBEK ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"',
-    'csv' => '"c:/Program Files (x86)/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' CSV ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"'
+    'ascii' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
+    'hdf5' => '"c:/Program Files/Hydroconsult/NATIVERASTER/WIWBNATIVERASTER.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
+    'modflow' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
+    'simgro' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail,
+    'sobek' => '"c:/Program Files/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' SOBEK ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"',
+    'csv' => '"c:/Program Files/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' CSV ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"'
     );
     
     $cmd = $cmd_array[$formaat];

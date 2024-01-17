@@ -33,7 +33,7 @@ Module HERHALINGSTIJD
                 GDALDemPath = "c:\Program Files\GDAL\gdaldem.exe"
             Else
                 HERH.RasterViewURL = "https://www.meteobase.nl/images/rasterviews/"                                               'laptop en server
-                HERH.RasterViewDIR = "c:\Program Files (x86)\PostgreSQL\EnterpriseDB-ApachePHP\apache\www\images\rasterviews\"  'server
+                HERH.RasterViewDIR = "C:\Apache24\htdocs\images\rasterviews\"  'server
                 HERH.DownloadURL = "https://www.meteobase.nl/meteobase/downloads/"                                                 'laptop en server
                 HERH.DownloadDIR = "c:\Apache24\htdocs\meteobase\downloads\"  'server
                 HERH.TempDir = "c:\temp\"

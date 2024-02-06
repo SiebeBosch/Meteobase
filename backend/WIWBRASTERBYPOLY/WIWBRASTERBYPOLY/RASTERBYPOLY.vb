@@ -2,6 +2,7 @@
 
 Imports METEOBAS
 Imports System
+Imports System.Reflection
 
 Module RASTERBYPOLY
 
@@ -24,6 +25,10 @@ Module RASTERBYPOLY
         Dim myArg As String
         Console.WriteLine("This program extracts data from the WIWB API and aggregates raster data by polygon.")
 
+        'write the version number to the console
+        Dim version As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Console.WriteLine("Application Version: " & version.ToString())
+
         '----------------------------------------------------------------------------------------------------------------------------
         'system-dependent variables
         '----------------------------------------------------------------------------------------------------------------------------
@@ -45,8 +50,8 @@ Module RASTERBYPOLY
         'reading the user's arguments
         '----------------------------------------------------------------------------------------------------------------------------
         If Debugger.IsAttached Then
-            RasterData.FDate = 20181201
-            RasterData.TDate = 20181231
+            RasterData.FDate = 20181230
+            RasterData.TDate = 20190102
             RasterData.NSL = True
             RasterData.MAKKINK = False
             RasterData.PM = False
@@ -57,17 +62,17 @@ Module RASTERBYPOLY
             RasterData.OrderNum = 20182
             RasterData.Naam = "Siebe Bosch"
             RasterData.MailAdres = "siebe@watercommunicatie.nl"
-            RasterData.ShapeFileZIP = "c:\SYNC\SOFTWARE\METEOBASE\Support\20231120_Noortje\gebieden_meteo_stations.zip"
-            'RasterData.ShapeFileZIP = "c:\Dropbox\MeteoBase\DEMODATA\SPIJKSTERPOMPEN_LAYER.zip"
+            'RasterData.ShapeFileZIP = "c:\SYNC\SOFTWARE\METEOBASE\Support\20231120_Noortje\gebieden_meteo_stations.zip"
+            RasterData.ShapeFileZIP = "c:\Dropbox\MeteoBase\DEMODATA\SPIJKSTERPOMPEN_LAYER.zip"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\Exchange\neerslagall.zip"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\VOORNEOOST_GAFIDENT.ZIP"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\SMILDE_GFEIDENT.ZIP"
             'RasterData.ShapeFileZIP = "d:\Dropbox\MeteoBase\DEMODATA\FRYSLAN_WATERSYSTE.ZIP"
             'RasterData.ShapeFileZIP = "D:\MeteoBase\DemoData\ARCADIS\afwateringsgebied.zip"
             'RasterData.ShapeFileZIP = "D:\Meteobase\Demodata\HKV\Fishnet.zip"
-            RasterData.ShapeField = "MS_id"
+            'RasterData.ShapeField = "MS_id"  'for gebieden_meteo_stations.zip
             'RasterData.ShapeField = "WATERSYSTE"    'for FRYSLAN
-            'RasterData.ShapeField = "layer"    'for Spijksterpompen
+            RasterData.ShapeField = "layer"    'for Spijksterpompen
             'RasterData.ShapeField = "subcatchme"    'for IMBER
             'RasterData.ShapeField = "GFEIDENT"    'for SMILDE
             'RasterData.ShapeField = "GPGIDENT"    'for HHNK

@@ -1078,7 +1078,7 @@ Public Class clsWIWBRasterData
                 Else
                     'our timespan falls in both eras
                     TDatePre2019 = 20190101
-                    FDatePost2019 = 20190102    'notice that WIWB returns the 24 hours BEFORE the start date
+                    FDatePost2019 = 20190101    'notice that WIWB returns the 24 hours BEFORE the start date
                     TDatePost2019 = TDate
                 End If
             Else
@@ -1193,18 +1193,23 @@ Public Class clsWIWBRasterData
             If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing pre-january 2019 data.")
                 If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePathPre2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                Me.Setup.Log.AddMessage("Raster download pre-january 2019 complete.")
                 If Not ExtractZIP(ZipFilePathPre2019, CurDate, TempResultsDir, MetaFileContent, False, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
+                Me.Setup.Log.AddMessage("Processing pre-january 2019 data complete.")
             End If
 
             'handle the post-2019 orders
             If FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
                 Me.Setup.Log.AddMessage("Processing post-january 2019 data.")
                 If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePathPost2019) Then Throw New Exception("Error retrieving rasterdata from API.")
+                Me.Setup.Log.AddMessage("Raster download post-january 2019 complete.")
                 If Not ExtractZIP(ZipFilePathPost2019, CurDate, TempResultsDir, MetaFileContent, True, "AAIGrid") Then Throw New Exception("Error extracting data received from WIWB server.")
+                Me.Setup.Log.AddMessage("Processing post-january 2019 data complete.")
             End If
 
             'as a final action, write the SIMGRO meta file (if required)
             If FORMAAT.Trim.ToUpper = "SIMGRO" Then
+                Me.Setup.Log.AddMessage("Writing precipitation in SIMGRO format.")
                 Using simWriter As New System.IO.StreamWriter(MetaFilePath)
                     simWriter.Write(MetaFileContent)
                 End Using
@@ -1237,7 +1242,7 @@ Public Class clsWIWBRasterData
 
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error processing daily precipitation.")
+            Me.Setup.Log.AddError("Error processing raster based precipitation data.")
             Me.Setup.Log.AddError(ex.Message)
             Return False
         End Try

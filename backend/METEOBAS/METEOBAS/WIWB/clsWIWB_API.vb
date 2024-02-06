@@ -401,6 +401,7 @@ Public Class clsWIWB_API
             Dim Sleeping As Boolean = True
             Dim Slept As Integer = 0
             While Sleeping
+                Me.Setup.Log.AddMessage("Creating webrequest for DataFlowId " & DataFlowId.ToString & " with URL " & downloadURL)
                 webRequest = TryCast(HttpWebRequest.Create(downloadURL), HttpWebRequest)
                 webRequest.Method = "POST"
                 webRequest.ContentType = "application/json"
@@ -412,6 +413,7 @@ Public Class clsWIWB_API
                     sw.Write(body)
                 End Using
 
+                Me.Setup.Log.AddMessage("Processing response")
                 Dim FinalResponse As HttpWebResponse
                 FinalResponse = DirectCast(webRequest.GetResponse(), HttpWebResponse)
                 Dim dataStream As Stream = FinalResponse.GetResponseStream
@@ -440,6 +442,7 @@ Public Class clsWIWB_API
 
             'finally download the file!
             Dim url As String = "https://wiwb.hydronet.com/api/grids/downloadfile?dataflowid=" & DataFlowId.ToString
+            Me.Setup.Log.AddMessage("Download url created: " & url)
             webRequest = TryCast(HttpWebRequest.Create(url), HttpWebRequest)
             webRequest.Method = "GET"
             webRequest.ContentType = "application/json"
@@ -448,13 +451,16 @@ Public Class clsWIWB_API
             webRequest.Headers("Authorization") = $"Bearer {accessToken}"
             webRequest.Timeout = 10 * 60 * 1000 ' Set the timeout at 10 minutes
 
+            Me.Setup.Log.AddMessage("Getting response")
             Dim response As HttpWebResponse = Nothing
             response = DirectCast(webRequest.GetResponse(), HttpWebResponse)
             Dim s As Stream = response.GetResponseStream()
 
             'Write to disk
+            Me.Setup.Log.AddMessage("writing to disk")
             Dim fs As New FileStream(Path, FileMode.Create)
 
+            Me.Setup.Log.AddMessage("reading")
             Dim read As Byte() = New Byte(255) {}
             Dim count As Integer = s.Read(read, 0, read.Length)
             While count > 0
@@ -463,6 +469,7 @@ Public Class clsWIWB_API
             End While
 
             'Close everything
+            Me.Setup.Log.AddMessage("closing up")
             fs.Close()
             s.Close()
             response.Close()
@@ -472,7 +479,7 @@ Public Class clsWIWB_API
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
             Throw New Exception("Could not retrieve grids from API.")
-            Return Nothing
+            Return False
         End Try
     End Function
 

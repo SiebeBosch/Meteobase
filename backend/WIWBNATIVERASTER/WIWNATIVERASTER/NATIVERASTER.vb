@@ -4,6 +4,7 @@ Option Explicit On
 Imports METEOBAS
 Imports System
 Imports Newtonsoft.Json.Linq
+Imports System.Reflection
 
 Module NATIVERASTER
 
@@ -18,6 +19,10 @@ Module NATIVERASTER
 
     Sub Main()
         Console.WriteLine("This program converts rasterdata from the WIWB API to ASCII grids for various simulation models")
+
+        ' Write the version number to the console
+        Dim version As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Console.WriteLine("Application Version: " & version.ToString())
 
         '----------------------------------------------------------------------------------------------------------------------------
         'system-dependent variables

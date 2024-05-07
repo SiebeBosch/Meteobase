@@ -126,10 +126,23 @@ if(isset($_POST['subrd'])){
     $datum_array[] = $TDATE;
     $TDATE = $TDATE[2].$TDATE[1].$TDATE[0];
     $RasterDataDir = "d:\METEOBASE\RasterData";
-    $XMIN = round($_COOKIE['minX'], 0);
-    $YMIN = round($_COOKIE['minY'], 0);
+	$XMIN = 0;
+	if(isset($_COOKIE['minX'])){    
+		$XMIN = round($_COOKIE['minX'], 0);
+	}
+	$YMIN = 0;
+	if(isset($_COOKIE['minY'])){
+		$YMIN = round($_COOKIE['minY'], 0);
+	}
+	$XMAX = 0;
+	if(isset($_COOKIE['minY'])){
     $XMAX = round($_COOKIE['maxX'], 0);
+	}
+	$YMAX = 0;
+	if(isset($_COOKIE['maxX'])){
     $YMAX = round($_COOKIE['maxY'], 0);
+	}
+    
     
 //		echo('penmanbool:' . $PENMAN . '<br>');
 //		echo('makkinkbool:' . $MAKKINK . '<br>');

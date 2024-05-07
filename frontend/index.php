@@ -279,7 +279,6 @@ window.onload = function() {
 //    eraseStations;
 //    initialize();
 <?php //if($initkaart[$tab] == 'stations') { echo '    check();' . "\n"; } ?>
-alert("Beste gebruiker, We zijn momenteel bezig met een belangrijke upgrade! Meteobase.nl wordt overgezet naar een nieuwe, verbeterde server. Gedurende deze migratieperiode kan het zijn dat onze dienst niet volledig functioneel is. We werken hard om de migratie zo snel en soepel mogelijk te laten verlopen. Onze excuses voor eventueel ongemak en we waarderen uw geduld en begrip in deze periode. Met vriendelijke groet, Het Meteobase Team");
 
 }
 </script>
@@ -666,7 +665,7 @@ alert("Beste gebruiker, We zijn momenteel bezig met een belangrijke upgrade! Met
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="feedbackModalLabel"></h4>
 			</div>
-			<?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>
+			<?php if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieAllowed") { ?>
 			<div class="modal-body">
 				<form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
 					<div class="form-group col-md-6 col-sm-12 col-xs-12">
@@ -2269,7 +2268,7 @@ $(function(){
 	<?php if ($tab == 'rasterview') : ?>
 		var rasterViewImage = '';
 
-		<?php if ($_SESSION['rasterViewImage']) : ?>
+		<?php if (isset($_SESSION['rasterViewImage'])) : ?>
 			rasterViewImage = '<?php echo $_SESSION["rasterViewImage"];?>';
 			legend.style.display = 'block';
 		<?php unset($_SESSION['rasterViewImage']) ; ?>
@@ -3260,7 +3259,7 @@ $(function(){
 				$('#interval-start').val(rasterViewStart || '15/01/1990');
 				$('#interval-end').val(rasterViewEnd || '15/01/1990');
 				//var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 || rasterViewStart == -1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((rasterViewEnd == 1 || rasterViewEnd == -1) ? 'dag' : 'dagen');
-				//var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 || rasterViewStart == -1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((rasterViewEnd == 1 || rasterViewEnd == -1) ? 'dag' : 'dagen');
+				var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 || rasterViewStart == -1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((rasterViewEnd == 1 || rasterViewEnd == -1) ? 'dag' : 'dagen');
 				$( "#interval" ).text(intervalText);
 				$( "#slider-interval" ).slider({
 				  range: true,

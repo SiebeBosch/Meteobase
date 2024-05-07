@@ -22,6 +22,11 @@ from numpy import array, log, log10,  exp, concatenate, where, interp, abs, isna
 import os
 import xlrd
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
 # vaste variabelen (worden ingeladen bij het starten van de app)
 duren = {'regenduurlijnen':[1/6,1/2,1,2,4,8,12,24,48,96,192],
             "oppervlaktereductie":[0.25,0.5,1,2,4,8,12,24,48,96,192,216]}
@@ -195,6 +200,89 @@ def factors_2019(durations,prob,season,climate,scenario):
                                factors],
                               axis=1)
 
+
+def poly(D):
+    return 5.952e-06 * D**2 - 1.515e-03 * D + 1.277
+
+def logpoly(D):
+    return 0.009143 * np.log(D)**2 - 0.1508 * np.log(D) + 1.621
+
+def calculate_verandergetal(D, Ts, v_values):
+    # Apply the appropriate v-value based on duration D using NumPy's piecewise logic
+    conditions = [D <= 24, (D > 24) & (D < 120), (D >= 120) & (D <= 240)]
+    v = np.select(conditions, v_values, default=np.nan)
+    return 1 + (v - 1) * Ts / 4
+
+def verandergetalfunctie_jaarrond(Ts, D):
+    v_values = [1.234, logpoly(D), 1.109]
+    return calculate_verandergetal(D, Ts, v_values)
+
+def verandergetalfunctie_winter(Ts, D):
+    v_values = [1.244, poly(D), 1.181]
+    return calculate_verandergetal(D, Ts, v_values)
+
+def get_verander_getal(climate, scenario, season, duur_uren):
+    temperature_increases = {
+        (2033, 'L'): 0.6,
+        (2050, 'L'): 0.8,
+        (2050, 'M'): 1.1,
+        (2050, 'H'): 1.5,
+        (2100, 'L'): 0.8,
+        (2100, 'M'): 1.9,
+        (2100, 'H'): 4.0,
+        (2150, 'M'): 2.1,
+        (2150, 'H'): 5.5
+    }
+    
+    if climate == 2014:
+        return np.ones_like(duur_uren)  # Return array of 1's if the year is 2014
+
+    key = (climate, scenario)
+    if key in temperature_increases:
+        temp_increase = temperature_increases[key]
+        if season == 'winter':
+            return verandergetalfunctie_winter(temp_increase, duur_uren)
+        else:
+            return verandergetalfunctie_jaarrond(temp_increase, duur_uren)
+    else:
+        return np.zeros_like(duur_uren)  # Return array of 0's for non-existing scenarios
+
+
+def vols_2024(rp,durations,season,climate,scenario):
+    prob = exp(-1/array(rp))
+    
+    # in de publicatie van 2024 is de statistiek van het huidige klimaat niet veranderd tov de publicatie van 2019
+    # de statistiek van de zichtjaren echter wel, en dit komt tot uiting via het zgn. verandergetal, een multiplier op het overschrijdingsvolume
+    vols = vols_2019_huidig(get_2019_params(durations,season),
+                             get_2019_params(durations,season,return_period=121),
+                             rp,
+                             prob,
+                             durations,
+                             season)
+    
+    # als het zichtjaar niet 2014 is, dan klimaatverandering toepassen
+    if not climate == '2014':
+        vols = vols * get_verander_getal(climate,scenario,season,durations)
+        
+    return vols
+
+def rp_2024(vols,durations,season,climate,scenario):
+    verandergetal = get_verander_getal(climate, scenario, season, durations)
+    
+    #schaal eerst het volume terug naar zijn equivalent onder huidig klimaat door te delen door het verandergetal
+    vols = vols / verandergetal
+
+    #nu we het volume hebben teruggeschaald naar de equivalent voor scenario 'Huidig'
+    #kunnen we eenvoudigweg de functie rp_2019_huidig aanroepen
+    rp = rp_2019_huidig(get_2019_params(durations,season),
+                         get_2019_params(durations,season,return_period=121),
+                         vols,
+                         durations,
+                         season)
+                         
+    return rp
+
+
 def vols_2019(rp,durations,season,climate,scenario):
     prob = exp(-1/array(rp))
     
@@ -266,17 +354,17 @@ def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
     numpy.set_printoptions(suppress=True)
     
     print('testen volume-tabel:')
-    vols = vols_2019(rp,durations,season,climate,scenario)
+    vols = vols_2024(rp,durations,season,climate,scenario)
     savetxt('vols_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,vols], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
     print(vols.round(1))
     
     print('terug-rekenen herhalingstijden:')
-    return_periods = array([rp_2019(vols[:,idx],durations,season,climate,scenario,debug=True)[:,idx] for idx in range(vols.shape[1])])
+    return_periods = array([rp_2024(vols[:,idx],durations,season,climate,scenario,debug=True)[:,idx] for idx in range(vols.shape[1])])
     print(return_periods.round(1))
     savetxt('rp_reverse_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,return_periods.T], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
 
     print('testen herhalingstijden-tabel:')
-    return_periods = rp_2019(volumes,durations,season,climate,scenario,debug=True)
+    return_periods = rp_2024(volumes,durations,season,climate,scenario,debug=True)
     print(return_periods.round(1))
     savetxt('rp_{}_{}_{}.csv.'.format(climate,season,scenario), 
             concatenate([array([durations]).T,return_periods.T], axis = 1), 
@@ -336,7 +424,7 @@ def returnperiod():
     # berekenen van volumes
     durations = duren['regenduurlijnen'].copy()
 
-    vols = vols_2019(rp,durations,season,climate,scenario)
+    vols = vols_2024(rp,durations,season,climate,scenario)
             
     result = xy_series(array(durations).round(decimals=2), vols, x_label="duur (uren)",
                            y_labels=y_labels,decimals=0).toGDT()  

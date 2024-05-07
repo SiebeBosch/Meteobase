@@ -7,7 +7,7 @@ $bericht = '';
 $data = '';
 $waarde_check = '';
 if(isset($_POST['subbg'])){
-    
+
     //$waarde = $_POST['waarde'];
     $datum_van = $_POST['intervalStartDate'];
     $datum_tot = $_POST['intervalEndDate'];
@@ -19,21 +19,22 @@ if(isset($_POST['subbg'])){
     $cmd = '"c:/Program Files/Hydroconsult/WIWBHERHALINGSTIJD/WIWBHERHALINGSTIJD.exe" ' . $datum_van . ' ' . $datum_tot . ' "' . $naam . '" '  . $mail . ' ' . $fileName . '.png';
 	
     $cmd = 'start /B cmd /C "' . $cmd . '"';
-
 	$_SESSION['rasterViewImage'] = $fileName . '.png';
 	$_SESSION['feedbackMsg'] = 'Uw bestelling is in goede orde ontvangen en wordt op dit moment verwerkt. U ontvangt een e-mail met download-link.';
 	pclose(popen($cmd, 'r'));
+    $filePath = 'C:/Apache24/htdocs/images/rasterviews/' . $fileName . '.png';
+    $isAvailable = is_file($filePath);
+    while(!$isAvailable) {
 
-	sleep(2);
+        sleep(1);
+        $isAvailable = is_file($filePath);
 
+    }
 	include('rasterView01.php');
 }else{
-
-
     include('rasterView01.php');
 }
 	
 ?>	
 	
 	
-</div>

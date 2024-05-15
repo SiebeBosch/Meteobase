@@ -41,12 +41,12 @@
 									</div>
 									<div class="col-md-9">
 										<label>
-											<input type="radio" name="dataType" value="stochasten_2015"> Oude statistieken
+											<input type="radio" name="dataType" value="stochasten_2015"> Statistieken STOWA 2015
 										</label>
 									</div>
 									<div class="col-md-9">
 										<label>
-											<input type="radio" name="dataType" value="tijdreeksen_2015"> Oude tijdreeksen
+											<input type="radio" name="dataType" value="tijdreeksen_2015"> Tijdreeksen STOWA 2015
 										</label>
 									</div>
 								</div>

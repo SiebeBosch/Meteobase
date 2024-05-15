@@ -223,27 +223,27 @@ def verandergetalfunctie_winter(Ts, D):
 
 def get_verander_getal(climate, scenario, season, duur_uren):
     temperature_increases = {
-        (2033, 'L'): 0.6,
-        (2050, 'L'): 0.8,
-        (2050, 'M'): 1.1,
-        (2050, 'H'): 1.5,
-        (2100, 'L'): 0.8,
-        (2100, 'M'): 1.9,
-        (2100, 'H'): 4.0,
-        (2150, 'M'): 2.1,
-        (2150, 'H'): 5.5
+        ('2033', 'L'): 0.6,
+        ('2050', 'L'): 0.8,
+        ('2050', 'M'): 1.1,
+        ('2050', 'H'): 1.5,
+        ('2100', 'L'): 0.8,
+        ('2100', 'M'): 1.9,
+        ('2100', 'H'): 4.0,
+        ('2150', 'M'): 2.1,
+        ('2150', 'H'): 5.5
     }
     
-    if climate == 2014:
-        return np.ones_like(duur_uren)  # Return array of 1's if the year is 2014
+    if climate == '2024':
+        return np.ones_like(duur_uren)  # Return array of 1's if the year is 2024
 
     key = (climate, scenario)
     if key in temperature_increases:
         temp_increase = temperature_increases[key]
         if season == 'winter':
-            return verandergetalfunctie_winter(temp_increase, duur_uren)
+            return [verandergetalfunctie_winter(temp_increase, duur_uren[id]) for id in range(len(duur_uren))]
         else:
-            return verandergetalfunctie_jaarrond(temp_increase, duur_uren)
+            return [verandergetalfunctie_jaarrond(temp_increase, duur_uren[id]) for id in range(len(duur_uren))]
     else:
         return np.zeros_like(duur_uren)  # Return array of 0's for non-existing scenarios
 
@@ -260,17 +260,18 @@ def vols_2024(rp,durations,season,climate,scenario):
                              durations,
                              season)
     
-    # als het zichtjaar niet 2014 is, dan klimaatverandering toepassen
-    if not climate == '2014':
-        vols = vols * get_verander_getal(climate,scenario,season,durations)
+    # als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
+    if not climate == '2024':
+        vols = vols * get_verander_getal(climate,scenario,season,durations)  
         
     return vols
 
-def rp_2024(vols,durations,season,climate,scenario):
+def rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=0):
     verandergetal = get_verander_getal(climate, scenario, season, durations)
     
     #schaal eerst het volume terug naar zijn equivalent onder huidig klimaat door te delen door het verandergetal
-    vols = vols / verandergetal
+    for id in range(len(vols)):
+        vols[id] = vols[id] / verandergetal[verandergetalIdx]   
 
     #nu we het volume hebben teruggeschaald naar de equivalent voor scenario 'Huidig'
     #kunnen we eenvoudigweg de functie rp_2019_huidig aanroepen
@@ -293,8 +294,8 @@ def vols_2019(rp,durations,season,climate,scenario):
                              durations,
                              season)
     
-    # als het zichtjaar niet 2014 is, dan klimaatverandering toepassen
-    if not climate == '2014':
+    # als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
+    if not climate == '2024':
         vols = vols * factors_2019(durations,prob,season,climate,scenario)
         
     return vols
@@ -312,7 +313,7 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
     rp = ones((len(vols),len(durations)))
 
     #als het niet de huidige situatie is, iteratief zoeken naar de juiste herhalingstijd
-    #if not climate == '2014':
+    #if not climate == '2024':
     iters = 0
     optimize = True
     vols = array([vols]  * len(rp[0])).T
@@ -343,10 +344,10 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
                 
     return rp
 
-def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
-         rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000],
+def test(durations=[1/6, 1/2, 1, 2, 4, 8, 12, 24, 48, 96, 192, 240],
+         rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000],
          volumes=[10,20,30,40,50,75,100,150],
-         climate='2014',
+         climate='2024',
          season='jaarrond',
          scenario='-'
          ):
@@ -359,12 +360,15 @@ def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
     print(vols.round(1))
     
     print('terug-rekenen herhalingstijden:')
-    return_periods = array([rp_2024(vols[:,idx],durations,season,climate,scenario,debug=True)[:,idx] for idx in range(vols.shape[1])])
+    return_periods = array([rp_2024(vols[:,idx],durations,season,climate,scenario, verandergetalIdx=idx)[:,idx] for idx in range(vols.shape[1])])
     print(return_periods.round(1))
     savetxt('rp_reverse_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,return_periods.T], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
 
     print('testen herhalingstijden-tabel:')
-    return_periods = rp_2024(volumes,durations,season,climate,scenario,debug=True)
+    return_periods = ones((len(volumes),len(durations)))
+    for idx in range(len(durations)):
+        vs = volumes.copy()
+        return_periods[:,idx] = rp_2024(vs,durations,season,climate,scenario,verandergetalIdx=idx)[:,idx]
     print(return_periods.round(1))
     savetxt('rp_{}_{}_{}.csv.'.format(climate,season,scenario), 
             concatenate([array([durations]).T,return_periods.T], axis = 1), 
@@ -393,8 +397,11 @@ def volume():
  
     #bereken de herhalingstijd alsof het de huidige situatie is 
     durations = duren['regenduurlijnen'].copy()
-    
-    rp = rp_2019(vols,durations,season,climate,scenario)
+
+    rp = ones((len(vols),len(durations)))
+    for idx in range(len(durations)):
+        vs = vols.copy()
+        rp[:,idx] = rp_2024(vs,durations,season,climate,scenario,verandergetalIdx=idx)[:,idx]
                                     
     result = xy_series(array(durations).round(decimals=2), rp, x_label="duur (uren)",
                        y_labels=y_labels,decimals=1).toGDT(min_val=herhalingstijden[0],max_val=herhalingstijden[-1])

@@ -234,8 +234,8 @@ def get_verander_getal(climate, scenario, season, duur_uren):
         ('2150', 'H'): 5.5
     }
     
-    if climate == '2014':
-        return np.ones_like(duur_uren)  # Return array of 1's if the year is 2014
+    if climate == '2024':
+        return np.ones_like(duur_uren)  # Return array of 1's if the year is 2024
 
     key = (climate, scenario)
     if key in temperature_increases:
@@ -260,8 +260,8 @@ def vols_2024(rp,durations,season,climate,scenario):
                              durations,
                              season)
     
-    # als het zichtjaar niet 2014 is, dan klimaatverandering toepassen
-    if not climate == '2014':
+    # als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
+    if not climate == '2024':
         vols = vols * get_verander_getal(climate,scenario,season,durations)  
         
     return vols
@@ -294,8 +294,8 @@ def vols_2019(rp,durations,season,climate,scenario):
                              durations,
                              season)
     
-    # als het zichtjaar niet 2014 is, dan klimaatverandering toepassen
-    if not climate == '2014':
+    # als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
+    if not climate == '2024':
         vols = vols * factors_2019(durations,prob,season,climate,scenario)
         
     return vols
@@ -313,7 +313,7 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
     rp = ones((len(vols),len(durations)))
 
     #als het niet de huidige situatie is, iteratief zoeken naar de juiste herhalingstijd
-    #if not climate == '2014':
+    #if not climate == '2024':
     iters = 0
     optimize = True
     vols = array([vols]  * len(rp[0])).T
@@ -347,7 +347,7 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
 def test(durations=[1/6, 1/2, 1, 2, 4, 8, 12, 24, 48, 96, 192, 240],
          rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000],
          volumes=[10,20,30,40,50,75,100,150],
-         climate='2014',
+         climate='2024',
          season='jaarrond',
          scenario='-'
          ):

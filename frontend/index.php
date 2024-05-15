@@ -1796,9 +1796,9 @@ $docu_menu = array(
                                     <br><br>
                                     <font size="1">
                                         Bron:
-                                        <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/STOWA_2019-19_neerslagstatistieken.pdf"
+                                        <a href="https://www.stowa.nl/publicaties/beoordeling-neerslagstatistiek-meteo-onderzoek-ten-behoeve-van-het-waterbeheer-deelrapport-1"
                                             target="_blank">
-                                            Stowa (2019)
+                                            Stowa (2023)
                                         </a>
                                     </font>
                                 </p>

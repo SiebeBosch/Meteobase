@@ -1776,6 +1776,7 @@ $docu_menu = array(
                                             <option value="H">H</option>
                                         </optgroup>
                                         <optgroup data-rel="2150">
+                                            <option value="L">L</option>
                                             <option value="M">M</option>
                                             <option value="H">H</option>
                                         </optgroup>

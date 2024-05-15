@@ -230,6 +230,7 @@ def get_verander_getal(climate, scenario, season, duur_uren):
         ('2100', 'L'): 0.8,
         ('2100', 'M'): 1.9,
         ('2100', 'H'): 4.0,
+        ('2150', 'L'): 0.8,
         ('2150', 'M'): 2.1,
         ('2150', 'H'): 5.5
     }

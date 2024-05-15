@@ -1265,6 +1265,14 @@ $docu_menu = array(
                         <h5>Neerslagstatistiek</h5>
                         <ul>
                             <li>
+                                STOWA, (2023),
+                                <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/STOWA_2023-35_meteo_basisstatistiek.pdf"
+                                    target="_blank">
+                                    “Beoordeling neerslagstatistiek. Meteo-onderzoek ten behoeve van het waterbeheer. Deelrapport 1”
+                                </a>
+                                , rapport 35-2023.
+                            </li>
+                            <li>
                                 STOWA, (2019),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/STOWA_2019-19_neerslagstatistieken.pdf"
                                     target="_blank">

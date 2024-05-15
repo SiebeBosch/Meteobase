@@ -253,9 +253,9 @@ Public Class clsWIWBHerhalingstijden
             If Not newGrid.CreateNew(HerhPath, newHeader, myGrid.DataType, 0, True, GridFileType.GeoTiff) Then Throw New Exception("Error creating return periods grid.")
             If Not newGrid.Open(HerhPath) Then Throw New Exception("Error opening Herhalingstijden grid.")
 
-            'vraag de regenduurlijnen op voor het huidige klimaat; regio G
+            'vraag de regenduurlijnen op voor het huidige klimaat; regio G, publicatiejaar 2024
             Dim Regenduurlijn = New clsRegenduurLijn(Me.Setup)
-            Regenduurlijn.Create("HUIDIG", "G")
+            Regenduurlijn.Create2024Huidig()
 
             For r = 0 To myGrid.Header.NumberRows - 1
                 For c = 0 To myGrid.Header.NumberCols - 1

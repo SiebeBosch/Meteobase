@@ -10,6 +10,165 @@ Public Class clsRegenduurLijn
         Setup = mySetup
     End Sub
 
+    Public Sub Create2024Huidig()
+        Dur(0) = 2
+        Dur(1) = 4
+        Dur(2) = 8
+        Dur(3) = 12
+        Dur(4) = 24
+        Dur(5) = 48
+        Dur(6) = 96
+        Dur(7) = 192
+        Dur(8) = 216
+
+        Vol(0) = 5
+        Vol(1) = 10
+        Vol(2) = 20
+        Vol(3) = 30
+        Vol(4) = 40
+        Vol(5) = 50
+        Vol(6) = 70
+        Vol(7) = 90
+        Vol(8) = 110
+        Vol(9) = 130
+        Vol(10) = 150
+        Vol(11) = 170
+
+        '5mm
+        Herh(0, 0) = 0.5
+        Herh(0, 1) = 0.5
+        Herh(0, 2) = 0.5
+        Herh(0, 3) = 0.5
+        Herh(0, 4) = 0.5
+        Herh(0, 5) = 0.5
+        Herh(0, 6) = 0.5
+        Herh(0, 7) = 0.5
+        Herh(0, 8) = 0.5
+
+        '10mm
+        Herh(1, 0) = 0.5
+        Herh(1, 1) = 0.5
+        Herh(1, 2) = 0.5
+        Herh(1, 3) = 0.5
+        Herh(1, 4) = 0.5
+        Herh(1, 5) = 0.5
+        Herh(1, 6) = 0.5
+        Herh(1, 7) = 0.5
+        Herh(1, 8) = 0.5
+
+        '20mm
+        Herh(2, 0) = 1.1
+        Herh(2, 1) = 0.6
+        Herh(2, 2) = 0.5
+        Herh(2, 3) = 0.5
+        Herh(2, 4) = 0.5
+        Herh(2, 5) = 0.5
+        Herh(2, 6) = 0.5
+        Herh(2, 7) = 0.5
+        Herh(2, 8) = 0.5
+
+        '30mm
+        Herh(3, 0) = 4.6
+        Herh(3, 1) = 2.5
+        Herh(3, 2) = 1.3
+        Herh(3, 3) = 0.9
+        Herh(3, 4) = 0.5
+        Herh(3, 5) = 0.5
+        Herh(3, 6) = 0.5
+        Herh(3, 7) = 0.5
+        Herh(3, 8) = 0.5
+
+        '40mm
+        Herh(4, 0) = 13.8
+        Herh(4, 1) = 7.6
+        Herh(4, 2) = 4.2
+        Herh(4, 3) = 2.9
+        Herh(4, 4) = 1.4
+        Herh(4, 5) = 0.6
+        Herh(4, 6) = 0.5
+        Herh(4, 7) = 0.5
+        Herh(4, 8) = 0.5
+
+        '50mm
+        Herh(5, 0) = 31.8
+        Herh(5, 1) = 18.4
+        Herh(5, 2) = 10.8
+        Herh(5, 3) = 7.8
+        Herh(5, 4) = 3.5
+        Herh(5, 5) = 1.4
+        Herh(5, 6) = 0.5
+        Herh(5, 7) = 0.5
+        Herh(5, 8) = 0.5
+
+        '70mm
+        Herh(6, 0) = 108.4
+        Herh(6, 1) = 66.9
+        Herh(6, 2) = 43.4
+        Herh(6, 3) = 34.1
+        Herh(6, 4) = 16.7
+        Herh(6, 5) = 7
+        Herh(6, 6) = 2.2
+        Herh(6, 7) = 0.6
+        Herh(6, 8) = 0.5
+
+        '90mm
+        Herh(7, 0) = 288.3
+        Herh(7, 1) = 212
+        Herh(7, 2) = 118.8
+        Herh(7, 3) = 99.1
+        Herh(7, 4) = 60.3
+        Herh(7, 5) = 27.6
+        Herh(7, 6) = 9.0
+        Herh(7, 7) = 1.9
+        Herh(7, 8) = 1.5
+
+        '110mm
+        Herh(8, 0) = 590.8
+        Herh(8, 1) = 462.8
+        Herh(8, 2) = 377.1
+        Herh(8, 3) = 339.7
+        Herh(8, 4) = 179.5
+        Herh(8, 5) = 92.3
+        Herh(8, 6) = 33.1
+        Herh(8, 7) = 6.8
+        Herh(8, 8) = 4.9
+
+        '130mm
+        Herh(9, 0) = 1000
+        Herh(9, 1) = 879.6
+        Herh(9, 2) = 769.7
+        Herh(9, 3) = 731.7
+        Herh(9, 4) = 463.5
+        Herh(9, 5) = 270.3
+        Herh(9, 6) = 112
+        Herh(9, 7) = 24.2
+        Herh(9, 8) = 17.2
+
+        '150mm
+        Herh(10, 0) = 1000
+        Herh(10, 1) = 1000
+        Herh(10, 2) = 1000
+        Herh(10, 3) = 1000
+        Herh(10, 4) = 1000
+        Herh(10, 5) = 713
+        Herh(10, 6) = 351.7
+        Herh(10, 7) = 86.1
+        Herh(10, 8) = 61.1
+
+        '150mm
+        Herh(11, 0) = 1000
+        Herh(11, 1) = 1000
+        Herh(11, 2) = 1000
+        Herh(11, 3) = 1000
+        Herh(11, 4) = 1000
+        Herh(11, 5) = 1000
+        Herh(11, 6) = 1000
+        Herh(11, 7) = 309
+        Herh(11, 8) = 223.3
+
+
+    End Sub
+
     Public Sub Create(Klimaat As String, Regio As String)
         Dur(0) = 2
         Dur(1) = 4

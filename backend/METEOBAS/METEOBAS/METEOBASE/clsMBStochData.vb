@@ -22,6 +22,7 @@ Public Class clsWIWBStochData
 
     Public Stats2015 As Boolean     'de oude publicatie uit 2015 plus die van 2019 met korte duren
     Public Stats2019 As Boolean     'de nieuwe publicatie uit 2019
+    Public Stats2024 As Boolean     'de nieuwe publicatie uit 2024
 
     'bestelgegevens
     Public SessionID As Integer    'sessieID
@@ -126,6 +127,16 @@ Public Class clsWIWBStochData
                 'FileCollection.Add(FileName)
             ElseIf Stats2019 Then
                 FileName = FilesDir & "Neerslagstatistiek_overzicht_en_tabellen.xlsx"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+                FileName = FilesDir & "Overzicht_patronen_2019.xlsm"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+                FileName = FilesDir & "Klimaatregios.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+            ElseIf Stats2024 Then
+                FileName = FilesDir & "Neerslagstatistiek2024_overzicht_en_tabellen.xlsm"
                 If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
                 FileCollection.Add(FileName)
                 FileName = FilesDir & "Overzicht_patronen_2019.xlsm"

@@ -17,7 +17,7 @@ include('local_config.php');
 $NewOrder = 0;
 // Stochasten
 if(isset($_POST['dataType'])){
-	if ($_POST['dataType'] == 'stochasten_2019') {
+	if ($_POST['dataType'] == 'stochasten_2024') {
 		
 		// Verwerken van het formulier
         $gebruiker = $_COOKIE['gebruiker'];
@@ -35,7 +35,27 @@ if(isset($_POST['dataType'])){
 		//echo('Session id ' . $sessionid);
 
 		
-		exportStochasten('FALSE', 'TRUE', $sessionid, $NewOrder, $naam, $mail);
+		exportStochasten('FALSE', 'FALSE', 'TRUE', $sessionid, $NewOrder, $naam, $mail);
+	} elseif ($_POST['dataType'] == 'stochasten_2019') {
+		
+		// Verwerken van het formulier
+        $gebruiker = $_COOKIE['gebruiker'];
+        $mail = $gebruiker['mail'];
+        $naam = $gebruiker['naam'];
+        $sessionid = $gebruiker['sessionid'];
+    
+        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
+        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
+        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
+		
+        $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE','TRUE', 'TRUE', 'TRUE', 'TRUE', 'TRUE');
+       
+		//echo('Order number ' . $NewOrder);
+		//echo('Session id ' . $sessionid);
+
+		
+		exportStochasten('FALSE', 'TRUE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
+		
 	} elseif ($_POST['dataType'] == 'stochasten_2015') {
 		
 		// Verwerken van het formulier
@@ -54,7 +74,7 @@ if(isset($_POST['dataType'])){
 		//echo('Session id ' . $sessionid);
 
 		
-		exportStochasten('TRUE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
+		exportStochasten('TRUE', 'FALSE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
     
     }else {
         $gebruiker = $_COOKIE['gebruiker'];
@@ -206,10 +226,10 @@ if(isset($_POST['dataType'])){
     pclose(popen($cmd, 'r'));
 	}
 	
-	function exportStochasten($STATS2015, $STATS2019, $psessionid, $pNewOrder, $pname, $pmail)
+	function exportStochasten($STATS2015, $STATS2019, $STATS2024, $psessionid, $pNewOrder, $pname, $pmail)
 	{
 	
-	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
+	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $STATS2024 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
 	//echo($cmd);
 	$cmd = '"c:/Program Files/Hydroconsult/WIWBSTOCHASTEN/WIWBSTOCHASTEN.exe" ' . $cmd;
 	//echo($cmd);

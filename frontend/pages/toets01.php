@@ -21,6 +21,16 @@
 								<div class="row">
 									<div class="col-md-9">
 										<label>
+											<input type="radio" name="dataType" value="stochasten_2024"> Statistieken STOWA 2024
+										</label>
+									</div>
+									<div class="col-md-9">
+										<label>
+											<input type="radio" name="dataType" value="tijdreeksen_2024" disabled> Tijdreeksen STOWA 2024
+										</label>
+									</div>
+									<div class="col-md-9">
+										<label>
 											<input type="radio" name="dataType" value="stochasten_2019"> Statistieken STOWA 2019
 										</label>
 									</div>

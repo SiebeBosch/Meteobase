@@ -39,6 +39,10 @@ Module WIWBSTOCHASTEN
             myArg = Console.ReadLine
             StochData.Stats2019 = myArg
             Setup.Log.CmdArgs.Add(myArg)
+            Console.WriteLine("Export Statistics 2024? (TRUE/FALSE)")
+            myArg = Console.ReadLine
+            StochData.Stats2024 = myArg
+            Setup.Log.CmdArgs.Add(myArg)
             Console.WriteLine("Enter the session ID")
             myArg = Console.ReadLine
             StochData.SessionID = myArg
@@ -55,16 +59,17 @@ Module WIWBSTOCHASTEN
             myArg = Console.ReadLine
             StochData.MailAdres = myArg
             Setup.Log.CmdArgs.Add(myArg)
-        ElseIf My.Application.CommandLineArgs.Count <> 6 Then
+        ElseIf My.Application.CommandLineArgs.Count <> 7 Then
             Console.WriteLine("Error: incorrect number of arguments presented")
             Setup.Log.AddError("Error: incorrect number of arguments presented to the executable.")
         Else
             StochData.Stats2015 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(0))
             StochData.Stats2019 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(1))
-            StochData.SessionID = My.Application.CommandLineArgs(2)
-            StochData.OrderNum = My.Application.CommandLineArgs(3)
-            StochData.Naam = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(4))
-            StochData.MailAdres = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(5))
+            StochData.Stats2024 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(2))
+            StochData.SessionID = My.Application.CommandLineArgs(3)
+            StochData.OrderNum = My.Application.CommandLineArgs(4)
+            StochData.Naam = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(5))
+            StochData.MailAdres = Setup.GeneralFunctions.RemoveBoundingQuotes(My.Application.CommandLineArgs(6))
         End If
 
         '----------------------------------------------------------------------------------------------------------------------------

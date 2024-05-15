@@ -511,7 +511,7 @@ $docu_menu = array(
                                                         <li>
                                                             <a href="#" class="modal-opener" data-toggle="modal"
                                                                 data-target="#chartDialogStochasten">Regenduurlijnen
-                                                                2019</a>
+                                                                2024</a>
                                                         </li>
                                                         <li>
                                                             <a href="#" class="modal-opener" data-toggle="modal"
@@ -1457,7 +1457,7 @@ $docu_menu = array(
     //change 
     var cartServerUrl = 'regenduurlijnen/api/stats/returnperiod/STOWA2019';
     var vaxis = 'volume [mm]';
-    var chartname = 'herhalingstijd_stowa2019';
+    var chartname = 'herhalingstijd Stowa (2024)';
     var vscale = 'none'
     var vMax = 250;
     var valMax = 300;
@@ -1816,10 +1816,10 @@ $docu_menu = array(
                                 <ul>
                                     <li>
                                         <a href="#fragment-1"
-                                            onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd_stowa2019'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
+                                            onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd Stowa (2024)'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
                                             <span>Herhalingstijd</span>
                                         </a>
-                                        <!--<a href="#fragment-1" onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd_stowa2019'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
+                                        <!--<a href="#fragment-1" onclick="seturl('regenduurlijnen/api/stats/returnperiod/STOWA2019'); setVMax(250); setchart('herhalingstijd Stowa (2024)'); setvaxis('volume [mm]');setscale('none'); onChartTabChange('Extra herhalingstijd:', '', 1000, true); $('#input_par_form').trigger('submit');">
 										<span>Herhalingstijd</span>
 									</a>-->
                                     </li>
@@ -1829,11 +1829,11 @@ $docu_menu = array(
 									</a>
 								</li>-->
                                     <li>
-                                        <!--<a href="#fragment-3" onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume_stowa2019'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
+                                        <!--<a href="#fragment-3" onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume Stowa (2024)'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
 										<span>Volume</span>
 									</a>-->
                                         <a href="#fragment-3"
-                                            onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume_stowa2019'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
+                                            onclick="seturl('regenduurlijnen/api/stats/volume/STOWA2019'); setVMax(1000); setchart('volume Stowa (2024)'); setvaxis('herhalingstijd [jaren]');setscale('log'); onChartTabChange('Extra volume:', '', 150, true); $('#input_par_form').trigger('submit');">
                                             <span>Volume</span>
                                         </a>
                                     </li>
@@ -1844,7 +1844,7 @@ $docu_menu = array(
 								</li>-->
                                 </ul>
                                 <div id="fragment-1">
-                                    <div id="herhalingstijd_stowa2019"
+                                    <div id="herhalingstijd Stowa (2024)"
                                         style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">
                                         selecteer input en druk op 'bereken'. <br>Let op: kan een minuutje duren!</div>
                                 </div>
@@ -1852,7 +1852,7 @@ $docu_menu = array(
 								<div id="herhalingstijd_stowa2018" style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">selecteer input en druk op 'bereken'</div>
 							</div>-->
                                 <div id="fragment-3">
-                                    <div id="volume_stowa2019"
+                                    <div id="volume Stowa (2024)"
                                         style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">
                                         selecteer input en druk op 'bereken' <br>Let op: kan een minuutje duren!</div>
                                 </div>

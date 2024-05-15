@@ -2925,13 +2925,13 @@ $docu_menu = array(
         });
 
         $('#dateFrom').datepicker('setDate', '01/01/1951');
-        $('#dateTo').datepicker('setDate', '31/12/2016');
+        $('#dateTo').datepicker('setDate', '31/12/2024');
         $('#rasterViewDateFrom').datepicker('setDate', '15/01/1990');
-        $('#rasterHarmonieDateFrom').datepicker('setDate', '01/01/2016');
+        $('#rasterHarmonieDateFrom').datepicker('setDate', '01/01/2024');
 
         <?php if ($tab == 'rasterdata') : ?>
         $('#dateFrom').datepicker('setDate', '01/01/1990');
-        $('#dateTo').datepicker('setDate', '31/12/2016');
+        $('#dateTo').datepicker('setDate', '31/12/2024');
         <?php endif;?>
         <?php if ($tab == 'rasterview') : ?>
         $("#slider-interval").slider({

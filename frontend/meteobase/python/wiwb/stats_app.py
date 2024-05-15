@@ -271,7 +271,7 @@ def rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=0):
     
     #schaal eerst het volume terug naar zijn equivalent onder huidig klimaat door te delen door het verandergetal
     for id in range(len(vols)):
-        vols[id] = vols[id] / verandergetal[verandergetalIdx]
+        vols[id] = vols[id] / verandergetal[verandergetalIdx]   
 
     #nu we het volume hebben teruggeschaald naar de equivalent voor scenario 'Huidig'
     #kunnen we eenvoudigweg de functie rp_2019_huidig aanroepen
@@ -344,8 +344,8 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
                 
     return rp
 
-def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
-         rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000],
+def test(durations=[1/6, 1/2, 1, 2, 4, 8, 12, 24, 48, 96, 192, 240],
+         rp=[0.5, 1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000],
          volumes=[10,20,30,40,50,75,100,150],
          climate='2014',
          season='jaarrond',
@@ -365,7 +365,10 @@ def test(durations=[0.16666666666666666,0.5,1,2,4,8,12,24,48,96,192],
     savetxt('rp_reverse_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,return_periods.T], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
 
     print('testen herhalingstijden-tabel:')
-    return_periods = rp_2024(volumes,durations,season,climate,scenario)
+    return_periods = ones((len(volumes),len(durations)))
+    for idx in range(len(durations)):
+        vols = volumes.copy()
+        return_periods[:,idx] = rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=idx)[:,idx]
     print(return_periods.round(1))
     savetxt('rp_{}_{}_{}.csv.'.format(climate,season,scenario), 
             concatenate([array([durations]).T,return_periods.T], axis = 1), 
@@ -394,8 +397,11 @@ def volume():
  
     #bereken de herhalingstijd alsof het de huidige situatie is 
     durations = duren['regenduurlijnen'].copy()
-    
-    rp = rp_2019(vols,durations,season,climate,scenario)
+
+    rp = ones((len(volumes),len(durations)))
+    for idx in range(len(durations)):
+        vols = volumes.copy()
+        rp[:,idx] = rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=idx)[:,idx]
                                     
     result = xy_series(array(durations).round(decimals=2), rp, x_label="duur (uren)",
                        y_labels=y_labels,decimals=1).toGDT(min_val=herhalingstijden[0],max_val=herhalingstijden[-1])

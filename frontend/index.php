@@ -784,10 +784,15 @@ $docu_menu = array(
                                 target="_blank">rapport</a>.
                         </p>
                         <p>
-                            In een bijeenkomst op 17 december 2015 is dit laatste onderzoek toegelicht,
+                            In een bijeenkomst op 17 december 2015 is het onderzoek van oktober 2025 onderzoek toegelicht,
                             het verslag en de presentaties vindt u <a
                                 href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/Verslag_17_december_2015.zip"
                                 target="_blank">hier</a>.
+                        </p>
+                        <p>
+                            In mei 2024 zijn nieuwe neerslagstatistieken <a
+                                href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2023-35_meteo_basisstatistiek.pdf"
+                                target="_blank">gepubliceerd</a>. Deze zijn per 16 mei 2024 verwerkt in alle producten op Meteobase: de regenduurlijnen-app, de herhalingstijdenrasters en de toetsingsdata. 
                         </p>
                         <p>
                             Deze online dienst is in het leven geroepen om medewerkers van waterschappen en
@@ -873,7 +878,7 @@ $docu_menu = array(
                         </p>
                         <p>
                             Wilt u de gedownloade neerslaggegevens toepassen op een groot gebiedsoppervlak? Dan moet
-                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de nieuwe statistiek van 2019 kan deze
+                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de nieuwe statistiek van 2024 (en 2019) kan deze
                             correctie worden uitgerekend met de app onder het menu Statistiek - Oppervlaktereductie.
                             Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar dit kan <a
                                 href="https://85.214.197.176:8080/meteobase/downloads/fixed/Neerslagreductie.zip"
@@ -983,7 +988,7 @@ $docu_menu = array(
                             voor het winterseizoen (NDJF). De regioverdeling voor jaarrond bestaat uit drie klassen:
                             L, R en H. De regioverdeling voor het winterseizoen bestaat uit vier klassen: LL, L, R en H.
                             Voor elk van deze klassen is een eigen langjarige
-                            tijdreeks en stochastiek afgeleid.
+                            tijdreeks en stochastiek afgeleid. Deze regionalisatie is bij de publicatie van STOWA 2024 niet herzien en blijft dus ongewijzigd.
                         </p>
                         <p>
                             Download deze regioverdeling in shape-formaat <a
@@ -996,7 +1001,7 @@ $docu_menu = array(
                         </p>
                         <p>
                             Wilt u de gedownloade neerslaggegevens toepassen op een groot gebiedsoppervlak? Dan moet
-                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de nieuwe statistiek van 2019 kan deze
+                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de statistiek van 2024 (en 2019) kan deze
                             correctie worden uitgerekend met de app onder het menu Statistiek - Oppervlaktereductie.
                             Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar dit kan <a
                                 href="https://www.meteobase.nl/meteobase/downloads/fixed/Neerslagreductie.zip"

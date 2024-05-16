@@ -704,7 +704,7 @@ $docu_menu = array(
                             aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="feedbackModalLabel"></h4>
                 </div>
-                <?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>
+                <?php if (isset($_COOKIE['cookiebar']) && $_COOKIE['cookiebar'] == "CookieAllowed") { ?>
                 <div class="modal-body">
                     <form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
                         <div class="form-group col-md-6 col-sm-12 col-xs-12">

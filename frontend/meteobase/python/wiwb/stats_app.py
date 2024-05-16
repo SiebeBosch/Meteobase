@@ -211,7 +211,7 @@ def calculate_verandergetal(D, Ts, v_values):
     # Apply the appropriate v-value based on duration D using NumPy's piecewise logic
     conditions = [D <= 24, (D > 24) & (D < 120), (D >= 120) & (D <= 240)]
     v = np.select(conditions, v_values, default=np.nan)
-    return 1 + (v - 1) * Ts / 4
+    return 1 + (v-1) * (Ts-0.4)/(4-0.4)
 
 def verandergetalfunctie_jaarrond(Ts, D):
     v_values = [1.234, logpoly(D), 1.109]

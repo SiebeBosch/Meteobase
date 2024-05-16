@@ -704,7 +704,7 @@ $docu_menu = array(
                             aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="feedbackModalLabel"></h4>
                 </div>
-                <?php if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieAllowed") { ?>
+                <?php if ($_COOKIE['cookiebar'] == "CookieAllowed") { ?>
                 <div class="modal-body">
                     <form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
                         <div class="form-group col-md-6 col-sm-12 col-xs-12">
@@ -745,11 +745,13 @@ $docu_menu = array(
                         </div>
                     </form>
                 </div>
-
-                <?php } else { ?>
-                <div class="model-body">
+                <?php } else {?>
+                <div class="modal-body">
                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                        <label for="feedbackMessage">Stuur een e-mail naar info-apenstaartje-meteobase.nl.</label>
+                        <label>Zorg dat de cookies geaccepteerd zijn om feedback te plaatsen.</label>
+                        <button class="btn btn-primary" onclick="requestCookieBar()">
+                            Accepteer cookies
+                        </button>
                     </div>
                 </div>
                 <?php } ?>
@@ -758,7 +760,8 @@ $docu_menu = array(
     </div>
     <!--End of Feedback Modal-->
     <!--Introduction Modal -->
-    <div class="modal fade" id="introductionModal" tabindex="-1" role="dialog" aria-labelledby="introductionModalTitle">
+    <div class=" modal fade" id="introductionModal" tabindex="-1" role="dialog"
+        aria-labelledby="introductionModalTitle">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -770,21 +773,26 @@ $docu_menu = array(
                     <div class="col-md-12">
                         <p>
                             Welkom bij Meteobase.nl: een online service van <a href="https://www.hetwaterschapshuis.nl"
-                                target="_blank">Het Waterschapshuis</a>. Vanaf deze website kunt u historische
+                                target="_blank">Het
+                                Waterschapshuis</a>. Vanaf deze website kunt u historische
                             neerslag- en verdampingsgegevens voor heel Nederland downloaden.
                         </p>
                         <p>
-                            Het achtergrondrapport voor informatie over basisgegevens en rasterdata vindt u <a
+                            Het achtergrondrapport voor informatie over basisgegevens en rasterdata
+                            vindt u <a
                                 href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf"
                                 target="_blank">hier</a>.
-                            Dit rapport bevat ook nog informatie over de toetsingsdata die tot medio oktober 2015
-                            op Meteobase aangeboden werden. Per medio oktober 2015 zijn deze data geactualiseerd.
+                            Dit rapport bevat ook nog informatie over de toetsingsdata die tot medio
+                            oktober 2015
+                            op Meteobase aangeboden werden. Per medio oktober 2015 zijn deze data
+                            geactualiseerd.
                             Uitgebreide toelichting op deze nieuwe data vindt u in dit <a
                                 href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2015_10_webversie_LR2.pdf"
                                 target="_blank">rapport</a>.
                         </p>
                         <p>
-                            In een bijeenkomst op 17 december 2015 is het onderzoek van oktober 2025 onderzoek toegelicht,
+                            In een bijeenkomst op 17 december 2015 is het onderzoek van oktober 2025
+                            onderzoek toegelicht,
                             het verslag en de presentaties vindt u <a
                                 href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/Verslag_17_december_2015.zip"
                                 target="_blank">hier</a>.
@@ -792,16 +800,22 @@ $docu_menu = array(
                         <p>
                             In mei 2024 zijn nieuwe neerslagstatistieken <a
                                 href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2023-35_meteo_basisstatistiek.pdf"
-                                target="_blank">gepubliceerd</a>. Deze zijn per 16 mei 2024 verwerkt in alle producten op Meteobase: de regenduurlijnen-app, de herhalingstijdenrasters en de toetsingsdata. 
+                                target="_blank">gepubliceerd</a>. Deze zijn per 16 mei 2024 verwerkt
+                            in alle producten op Meteobase: de regenduurlijnen-app, de
+                            herhalingstijdenrasters en de toetsingsdata.
                         </p>
                         <p>
-                            Deze online dienst is in het leven geroepen om medewerkers van waterschappen en
-                            adviesbureaus in de watersector te ondersteunen bij het uitvoeren van modelstudies waarvoor
+                            Deze online dienst is in het leven geroepen om medewerkers van
+                            waterschappen en
+                            adviesbureaus in de watersector te ondersteunen bij het uitvoeren van
+                            modelstudies waarvoor
                             meteorologische gegevens nodig zijn.
                         </p>
                         <p>
-                            Let op: deze website maakt gebruik van cookies. Deze slaan uitsluitend uw gebruikersnaam,
-                            bedrijfsnaam en mailadres op ten behoeve van de gebruiksstatistieken en de helpdesk.
+                            Let op: deze website maakt gebruik van cookies. Deze slaan uitsluitend
+                            uw gebruikersnaam,
+                            bedrijfsnaam en mailadres op ten behoeve van de gebruiksstatistieken en
+                            de helpdesk.
                         </p>
                     </div>
                 </div>
@@ -826,17 +840,20 @@ $docu_menu = array(
                         <p>
                             Om data van deze website te kunnen betrekken, dient u allereerst uw naam,
                             bedrijfsnaam, e-mailadres en telefoonnummer op te geven.
-                            Na het aanmelden krijgt u automatisch toegang tot de tabbladen Basisgegevens,
+                            Na het aanmelden krijgt u automatisch toegang tot de tabbladen
+                            Basisgegevens,
                             Rasterdata en Toetsingsdata.
                         </p>
                         <p>
-                            Nadat u uw bestelling hebt geplaatst, krijgt u uw sessie-ID te zien en een link
+                            Nadat u uw bestelling hebt geplaatst, krijgt u uw sessie-ID te zien en een
+                            link
                             naar de download-directory. Afhankelijk van de omvang van uw bestelling kan
                             het enige tijd duren eer uw gegevens online staan.
                         </p>
                         <p>
                             Meteobase.nl maakt bij het aanbieden van haar diensten gebruik van cookies.
-                            Dit zijn bijvoorbeeld cookies die gebruikt worden om u, nadat u ingelogd bent,
+                            Dit zijn bijvoorbeeld cookies die gebruikt worden om u, nadat u ingelogd
+                            bent,
                             te kunnen blijven herkennen. Naast deze functionele cookies worden tevens
                             cookies gebruikt voor het bijhouden van websitestatistieken.
                         </p>
@@ -877,15 +894,19 @@ $docu_menu = array(
                             naam van het desbetreffende station.
                         </p>
                         <p>
-                            Wilt u de gedownloade neerslaggegevens toepassen op een groot gebiedsoppervlak? Dan moet
-                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de nieuwe statistiek van 2024 (en 2019) kan deze
-                            correctie worden uitgerekend met de app onder het menu Statistiek - Oppervlaktereductie.
-                            Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar dit kan <a
-                                href="https://85.214.197.176:8080/meteobase/downloads/fixed/Neerslagreductie.zip"
+                            Wilt u de gedownloade neerslaggegevens toepassen op een groot
+                            gebiedsoppervlak? Dan moet
+                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de nieuwe statistiek van
+                            2024 (en 2019) kan deze
+                            correctie worden uitgerekend met de app onder het menu Statistiek -
+                            Oppervlaktereductie.
+                            Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar
+                            dit kan <a href="https://85.214.197.176:8080/meteobase/downloads/fixed/Neerslagreductie.zip"
                                 target="_blank">hier</a> worden gevonden.
                         </p>
                         <p>
-                            DEZE GEGEVENS MOGEN VRIJELIJK WORDEN GEBRUIKT MITS DE VOLGENDE BRONVERMELDING
+                            DEZE GEGEVENS MOGEN VRIJELIJK WORDEN GEBRUIKT MITS DE VOLGENDE
+                            BRONVERMELDING
                             WORDT GEGEVEN: KONINKLIJK NEDERLANDS METEOROLOGISCH INSTITUUT (KNMI)
                         </p>
                     </div>
@@ -911,7 +932,8 @@ $docu_menu = array(
                         <!-- Nav tabs -->
                         <ul id="rasterDataTabs" class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#introduction" aria-controls="home"
-                                    role="tab" data-toggle="tab">Introductie</a></li>
+                                    role="tab" data-toggle="tab">Introductie</a>
+                            </li>
                             <li role="presentation"><a href="#algorithms" aria-controls="profile" role="tab"
                                     data-toggle="tab">Algoritmes</a></li>
                         </ul>
@@ -921,22 +943,28 @@ $docu_menu = array(
                             <div role="tabpanel" class="tab-pane active" id="introduction">
                                 <p>Grids met neerslag en verdamping.</p>
                                 <p>
-                                    Veel (geo)hydrologische simultatieprogramma's vragen om meteorologische data in
+                                    Veel (geo)hydrologische simultatieprogramma's vragen om
+                                    meteorologische data in
                                     rasterformaat.
-                                    Andere modellen vragen juist om gebiedsgemiddelde neerslagvolumes die zijn afgeleid
+                                    Andere modellen vragen juist om gebiedsgemiddelde neerslagvolumes
+                                    die zijn afgeleid
                                     uit
                                     de ruimtelijk verdeelde neerslag op een gebied.
                                 </p>
                                 <p>
-                                    Om aan dergelijke wensen van hydrologen tegemoet te komen, biedt deze sectie u de
-                                    mogelijkheid om neerslag en verdamping voor een vrij te kiezen deelregio te
+                                    Om aan dergelijke wensen van hydrologen tegemoet te komen, biedt
+                                    deze sectie u de
+                                    mogelijkheid om neerslag en verdamping voor een vrij te kiezen
+                                    deelregio te
                                     downloaden
                                     in rasterformaat.
                                 </p>
                                 <p>
-                                    De neerslagvolumes bestaan uit radargegevens die aan meetwaarden van 216
+                                    De neerslagvolumes bestaan uit radargegevens die aan meetwaarden van
+                                    216
                                     grondstations
-                                    zijn geijkt, en kunnen daarom worden gebruikt voor kalibratiedoeleinden.
+                                    zijn geijkt, en kunnen daarom worden gebruikt voor
+                                    kalibratiedoeleinden.
                                 </p>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="algorithms">
@@ -944,7 +972,8 @@ $docu_menu = array(
                                     Informatie over de algoritmes.
                                 </p>
                                 <p>
-                                    Als u geinteresseerd bent in de wijze waarop de ruwe radargegevens werden geijkt aan
+                                    Als u geinteresseerd bent in de wijze waarop de ruwe radargegevens
+                                    werden geijkt aan
                                     de meetwaarden van de grondstations, nodigen wij u van harte uit om
                                     <a href="https://www.meteobase.nl/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf"
                                         target="_blank">hier</a> het rapport
@@ -973,38 +1002,49 @@ $docu_menu = array(
                 <div class="modal-body">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <p>
-                            In deze sectie kunt u meteorologische gegevens downloaden ten behoeve van statistische
+                            In deze sectie kunt u meteorologische gegevens downloaden ten behoeve van
+                            statistische
                             analyses
                             zoals hoogwaterstudies.
                         </p>
                         <p>
-                            Omdat KNMI-station De Bilt beschikt over de langste homogene dataset van Nederland
+                            Omdat KNMI-station De Bilt beschikt over de langste homogene dataset van
+                            Nederland
                             (1906-heden),
                             zijn alle gegevens in deze sectie ontleend aan meetwaarden van dit station.
                         </p>
                         <p>
-                            Station De Bilt kan echter niet representatief worden geacht voor heel Nederland.
-                            Daarom heeft KNMI in 2019 een nieuwe regioverdeling gepubliceerd voor jaarrondstatistiek en
-                            voor het winterseizoen (NDJF). De regioverdeling voor jaarrond bestaat uit drie klassen:
-                            L, R en H. De regioverdeling voor het winterseizoen bestaat uit vier klassen: LL, L, R en H.
+                            Station De Bilt kan echter niet representatief worden geacht voor heel
+                            Nederland.
+                            Daarom heeft KNMI in 2019 een nieuwe regioverdeling gepubliceerd voor
+                            jaarrondstatistiek en
+                            voor het winterseizoen (NDJF). De regioverdeling voor jaarrond bestaat uit
+                            drie klassen:
+                            L, R en H. De regioverdeling voor het winterseizoen bestaat uit vier
+                            klassen: LL, L, R en H.
                             Voor elk van deze klassen is een eigen langjarige
-                            tijdreeks en stochastiek afgeleid. Deze regionalisatie is bij de publicatie van STOWA 2024 niet herzien en blijft dus ongewijzigd.
+                            tijdreeks en stochastiek afgeleid. Deze regionalisatie is bij de publicatie
+                            van STOWA 2024 niet herzien en blijft dus ongewijzigd.
                         </p>
                         <p>
                             Download deze regioverdeling in shape-formaat <a
                                 href="https://www.meteobase.nl/meteobase/downloads/fixed/Klimaatregios.zip"
-                                target="_blank">hier</a>. U ontvangt deze regioverdeling overigens ook bij uw
+                                target="_blank">hier</a>. U ontvangt deze regioverdeling overigens ook
+                            bij uw
                             bestelling.
                             De regioverdeling die hoort bij de 'oude' statistiek uit 2015 kan <a
                                 href="https://www.meteobase.nl/meteobase/downloads/fixed/Regios.zip"
                                 target="_blank">hier</a> nog worden gevonden.
                         </p>
                         <p>
-                            Wilt u de gedownloade neerslaggegevens toepassen op een groot gebiedsoppervlak? Dan moet
-                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de statistiek van 2024 (en 2019) kan deze
-                            correctie worden uitgerekend met de app onder het menu Statistiek - Oppervlaktereductie.
-                            Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar dit kan <a
-                                href="https://www.meteobase.nl/meteobase/downloads/fixed/Neerslagreductie.zip"
+                            Wilt u de gedownloade neerslaggegevens toepassen op een groot
+                            gebiedsoppervlak? Dan moet
+                            worden gecorrigeerd voor het gebiedsoppervlak. Voor de statistiek van 2024
+                            (en 2019) kan deze
+                            correctie worden uitgerekend met de app onder het menu Statistiek -
+                            Oppervlaktereductie.
+                            Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar
+                            dit kan <a href="https://www.meteobase.nl/meteobase/downloads/fixed/Neerslagreductie.zip"
                                 target="_blank">hier</a> worden gevonden.
                         </p>
                     </div>
@@ -1029,7 +1069,8 @@ $docu_menu = array(
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <p>
                             Deze online service werd ontwikkeld in opdracht van <a href="www.hetwaterschapshuis.nl"
-                                target="_blank">Het Waterschapshuis</a>.
+                                target="_blank">Het
+                                Waterschapshuis</a>.
                         </p>
                         <p>
                             Alle meteorologische gegevens werden ontsloten en bewerkt door
@@ -1039,14 +1080,18 @@ $docu_menu = array(
                                 target="_blank">hier</a> downloaden.
                         </p>
                         <p>
-                            Station De Bilt kan echter niet representatief worden geacht voor heel Nederland.
-                            Daarom heeft KNMI een regioverdeling gepubliceerd die bestaat uit vier klassen:
-                            Mild, De Bilt, Hevig en Zeer hevig. Voor elk van deze klassen is een eigen langjarige
+                            Station De Bilt kan echter niet representatief worden geacht voor heel
+                            Nederland.
+                            Daarom heeft KNMI een regioverdeling gepubliceerd die bestaat uit vier
+                            klassen:
+                            Mild, De Bilt, Hevig en Zeer hevig. Voor elk van deze klassen is een eigen
+                            langjarige
                             tijdreeks en stochastiek afgeleid.
                         </p>
                         <p>
                             De ontwikkeling van de website, database en online hosting was in handen
-                            van <a href="https://hydroconsult.nl" target="_blank">Hydroconsult</a> met medewerking van
+                            van <a href="https://hydroconsult.nl" target="_blank">Hydroconsult</a> met
+                            medewerking van
                             <a href="https://geopro.nl" target="_blank">Geopro</a> en <a
                                 href="https://prodevel.solutions" target="_blank">Prodevel</a>.
                         </p>
@@ -1055,11 +1100,15 @@ $docu_menu = array(
                             algemene e-mailadres van meteobase: <a href="mailto:info@meteobase.nl">info@meteobase.nl</a>
                         </p>
                         <p>
-                            Aan de teksten en gegevens op deze website heeft Het Waterschapshuis veel zorg en aandacht
+                            Aan de teksten en gegevens op deze website heeft Het Waterschapshuis veel
+                            zorg en aandacht
                             besteed om de
-                            juistheid en actualiteit ervan te waarborgen. Het kan desondanks voorkomen dat er fouten
-                            in zijn geslopen. Mocht u informatie tegenkomen die in uw ogen niet correct (meer) is,
-                            of verouderd, laat het ons weten. Het Waterschapshuis aanvaardt geen aansprakelijkheid voor
+                            juistheid en actualiteit ervan te waarborgen. Het kan desondanks voorkomen
+                            dat er fouten
+                            in zijn geslopen. Mocht u informatie tegenkomen die in uw ogen niet correct
+                            (meer) is,
+                            of verouderd, laat het ons weten. Het Waterschapshuis aanvaardt geen
+                            aansprakelijkheid voor
                             deze fouten.
                         </p>
                     </div>
@@ -1089,7 +1138,8 @@ $docu_menu = array(
                                 Hakvoort, H., et al., 2013,
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Hakvoort2013_Stromingen_Meteobase.pdf"
                                     target="_blank">
-                                    “Meteobase: online neerslag- en referentiegewasverdampingsdatabase voor het
+                                    “Meteobase: online neerslag- en referentiegewasverdampingsdatabase
+                                    voor het
                                     Nederlandse waterbeheer”
                                 </a>
                                 , Stromingen 19(2), pp. 75-84.
@@ -1099,7 +1149,8 @@ $docu_menu = array(
                                     target="_blank">www.meteobase.nl</a>:
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Versteeg2012_HKV_Rapport Meteobase.pdf"
                                     target="_blank">
-                                    online-archief van neerslag- en verdampingsgegevens voor het waterbeheer
+                                    online-archief van neerslag- en verdampingsgegevens voor het
+                                    waterbeheer
                                 </a>
                                 , HKV Rapport 2197.
                             </li>
@@ -1107,7 +1158,8 @@ $docu_menu = array(
                                 Wolters E., et al., 2013,
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Wolters2013_Meteorologica_Meteobase.pdf"
                                     target="_blank">
-                                    “Meteobase: online neerslag- en referentiegewasverdampingsdatabase voor het
+                                    “Meteobase: online neerslag- en referentiegewasverdampingsdatabase
+                                    voor het
                                     Nederlandse waterbeheer”
                                 </a>
                                 , Meteorologica 2, pp. 15-18.
@@ -1116,7 +1168,8 @@ $docu_menu = array(
                                 Bosch S.M.,2023,
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/20230414_Memo_Herkomst_Rasterdata.pdf"
                                     target="_blank">
-                                    “Totstandkoming, toepassingsbereik en herkomst neerslagrasters Meteobase”
+                                    “Totstandkoming, toepassingsbereik en herkomst neerslagrasters
+                                    Meteobase”
                                 </a>
                                 , Memo Het Waterschapshuis.
                             </li>
@@ -1200,7 +1253,8 @@ $docu_menu = array(
                                 Holleman, I. (2007),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Holleman2007_MeteorolApp_radarComposites.pdf"
                                     target="_blank">
-                                    “Bias adjustment and long-term verification of radar-based precipitation estimates”
+                                    “Bias adjustment and long-term verification of radar-based
+                                    precipitation estimates”
                                 </a>
                                 , Meteorol. Appl. 14, pp. 195–203.
                             </li>
@@ -1224,7 +1278,8 @@ $docu_menu = array(
                                 Pebesma, E.,
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Pebesma_Gstat_R_documentation.pdf"
                                     target="_blank">
-                                    “Documentation of the R-package ‘gstat’, version 1.1.4: spatial and spatio-temporal
+                                    “Documentation of the R-package ‘gstat’, version 1.1.4: spatial and
+                                    spatio-temporal
                                     geostatistical modelling, prediction and simulation”
                                 </a>.
                             </li>
@@ -1232,7 +1287,8 @@ $docu_menu = array(
                                 Schuurmans, J.M., et al. (2007),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Schuurmans2007_JHM_interpolation.pdf"
                                     target="_blank">
-                                    “Automatic Prediction of High-Resolution Daily Rainfall Fields for Multiple Extents:
+                                    “Automatic Prediction of High-Resolution Daily Rainfall Fields for
+                                    Multiple Extents:
                                     The Potential of Operational Radar”
                                 </a>
                                 , J. Hydrometeorol. 8, pp. 1204-1224.
@@ -1244,7 +1300,8 @@ $docu_menu = array(
                                 Allen, R.A., et al. (1998),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Allen1998_FOA56_ET0_PM.pdf"
                                     target="_blank">
-                                    “Crop Evapotranspiration (guidelines for computing crop water requirements)"
+                                    “Crop Evapotranspiration (guidelines for computing crop water
+                                    requirements)"
                                 </a>
                                 , FAO Irrigation and Drainage Paper No. 56.
                             </li>
@@ -1262,8 +1319,10 @@ $docu_menu = array(
                                     target="_blank">
                                     “From Penman to Makkink”
                                 </a>
-                                . In: Hooghart, J.C., Ed., Proceedings and Information: TNO Committee on Hydrological
-                                Research N°39. The Netherlands Organization for Applied Scientific Research TNO, Den
+                                . In: Hooghart, J.C., Ed., Proceedings and Information: TNO Committee on
+                                Hydrological
+                                Research N°39. The Netherlands Organization for Applied Scientific
+                                Research TNO, Den
                                 Haag, 5-31.
                             </li>
                         </ul>
@@ -1273,7 +1332,8 @@ $docu_menu = array(
                                 STOWA, (2023),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/STOWA_2023-35_meteo_basisstatistiek.pdf"
                                     target="_blank">
-                                    “Beoordeling neerslagstatistiek. Meteo-onderzoek ten behoeve van het waterbeheer. Deelrapport 1”
+                                    “Beoordeling neerslagstatistiek. Meteo-onderzoek ten behoeve van het
+                                    waterbeheer. Deelrapport 1”
                                 </a>
                                 , rapport 35-2023.
                             </li>
@@ -1289,7 +1349,8 @@ $docu_menu = array(
                                 Leijnse, H., (2019),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/rapport_correctiemethoden.pdf"
                                     target="_blank">
-                                    “Analyse van verschillende methoden voor het combineren van radar- en
+                                    “Analyse van verschillende methoden voor het combineren van radar-
+                                    en
                                     regenmetergegevens”
                                 </a>
                                 , KNMI. <a
@@ -1300,7 +1361,8 @@ $docu_menu = array(
                                 Vos, L.W. de, et al., (2019),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/onderzoek_kwaliteitscontrole_voor_regenmeters_door_Lotte_de_Vos_Engels.pdf"
                                     target="_blank">
-                                    “Crowdsourced personal weather stations show great potential for operational
+                                    “Crowdsourced personal weather stations show great potential for
+                                    operational
                                     rainfall monitoring”
                                 </a>
                                 , Ingediend bij Geophysical Research Letters. <a
@@ -1311,7 +1373,8 @@ $docu_menu = array(
                                 Beersma, J. et al., (2015),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Beersma2015_STOWArapport_actualisatie_meteogegevens.pdf"
                                     target="_blank">
-                                    “Actualisatie meteogegevens voor waterbeheer 2015. Deel 1 Neerslag- en
+                                    “Actualisatie meteogegevens voor waterbeheer 2015. Deel 1 Neerslag-
+                                    en
                                     verdampingsreeksen. Deel 2 Statistiek van de extreme neerslag”
                                 </a>
                                 , STOWA Rapport 2015-10.
@@ -1344,7 +1407,8 @@ $docu_menu = array(
                                 Velner, R. et al. (2011),
                                 <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/Velner2011_STOWArapport_standaard_werkwijze_toetsen.pdf"
                                     target="_blank">
-                                    “Standaard werkwijze voor de toetsing van watersystemen aan de normen voor regionale
+                                    “Standaard werkwijze voor de toetsing van watersystemen aan de
+                                    normen voor regionale
                                     wateroverlast”
                                 </a>
                                 , STOWA Rapport 2011-31.
@@ -1671,7 +1735,8 @@ $docu_menu = array(
 
                 var el = table.getFormattedValue(i, j);
                 el = el.replace(/"/g, '""');
-                if (el.indexOf(delimiter) !== -1 || el.indexOf("\n") !== -1 || el.indexOf('"') !== -1) {
+                if (el.indexOf(delimiter) !== -1 || el.indexOf("\n") !== -1 || el.indexOf('"') !== -
+                    1) {
                     el = '"' + el + '"';
                 }
                 csv += el;
@@ -1689,6 +1754,14 @@ $docu_menu = array(
     function downloadCSV() {
         console.log(chartImageName);
         download(csvString, chartImageName + '.csv', 'text/csv');
+    }
+    </script>
+
+    <script>
+    function requestCookieBar() {
+        console.log("test")
+        document.cookie = "cookiebar" + "=" + "CookieAllowed" + "" + "; path=/";
+        location.reload();
     }
     </script>
 
@@ -1860,7 +1933,8 @@ $docu_menu = array(
                                 <div id="fragment-1">
                                     <div id="herhalingstijd Stowa (2024)"
                                         style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">
-                                        selecteer input en druk op 'bereken'. <br>Let op: kan een minuutje duren!</div>
+                                        selecteer input en druk op 'bereken'. <br>Let op: kan een
+                                        minuutje duren!</div>
                                 </div>
                                 <!--<div id="fragment-2">
 								<div id="herhalingstijd_stowa2018" style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">selecteer input en druk op 'bereken'</div>
@@ -1868,7 +1942,8 @@ $docu_menu = array(
                                 <div id="fragment-3">
                                     <div id="volume Stowa (2024)"
                                         style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">
-                                        selecteer input en druk op 'bereken' <br>Let op: kan een minuutje duren!</div>
+                                        selecteer input en druk op 'bereken' <br>Let op: kan een
+                                        minuutje duren!</div>
                                 </div>
                                 <!--<div id="fragment-4">
 								<div id="volume_stowa2018" style="border: 1px solid #ccc; width: 100%; height: 100%; min-height: 410px;">selecteer input en druk op 'bereken'</div>
@@ -1955,13 +2030,17 @@ $docu_menu = array(
                 <div class="modal-body">
                     <div class="col-md-12">
                         <p>
-                            De regenduurlijnen met herhalingstijden vanaf 3000 jaar vertonen bij duren langer dan 8 uur
+                            De regenduurlijnen met herhalingstijden vanaf 3000 jaar vertonen bij duren
+                            langer dan 8 uur
                             een lichte daling. Dit komt omdat is
-                            gekozen voor één extreme waardenverdeling met de bijbehorende parameter-set die het geheel
+                            gekozen voor één extreme waardenverdeling met de bijbehorende parameter-set
+                            die het geheel
                             van regenduurlijnen het beste beschrijft.
-                            In het uiterste van het bereik treedt dit effect op. De vergelijking geeft een schatting van
+                            In het uiterste van het bereik treedt dit effect op. De vergelijking geeft
+                            een schatting van
                             extreme neerslaghoeveelheden.
-                            Deze schatting heeft een onzekerheidsmarge die bij toenemende herhalingstijden en duren
+                            Deze schatting heeft een onzekerheidsmarge die bij toenemende
+                            herhalingstijden en duren
                             toeneemt. De schatting mag naar
                             boven worden aangepast.
                         </p>
@@ -2333,8 +2412,9 @@ $docu_menu = array(
         function selectStation(features, deselected) {
             _.each(features, function(feature) {
                 if (getStationNumber(feature.get('name'))) {
-                    createCookie('ms[' + feature.get('name') + ']', getStationNumber(feature.get(
-                        'name')));
+                    createCookie('ms[' + feature.get('name') + ']', getStationNumber(
+                        feature.get(
+                            'name')));
                     enableFeature(feature);
                 }
 
@@ -2362,7 +2442,8 @@ $docu_menu = array(
                 selectInteraction.getFeatures().clear();
                 var stationsFeatures = [];
                 _.each(uurStations, function(station) {
-                    stationsFeatures.push(transformToFeature(station, 'hourly'));
+                    stationsFeatures.push(transformToFeature(station,
+                        'hourly'));
                 });
                 $('input[type="checkbox"]#verdamping').parent().fadeIn();
                 vectorLayer.get('source').addFeatures(stationsFeatures);
@@ -2437,8 +2518,10 @@ $docu_menu = array(
                 var maxY = p.getExtent()[3];
                 minXY = [minX, minY];
                 maxXY = [maxX, maxY];
-                var transformedMinXY = ol.proj.transform(minXY, 'EPSG:3857', 'EPSG:28992');
-                var transformedMaxXY = ol.proj.transform(maxXY, 'EPSG:3857', 'EPSG:28992');
+                var transformedMinXY = ol.proj.transform(minXY, 'EPSG:3857',
+                    'EPSG:28992');
+                var transformedMaxXY = ol.proj.transform(maxXY, 'EPSG:3857',
+                    'EPSG:28992');
                 createCookie('minX', transformedMinXY[0]);
                 createCookie('minY', transformedMinXY[1]);
                 createCookie('maxX', transformedMaxXY[0]);
@@ -2523,7 +2606,8 @@ $docu_menu = array(
             var map = new ol.Map({
                 layers: [raster, vector, new ol.layer.Image({
                     source: new ol.source.ImageStatic({
-                        url: '../images/rasterviews/' + rasterViewImage,
+                        url: '../images/rasterviews/' +
+                            rasterViewImage,
                         crossOrigin: '',
                         projection: 'EPSG:28992',
                         imageExtent: imageExtent
@@ -2533,7 +2617,8 @@ $docu_menu = array(
                 target: 'map',
                 view: new ol.View({
                     center: ol.proj.transform(
-                        ol.extent.getCenter(imageExtent), 'EPSG:28992', 'EPSG:3857'
+                        ol.extent.getCenter(imageExtent),
+                        'EPSG:28992', 'EPSG:3857'
                     ),
                     zoom: 8
                 })
@@ -2566,7 +2651,8 @@ $docu_menu = array(
             var map = new ol.Map({
                 layers: [raster, vector, new ol.layer.Image({
                     source: new ol.source.ImageStatic({
-                        url: '../images/rasterviews/' + rasterViewImage,
+                        url: '../images/rasterviews/' +
+                            rasterViewImage,
                         crossOrigin: '',
                         projection: 'EPSG:28992',
                         imageExtent: imageExtent
@@ -2576,7 +2662,8 @@ $docu_menu = array(
                 target: 'map',
                 view: new ol.View({
                     center: ol.proj.transform(
-                        ol.extent.getCenter(imageExtent), 'EPSG:28992', 'EPSG:3857'
+                        ol.extent.getCenter(imageExtent),
+                        'EPSG:28992', 'EPSG:3857'
                     ),
                     zoom: 8
                 })
@@ -2608,7 +2695,8 @@ $docu_menu = array(
             var map = new ol.Map({
                 layers: [raster, vector, new ol.layer.Image({
                     source: new ol.source.ImageStatic({
-                        url: '../images/rasterviews/' + rasterHarmonieImage,
+                        url: '../images/rasterviews/' +
+                            rasterHarmonieImage,
                         crossOrigin: '',
                         projection: 'EPSG:28992',
                         imageExtent: imageExtent
@@ -2618,7 +2706,8 @@ $docu_menu = array(
                 target: 'map',
                 view: new ol.View({
                     center: ol.proj.transform(
-                        ol.extent.getCenter(imageExtent), 'EPSG:28992', 'EPSG:3857'
+                        ol.extent.getCenter(imageExtent),
+                        'EPSG:28992', 'EPSG:3857'
                     ),
                     zoom: 8
                 })
@@ -2729,7 +2818,8 @@ $docu_menu = array(
                     }
                     $("#basicInfoForm").submit();
                 } else {
-                    createCookie('redirect_after_login', '?tb=basisgegevens&dp=basisgegevens');
+                    createCookie('redirect_after_login',
+                        '?tb=basisgegevens&dp=basisgegevens');
                     createCookie('basicInfoFormData', $('#basicInfoForm').serialize());
                     $("#registerModal").modal();
                 }
@@ -2745,7 +2835,8 @@ $docu_menu = array(
                 if (readCookie('rasterViewFormData')) {
                     eraseCookie('rasterViewFormData');
                 } else {
-                    createCookie('rasterViewFormData', $('#rasterViewForm').serialize());
+                    createCookie('rasterViewFormData', $('#rasterViewForm')
+                        .serialize());
                     $("#rasterViewForm").submit();
                 }
             } else {
@@ -2764,11 +2855,14 @@ $docu_menu = array(
                 if (readCookie('rasterHarmonieFormData')) {
                     eraseCookie('rasterHarmonieFormData');
                 }
-                createCookie('rasterHarmonieFormData', $('#rasterHarmonieForm').serialize());
+                createCookie('rasterHarmonieFormData', $('#rasterHarmonieForm')
+                    .serialize());
                 $("#rasterHarmonieForm").submit();
             } else {
-                createCookie('redirect_after_login', '?tb=rasterHarmonie&dp=rasterHarmonie');
-                createCookie('rasterHarmonieFormData', $('#rasterHarmonieForm').serialize());
+                createCookie('redirect_after_login',
+                    '?tb=rasterHarmonie&dp=rasterHarmonie');
+                createCookie('rasterHarmonieFormData', $('#rasterHarmonieForm')
+                    .serialize());
                 $("#registerModal").modal();
             }
         });
@@ -2777,7 +2871,8 @@ $docu_menu = array(
             e.stopPropagation();
             e.preventDefault();
             if (!_.isEmpty(readCookie('gebruiker[naam]'))) {
-                if ($('#rasterDataForm #fileType').val() == 'csv' || $('#rasterDataForm #fileType')
+                if ($('#rasterDataForm #fileType').val() == 'csv' || $(
+                        '#rasterDataForm #fileType')
                     .val() == 'sobek') {
                     if (!_.isEmpty($('#veldnaam').val())) {
                         if (!_.isEmpty($('#fileUploaded').val())) {
@@ -2806,7 +2901,8 @@ $docu_menu = array(
                     }
                 }
             } else {
-                createCookie('redirect_after_login', '?tb=rasterdata&dp=rasterdata&dp_sub=introductie');
+                createCookie('redirect_after_login',
+                    '?tb=rasterdata&dp=rasterdata&dp_sub=introductie');
                 createCookie('rasterDataFormData', $('#rasterDataForm').serialize());
                 $("#registerModal").modal();
             }
@@ -2823,10 +2919,14 @@ $docu_menu = array(
                 createCookie('minY', $('input#zwy').val());
                 createCookie('maxX', $('input#nox').val());
                 createCookie('maxY', $('input#noy').val());
-                minXY = [parseFloat(readCookie('minX')), parseFloat(readCookie('minY'))];
-                maxXY = [parseFloat(readCookie('maxX')), parseFloat(readCookie('maxY'))];
-                var transformedMinXY = ol.proj.transform(minXY, 'EPSG:28992', 'EPSG:3857');
-                var transformedMaxXY = ol.proj.transform(maxXY, 'EPSG:28992', 'EPSG:3857');
+                minXY = [parseFloat(readCookie('minX')), parseFloat(readCookie(
+                    'minY'))];
+                maxXY = [parseFloat(readCookie('maxX')), parseFloat(readCookie(
+                    'maxY'))];
+                var transformedMinXY = ol.proj.transform(minXY, 'EPSG:28992',
+                    'EPSG:3857');
+                var transformedMaxXY = ol.proj.transform(maxXY, 'EPSG:28992',
+                    'EPSG:3857');
                 var recCoords = transformedMinXY + ',' + transformedMaxXY;
                 createCookie('crdphp', recCoords);
 
@@ -2858,7 +2958,8 @@ $docu_menu = array(
                 }
                 $("#testingInfoForm").submit();
             } else {
-                createCookie('redirect_after_login', '?tb=toetsingsdata&dp=toetsingsdata');
+                createCookie('redirect_after_login',
+                    '?tb=toetsingsdata&dp=toetsingsdata');
                 createCookie('testingInfoFormData', $('#testingInfoForm').serialize());
                 $("#registerModal").modal();
             }
@@ -2949,7 +3050,8 @@ $docu_menu = array(
                 $("#interval-end").val(ui.values[1])
                 //var textInterval = ui.values[ 0 ] + " " + ((ui.values[ 0 ] == 1 || ui.values[ 0 ] == -1) ? 'dag' : 'dagen') + " tot " + ui.values[ 1 ] + " " + ((ui.values[ 1 ] == 1 || ui.values[ 1 ] == -1) ? 'dag' : 'dagen');
                 var textInterval = ui.values[0] + ' tot ' + ui.values[1] +
-                    ' dagen na gekozen datum (' + 24 * (ui.values[1] - ui.values[0]) + ' uur)';
+                    ' dagen na gekozen datum (' + 24 * (ui.values[1] - ui.values[
+                        0]) + ' uur)';
                 $("#interval").text(textInterval);
             }
         });
@@ -2969,28 +3071,32 @@ $docu_menu = array(
         }
 
         jQuery.validator.addMethod("basicInfoMinDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(moment(
-                    '01/01/1951', 'DD/MM/YYYY'));
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(
+                    moment(
+                        '01/01/1951', 'DD/MM/YYYY'));
             },
             "De begindatum mag niet eerder dan 01/01/1951 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
         );
 
         jQuery.validator.addMethod("rasterHarmonieMinDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(moment(
-                    '01/01/2014', 'DD/MM/YYYY'));
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(
+                    moment(
+                        '01/01/2014', 'DD/MM/YYYY'));
             },
             "De begindatum mag niet eerder dan 01/01/2014 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
         );
 
         jQuery.validator.addMethod("herhalingMinDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(moment(
-                    '15/01/1990', 'DD/MM/YYYY'));
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(
+                    moment(
+                        '15/01/1990', 'DD/MM/YYYY'));
             },
             "De begindatum mag niet eerder dan 15/01/1990 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
         );
 
         jQuery.validator.addMethod("dateRangeCheck", function(value, element) {
-            if (moment($('#dateTo').val(), 'DD/MM/YYYY').isBefore(moment($('#dateFrom').val(),
+            if (moment($('#dateTo').val(), 'DD/MM/YYYY').isBefore(moment($('#dateFrom')
+                    .val(),
                     'DD/MM/YYYY'))) {
                 return false;
             }
@@ -2998,23 +3104,28 @@ $docu_menu = array(
         }, "De startdatum moet voor de einddatum liggen.");
 
         jQuery.validator.addMethod("basicInfoMaxDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrBefore(moment(
-                    '31/12/2050', 'DD/MM/YYYY'));
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrBefore(
+                    moment(
+                        '31/12/2050', 'DD/MM/YYYY'));
             },
-            "De einddatum mag niet later dan  31/12/2050 zijn. De datum moet de notatie DD/MM/JJJJ hebben.");
+            "De einddatum mag niet later dan  31/12/2050 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
+        );
 
         jQuery.validator.addMethod("rasterDataMinDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(moment(
-                    '01/01/1990', 'DD/MM/YYYY'));
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(
+                    moment(
+                        '01/01/1990', 'DD/MM/YYYY'));
             },
             "De begindatum mag niet eerder dan 01/01/1990 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
         );
 
         jQuery.validator.addMethod("rasterDataMaxDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrBefore(moment(
-                    '31/12/2050', 'DD/MM/YYYY'));;
+                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrBefore(
+                    moment(
+                        '31/12/2050', 'DD/MM/YYYY'));;
             },
-            "De einddatum mag niet later dan 31/12/2050 zijn. De datum moet de notatie DD/MM/JJJJ hebben.");
+            "De einddatum mag niet later dan 31/12/2050 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
+        );
 
         jQuery.validator.addMethod("dateRange", function(value, element) {
             if (this.optional(element)) {
@@ -3065,9 +3176,11 @@ $docu_menu = array(
             },
             submitHandler: function(form) {
 
-                var fromDateFormatted = moment($("#basicInfoForm input[name=fromDate]").val(),
+                var fromDateFormatted = moment($(
+                        "#basicInfoForm input[name=fromDate]").val(),
                     'DD/MM/YYYY').format('YYYYMMDD');
-                var toDateFormatted = moment($("#basicInfoForm input[name=toDate]").val(),
+                var toDateFormatted = moment($("#basicInfoForm input[name=toDate]")
+                    .val(),
                     'DD/MM/YYYY').format('YYYYMMDD');
 
                 $("#basicInfoForm input[name=fromDate]").val(fromDateFormatted);
@@ -3096,10 +3209,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $("#chartTabs").tabs({
@@ -3119,17 +3234,24 @@ $docu_menu = array(
                 },
             },
             submitHandler: function(form) {
-                var fromDate = moment($("#rasterViewForm input[name=rasterViewDateFrom]").val(),
+                var fromDate = moment($(
+                        "#rasterViewForm input[name=rasterViewDateFrom]").val(),
                     'DD/MM/YYYY');
-                var intervalStart = $("#rasterViewForm input[name=interval-start]").val();
-                var intervalEnd = $("#rasterViewForm input[name=interval-end]").val();
-                var fromDateFormatted = moment(fromDate).add(parseInt(intervalStart), 'days')
+                var intervalStart = $("#rasterViewForm input[name=interval-start]")
+                    .val();
+                var intervalEnd = $("#rasterViewForm input[name=interval-end]")
+                    .val();
+                var fromDateFormatted = moment(fromDate).add(parseInt(
+                        intervalStart), 'days')
                     .format('YYYYMMDD');
-                var toDateFormatted = moment(fromDate).add(parseInt(intervalEnd), 'days').format(
+                var toDateFormatted = moment(fromDate).add(parseInt(intervalEnd),
+                    'days').format(
                     'YYYYMMDD');
                 var fileName = _.uniqueId(moment().format('YYYYMMDDHHmmSS'));
-                $("#rasterViewForm input[name=intervalStartDate]").val(fromDateFormatted);
-                $("#rasterViewForm input[name=intervalEndDate]").val(toDateFormatted);
+                $("#rasterViewForm input[name=intervalStartDate]").val(
+                    fromDateFormatted);
+                $("#rasterViewForm input[name=intervalEndDate]").val(
+                    toDateFormatted);
                 $("#rasterViewForm input[name=fileName]").val(fileName);
                 form.submit();
             },
@@ -3155,10 +3277,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $('#rasterHarmonieForm').validate({
@@ -3170,11 +3294,14 @@ $docu_menu = array(
                 },
             },
             submitHandler: function(form) {
-                var fromDate = moment($("#rasterHarmonieForm input[name=rasterHarmonieDateFrom]")
+                var fromDate = moment($(
+                        "#rasterHarmonieForm input[name=rasterHarmonieDateFrom]"
+                    )
                     .val(), 'DD/MM/YYYY');
                 var fromDateFormatted = moment(fromDate).format('YYYYMMDD');
                 var fileName = _.uniqueId(moment().format('YYYYMMDDHHmmSS'));
-                $("#rasterHarmonieForm input[name=intervalStartDate]").val(fromDateFormatted);
+                $("#rasterHarmonieForm input[name=intervalStartDate]").val(
+                    fromDateFormatted);
                 $("#rasterHarmonieForm input[name=fileName]").val(fileName);
                 form.submit();
             },
@@ -3200,10 +3327,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $('#polygonCoordinates').validate({
@@ -3276,10 +3405,12 @@ $docu_menu = array(
                 $(element).valid();
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $('#rasterDataForm').validate({
@@ -3336,10 +3467,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $("#registerModalForm").validate({
@@ -3393,10 +3526,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
         $('#dateTo').change(function(e) {
@@ -3458,10 +3593,12 @@ $docu_menu = array(
 
             },
             highlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-error").removeClass("has-success");
+                $(element).closest(".form-group").addClass("has-error").removeClass(
+                    "has-success");
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(element).closest(".form-group").addClass("has-success").removeClass("has-error");
+                $(element).closest(".form-group").addClass("has-success")
+                    .removeClass("has-error");
             }
         });
 
@@ -3476,12 +3613,15 @@ $docu_menu = array(
                 if (cookieName == 'fileType') {
                     $('#rasterDataForm #fileType').val(cookieValue);
                     $('#rasterDataForm #fileType').trigger('change');
-                } else if (cookieName == 'makkink' || cookieName == 'neerslag' || cookieName ==
+                } else if (cookieName == 'makkink' || cookieName == 'neerslag' ||
+                    cookieName ==
                     'penman' || cookieName == 'evtact' || cookieName == 'evtsho') {
-                    $('#rasterDataForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#rasterDataForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .attr('checked', 'true');
                 } else {
-                    $('#rasterDataForm input[name="' + cookieName + '"]').val(cookieValue);
+                    $('#rasterDataForm input[name="' + cookieName + '"]').val(
+                        cookieValue);
                 }
             });
             if (!_.isEmpty(rasterData)) {
@@ -3497,16 +3637,21 @@ $docu_menu = array(
                 var cookieValue = keyValuePair.replace(/^[^=]*\=/,
                     ""); // some decoding is probably necessary
                 if (cookieName == 'stationsType') {
-                    $('#basicInfoForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#basicInfoForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .attr('checked', 'true');
-                    $('#basicInfoForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#basicInfoForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .trigger('click');
-                } else if (cookieName == 'makkink' || cookieName == 'penman' || cookieName ==
+                } else if (cookieName == 'makkink' || cookieName == 'penman' ||
+                    cookieName ==
                     'neerslag' || cookieName == 'evtact' || cookieName == 'evtsho') {
-                    $('#basicInfoForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#basicInfoForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .attr('checked', 'true');
                 } else {
-                    $('#basicInfoForm input[name="' + cookieName + '"]').val(cookieValue);
+                    $('#basicInfoForm input[name="' + cookieName + '"]').val(
+                        cookieValue);
                 }
             });
             if (!_.isEmpty(basicInfoData)) {
@@ -3521,14 +3666,17 @@ $docu_menu = array(
                     ""); // some decoding is probably necessary
                 var cookieValue = keyValuePair.replace(/^[^=]*\=/,
                     ""); // some decoding is probably necessary
-                if (cookieName == 'harmonieTijd' || cookieName == 'voorspellingshorizon') {
+                if (cookieName == 'harmonieTijd' || cookieName ==
+                    'voorspellingshorizon') {
                     $("#rasterHarmonieForm #" + cookieName).val(cookieValue);
                     $("#rasterHarmonieForm #" + cookieName).trigger('change');
                 } else if (cookieName == 'gegevenstype') {
-                    $('#rasterHarmonieForm input[name="' + cookieName + '"][value="' + cookieValue +
+                    $('#rasterHarmonieForm input[name="' + cookieName + '"][value="' +
+                        cookieValue +
                         '"]').attr('checked', 'true');
                 } else {
-                    $('#rasterHarmonieForm input[name="' + cookieName + '"]').val(cookieValue);
+                    $('#rasterHarmonieForm input[name="' + cookieName + '"]').val(
+                        cookieValue);
                 }
             });
             if (!_.isEmpty(rasterData)) {
@@ -3547,14 +3695,17 @@ $docu_menu = array(
                         ""); // some decoding is probably necessary
                     rasterViewCookie[cookieName] = cookieValue;
                 });
-                $('#rasterViewDateFrom').val(rasterViewCookie['rasterViewDateFrom'] || '15/01/1990');
+                $('#rasterViewDateFrom').val(rasterViewCookie['rasterViewDateFrom'] ||
+                    '15/01/1990');
                 var rasterViewStart = rasterViewCookie['interval-start'];
                 var rasterViewEnd = rasterViewCookie['interval-end'];
                 $('#interval-start').val(rasterViewStart || '15/01/1990');
                 $('#interval-end').val(rasterViewEnd || '15/01/1990');
                 //var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 || rasterViewStart == -1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((rasterViewEnd == 1 || rasterViewEnd == -1) ? 'dag' : 'dagen');
-                var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 || rasterViewStart == -
-                    1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((rasterViewEnd == 1 ||
+                var intervalText = (rasterViewStart || 0) + " " + ((rasterViewStart == 1 ||
+                    rasterViewStart == -
+                    1) ? 'dag' : 'dagen') + " tot " + (rasterViewEnd || 15) + " " + ((
+                    rasterViewEnd == 1 ||
                     rasterViewEnd == -1) ? 'dag' : 'dagen');
                 $("#interval").text(intervalText);
                 $("#slider-interval").slider({
@@ -3567,7 +3718,8 @@ $docu_menu = array(
                         $("#interval-end").val(ui.values[1]);
                         //var textValue = ui.values[ 0 ] + " " + ((ui.values[ 0 ] == 1 || ui.values[ 0 ] == -1) ? 'dag' : 'dagen') + " tot " + ui.values[ 1 ] + " " + ((ui.values[ 1 ] == 1 || ui.values[ 1 ] == -1) ? 'dag' : 'dagen');
                         var textValue = ui.values[0] + ' tot ' + ui.values[1] +
-                            ' dagen na gekozen datum (' + 24 * (ui.values[1] - ui.values[0]) +
+                            ' dagen na gekozen datum (' + 24 * (ui.values[1] - ui
+                                .values[0]) +
                             ' uur)';
                         $("#interval").text(textValue);
                     }
@@ -3584,10 +3736,12 @@ $docu_menu = array(
                 var cookieValue = keyValuePair.replace(/^[^=]*\=/,
                     ""); // some decoding is probably necessary
                 if (cookieName == 'dataType') {
-                    $('#testingInfoForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#testingInfoForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .trigger('click');
                 } else {
-                    $('#testingInfoForm input[name="' + cookieName + '"][value="' + cookieValue + '"]')
+                    $('#testingInfoForm input[name="' + cookieName + '"][value="' +
+                            cookieValue + '"]')
                         .attr('checked', 'true');
                 }
             });

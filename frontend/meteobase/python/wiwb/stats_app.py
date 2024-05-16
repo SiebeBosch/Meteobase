@@ -95,7 +95,7 @@ def get_2019_params(durations,season,return_period=1):
                                  0.118 - 0.266 * log10(durations_mins[durations_mins > 720]) + 0.0586 * log10(durations_mins[durations_mins > 720])**2])
 
                     
-    if season == 'winterperiode':
+    if season == 'winter':
         
         mu = concatenate([1.07 * 1.02 * (4.883 - 5.587 * log10(durations_mins[durations_mins <= 720]) + 3.526 * log10(durations_mins[durations_mins <= 720])**2),
                           (0.670 - 0.0426 * log(durations[durations_mins > 720]))**(-1/0.193)])
@@ -130,7 +130,7 @@ def vols_2019_huidig(pars_default,pars_high,rp,prob,durations,season):
                                   pars_high[1][array(durations) > 12],
                                   -pars_high[2][array(durations) > 12],
                                   prob[array(rp) > 120])],axis=1)])
-    elif season == 'winterperiode':
+    elif season == 'winter':
         vols = GEVINVERSE(pars_default[0], pars_default[1], -pars_default[2], prob)
         
     return vols
@@ -158,7 +158,7 @@ def rp_2019_huidig(pars_default,pars_high,vols,durations,season):
         
         res = where(res['low_rp'] <= 120, res['low_rp'], res['high_rp'])
 
-    elif season == 'winterperiode':
+    elif season == 'winter':
         res =  GEVCDF(pars_default[0], pars_default[1], -pars_default[2], vols)
 
     return 1/-log(res)
@@ -187,7 +187,7 @@ def factors_2019(durations,prob,season,climate,scenario):
                             factors['STOWA2015']],
                            axis=1)
     
-    if season == 'winterperiode':
+    if season == 'winter':
         durs = {'STOWA2015':array(durations)[array(durations) >= 2],
             'kort':array(durations)[array(durations) < 2]}
         
@@ -241,7 +241,7 @@ def get_verander_getal(climate, scenario, season, duur_uren):
     key = (climate, scenario)
     if key in temperature_increases:
         temp_increase = temperature_increases[key]
-        if season == 'winterperiode':
+        if season == 'winter':
             return [verandergetalfunctie_winter(temp_increase, duur_uren[id]) for id in range(len(duur_uren))]
         else:
             return [verandergetalfunctie_jaarrond(temp_increase, duur_uren[id]) for id in range(len(duur_uren))]

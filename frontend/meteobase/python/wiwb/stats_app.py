@@ -492,7 +492,7 @@ def volume():
     rp = ones((len(vols),len(durations)))
     for idx in range(len(durations)):
         vs = vols.copy()
-        rp[:idx] = array(rp_2024(vs,durations,season,climate,scenario))[:idx]
+        rp[:,idx] = array(rp_2024(vs,durations,season,climate,scenario))[:,idx]
                                     
     result = xy_series(array(durations).round(decimals=2), rp, x_label="duur (uren)",
                        y_labels=y_labels,decimals=1).toGDT(min_val=herhalingstijden[0],max_val=herhalingstijden[-1])

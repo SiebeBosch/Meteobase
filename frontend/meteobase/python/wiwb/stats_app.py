@@ -9,6 +9,8 @@ __maintainer__ = "Daniel Tollenaar"
 __email__ = "daniel@d2hydro.nl"
 __status__ = "Development"
 
+import logging
+
 from collections import defaultdict
 from flask import (
     Blueprint, request
@@ -17,15 +19,22 @@ from json import dumps
 from wiwb.stats_lib import GEVCDF, GEVINVERSE, GLOCDF, GLOINVERSE, AREA
 from wiwb.series_lib import xy_series
 
-    
+
+from .STOWA_Neerslagstatistiek import STOWA2024_NDJF_V, STOWA2024_JAARROND_V, STOWA2024_NDJF_T, STOWA2024_JAARROND_T
+
 from numpy import array, log, log10,  exp, concatenate, where, interp, abs, isnan, savetxt, ones
 import os
 import xlrd
+xlrd.xlsx.ensure_elementtree_imported(False, None)
+xlrd.xlsx.Element_has_iter = True
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # vaste variabelen (worden ingeladen bij het starten van de app)
 duren = {'regenduurlijnen':[1/6,1/2,1,2,4,8,12,24,48,96,192],
@@ -180,6 +189,12 @@ def factors_2019(durations,prob,season,climate,scenario):
                    GEVINVERSE(pars['huidig'][0], pars['huidig'][1], pars['huidig'][2], prob),
                    'kort': parameters['STOWA2019'][int(climate),scenario,region,season][0][0]}
         
+            
+        
+        # Logging the shape and content of factors['STOWA2015']
+        logging.info(f"Shape of factors['STOWA2015']: {factors['STOWA2015'].shape}")
+        logging.info(f"Content of factors['STOWA2015']: {factors['STOWA2015']}")
+                
         factors['midden'] = array([interp(durs['midden'],xp,fp = [factors['kort'],factor]) for factor in factors['STOWA2015'][:,0]])
             
         return concatenate([array([[factors['kort']] * len(durs['kort'])] * len(prob)),
@@ -222,6 +237,7 @@ def verandergetalfunctie_winter(Ts, D):
     return calculate_verandergetal(D, Ts, v_values)
 
 def get_verander_getal(climate, scenario, season, duur_uren):
+    # print(f"get_verander_getal called with parameters: {climate}, {scenario}, {season}, {duur_uren}")
     temperature_increases = {
         ('2033', 'L'): 0.6,
         ('2050', 'L'): 0.8,
@@ -235,7 +251,8 @@ def get_verander_getal(climate, scenario, season, duur_uren):
         ('2150', 'H'): 5.5
     }
     
-    if climate == '2024':
+    if climate == '2024' or climate == '2014' or climate == '2004':
+        # print(f"returning ones as verandergetal for the current climate")
         return np.ones_like(duur_uren)  # Return array of 1's if the year is 2024
 
     key = (climate, scenario)
@@ -248,27 +265,67 @@ def get_verander_getal(climate, scenario, season, duur_uren):
     else:
         return np.zeros_like(duur_uren)  # Return array of 0's for non-existing scenarios
 
+def convert_hours_to_minutes(durations):
+    """
+    Convert an array of durations from hours to minutes.
+    """
+    return [duration * 60 for duration in durations]
 
-def vols_2024(rp,durations,season,climate,scenario):
+def vols_2024_old(rp, durations, season, climate, scenario):
+    # this is the former method
     prob = exp(-1/array(rp))
     
-    # in de publicatie van 2024 is de statistiek van het huidige klimaat niet veranderd tov de publicatie van 2019
-    # de statistiek van de zichtjaren echter wel, en dit komt tot uiting via het zgn. verandergetal, een multiplier op het overschrijdingsvolume
+    #in de publicatie van 2024 is de statistiek van het huidige klimaat niet veranderd tov de publicatie van 2019
+    #de statistiek van de zichtjaren echter wel, en dit komt tot uiting via het zgn. verandergetal, een multiplier op het overschrijdingsvolume
     vols = vols_2019_huidig(get_2019_params(durations,season),
-                             get_2019_params(durations,season,return_period=121),
-                             rp,
-                             prob,
-                             durations,
-                             season)
+                            get_2019_params(durations,season,return_period=121),
+                            rp,
+                            prob,
+                            durations,
+                            season)
     
-    # als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
+    #als het zichtjaar niet 2024 is, dan klimaatverandering toepassen
     if not climate == '2024':
-        vols = vols * get_verander_getal(climate,scenario,season,durations)  
+       vols = vols * get_verander_getal(climate,scenario,season,durations)  
         
     return vols
 
-def rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=0):
+def vols_2024(rp, durations, season, climate, scenario):
+    # Create a 2D array to store the results
+    # 2024-06-10: Siebe Bosch: replaced the method
+    results = []
+    # print(f"processing season {season}")
+    # print(f"processing climate {climate}")
+
+    #make sure climate is an integer
+    if isinstance(climate, str):
+        climate = int(climate)    
+
+    #convert the durations in hours to durations in minutes. This is what our functions require
+    durations = convert_hours_to_minutes(durations)
+
+    for r in rp:
+        # print(f"processing return period {r}")
+        row = []
+        for duration in durations:
+            # print(f"processing duration {duration}")
+            if season == 'winter':
+                # print(f"processing winter for duration {duration}, return period {r}, climate {climate} and scenario {scenario}")
+                value = STOWA2024_NDJF_V(duration, r, climate, scenario)
+            else:
+                value = STOWA2024_JAARROND_V(duration, r, climate, scenario)
+            row.append(value)
+        results.append(row)
+    
+    return results
+
+
+
+def rp_2024_old(vols,durations,season,climate,scenario,verandergetalIdx=0):
+    # The previous method:
+    # print("starting rp_2024")
     verandergetal = get_verander_getal(climate, scenario, season, durations)
+    # print(f"verandergetal is {verandergetal}")
     
     #schaal eerst het volume terug naar zijn equivalent onder huidig klimaat door te delen door het verandergetal
     for id in range(len(vols)):
@@ -281,9 +338,39 @@ def rp_2024(vols,durations,season,climate,scenario,verandergetalIdx=0):
                          vols,
                          durations,
                          season)
-                         
+
     return rp
 
+
+def rp_2024(vols,durations,season,climate,scenario):
+
+    # Create a 2D array to store the results
+    # 2024-06-10: Siebe Bosch: replaced the method
+    results = []
+    # print(f"processing season {season}")
+    # print(f"processing climate {climate}")
+
+    #make sure climate is an integer
+    if isinstance(climate, str):
+        climate = int(climate)    
+
+    #convert the durations in hours to durations in minutes. This is what our functions require
+    durations = convert_hours_to_minutes(durations)
+
+    for v in vols:
+        #print(f"processing volume {v}")
+        row = []
+        for duration in durations:
+            #print(f"processing duration {duration}")
+            if season == 'winter':
+                # print(f"processing winter for duration {duration}, volume {v}, climate {climate} and scenario {scenario}")
+                value = STOWA2024_NDJF_T(duration, v, climate, scenario)
+            else:
+                value = STOWA2024_JAARROND_T(duration, v, climate, scenario)
+            row.append(value)
+        results.append(row)
+    
+    return results
 
 def vols_2019(rp,durations,season,climate,scenario):
     prob = exp(-1/array(rp))
@@ -302,7 +389,7 @@ def vols_2019(rp,durations,season,climate,scenario):
     return vols
 
 def rp_2019(vols,durations,season,climate,scenario,debug=False):
-    
+    #print(f"running rp_2019 for volumes {vols},durations {durations}, season {season}, climate {climate}, scenario {scenario}")
     # rp = rp_2019_huidig(get_2019_params(durations,season),
     #                     get_2019_params(durations,season,return_period=121),
     #                     vols,
@@ -313,6 +400,8 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
     
     rp = ones((len(vols),len(durations)))
 
+    #print(f"rp is {rp}")
+
     #als het niet de huidige situatie is, iteratief zoeken naar de juiste herhalingstijd
     #if not climate == '2024':
     iters = 0
@@ -321,7 +410,7 @@ def rp_2019(vols,durations,season,climate,scenario,debug=False):
     
     while optimize:
         v_estimate = array([(vols_2019_huidig(get_2019_params(durations,season),
-                             get_2019_params(durations,season,return_period=121),
+                             get_2019_params(durations,season,return_period=rp[:,idx]),
                              rp[:,idx],
                              exp(-1/array(rp[:,idx])),
                              durations,
@@ -355,10 +444,10 @@ def test(durations=[1/6, 1/2, 1, 2, 4, 8, 12, 24, 48, 96, 192, 240],
     import numpy
     numpy.set_printoptions(suppress=True)
     
-    print('testen volume-tabel:')
+    #print('testen volume-tabel:')
     vols = vols_2024(rp,durations,season,climate,scenario)
     savetxt('vols_{}_{}_{}.csv.'.format(climate,season,scenario), concatenate([array([rp]).T,vols], axis = 1), delimiter=',', fmt='%.1f', header="herhalingstijden," + ",".join([str(dur) for dur in durations]))
-    print(vols.round(1))
+    #print(vols.round(1))
     
     print('terug-rekenen herhalingstijden:')
     return_periods = array([rp_2024(vols[:,idx],durations,season,climate,scenario, verandergetalIdx=idx)[:,idx] for idx in range(vols.shape[1])])
@@ -456,3 +545,20 @@ def area():
     
     except ValueError:
         return "Invalid input for parameter 'area'", 422
+
+def GLOLocparBasisstatistiek2019KorteDuur(durations_mins):
+    return 1.02 * (7.339 + 0.848 * np.log10(durations_mins) + 2.844 * np.log10(durations_mins) ** 2)
+
+def GLODispCoefBasisstatistiek2019KorteDuur(durations_mins):
+    disp = np.where(durations_mins <= 104,
+                    0.04704 + 0.1978 * np.log10(durations_mins) - 0.05729 * np.log10(durations_mins) ** 2,
+                    0.2801 - 0.0333 * np.log10(durations_mins))
+    return disp
+
+def GLOShapeParBasisstatistiek2019KorteDuur(durations_mins, T_estimate):
+    condition = (durations_mins <= 90) | ((durations_mins <= 720) & (T_estimate <= 120))
+    zeta = np.where(condition,
+                    -0.0336 - 0.264 * np.log10(durations_mins) + 0.0636 * np.log10(durations_mins) ** 2,
+                    -0.31 - 0.0544 * np.log10(durations_mins) + 0.0288 * np.log10(durations_mins) ** 2)
+    return zeta
+

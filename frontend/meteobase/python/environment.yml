@@ -1,0 +1,16 @@
+name: meteobase
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - flask
+  - pandas
+  - geopandas
+  - ipykernel
+  - waitress
+  - flask_cors
+  - pip:
+    - xlrd==1.2.0
+    - pygeoj

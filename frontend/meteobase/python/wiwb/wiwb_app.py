@@ -17,12 +17,12 @@ import glob
 import numpy as np
 import json
 import os
-import rasterio
+#import rasterio
 import requests
 import shutil
 import time
 import zipfile
-from rasterio import features
+#from rasterio import features
 import pygeoj
 
 # create directories if not existing

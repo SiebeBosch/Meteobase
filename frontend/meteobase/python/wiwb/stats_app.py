@@ -28,9 +28,7 @@ import xlrd
 xlrd.xlsx.ensure_elementtree_imported(False, None)
 xlrd.xlsx.Element_has_iter = True
 
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 
 # Configure logging
@@ -521,7 +519,7 @@ def returnperiod():
     # berekenen van volumes
     durations = duren['regenduurlijnen'].copy()
 
-    vols = vols_2024(rp,durations,season,climate,scenario)
+    vols = array(vols_2024(rp,durations,season,climate,scenario))
             
     result = xy_series(array(durations).round(decimals=2), vols, x_label="duur (uren)",
                            y_labels=y_labels,decimals=0).toGDT()  

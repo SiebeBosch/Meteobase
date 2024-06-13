@@ -16,16 +16,6 @@ def GEVCDF(mu, sigma, zeta, x):
     
     return e ** -T
 
-# Example usage
-mu = 0.5
-sigma = 1.0
-zeta = -0.2
-x = 1.0
-
-result = GEVCDF(mu, sigma, zeta, x)
-print(f"Result from GEVCDF: {result}")
-
-
 def GEVINVERSE(mu, sigma, zeta, value):
     """
     Deze routine berekent de ONDERschrijdingskans p van een bepaalde parameterwaarde volgens GEV-verdeling.
@@ -42,10 +32,10 @@ def GEVINVERSE(mu, sigma, zeta, value):
         # When zeta is zero, the distribution simplifies to the Gumbel distribution
         return mu - sigma * math.log(-math.log(value))
     else:
-        print(f"mu is {mu}")
-        print(f"sigma is {sigma}")
-        print(f"value is {value}")
-        print(f"zeta is {zeta}")
+        # print(f"mu is {mu}")
+        # print(f"sigma is {sigma}")
+        # print(f"value is {value}")
+        # print(f"zeta is {zeta}")
         return mu + sigma * ((-math.log(value)) ** zeta - 1) / -zeta
 
 def GLOCDF(mu, sigma, teta, x):

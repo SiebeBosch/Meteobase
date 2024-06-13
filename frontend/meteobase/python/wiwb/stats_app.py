@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Python app for Meteo Base. Handling computation of duration curves
 """
@@ -468,12 +467,16 @@ def volume():
     """ return the Google Data Table in JSON from a html form set of parameters """
     # get params from html form
     climate = request.form['climate']
-    try: scenario = request.form['scenario']
-    except: scenario = '-'
+    try: 
+        scenario = request.form['scenario']
+    except: 
+        scenario = '-'
     season = request.form['season']
     #%%process volumes array
-    try: vol = request.form['value']
-    except: vol = ''
+    try: 
+        vol = request.form['value']
+    except: 
+        vol = ''
 
     vols = volumes.copy()
     if not vol == '': vols = vols + [float(vol)]
@@ -489,7 +492,7 @@ def volume():
     rp = ones((len(vols),len(durations)))
     for idx in range(len(durations)):
         vs = vols.copy()
-        rp[:,idx] = rp_2024(vs,durations,season,climate,scenario,verandergetalIdx=idx)[:,idx]
+        rp[:idx] = array(rp_2024(vs,durations,season,climate,scenario))[:idx]
                                     
     result = xy_series(array(durations).round(decimals=2), rp, x_label="duur (uren)",
                        y_labels=y_labels,decimals=1).toGDT(min_val=herhalingstijden[0],max_val=herhalingstijden[-1])

@@ -384,12 +384,17 @@ Public Class clsWIWBBasisData
                         X = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         Y = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         myMS = Stations.GetByNumber(NumStr.Trim.ToUpper)
-                        If Not myMS Is Nothing Then
+                        If myMS IsNot Nothing Then
                             myMS.ID = NumStr
                             myMS.Number = NumStr
                             myMS.Name = LocStr
-                            myMS.X = X
-                            myMS.Y = Y
+
+                            'convert WGS84 coordinates to RD coordinates
+                            Dim XRD As Double, YRD As Double
+                            Me.Setup.GeneralFunctions.WGS842RD(Y, X, XRD, YRD)
+
+                            myMS.X = XRD
+                            myMS.Y = YRD
                         End If
                     End If
                 End If

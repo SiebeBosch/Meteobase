@@ -45,7 +45,7 @@ C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.vbproj.Reso
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.Resources.resources
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.vbproj.GenerateResource.cache
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.vbproj.CoreCompileInputs.cache
-C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.vbproj.CopyComplete
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.dll
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.xml
 C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.pdb
+C:\GITHUB\Meteobase\backend\METEOBAS\METEOBAS\obj\x64\Debug\METEOBAS.vbproj.Up2Date

@@ -1,0 +1,92 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\GITHUB\\Meteobase\\backend\\WIWBDownloader\\WIWBDownloader.vbproj": {}
+  },
+  "projects": {
+    "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBAS.vbproj": {
+      "restore": {
+        "projectUniqueName": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBAS.vbproj",
+        "projectName": "METEOBAS",
+        "projectPath": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBAS.vbproj",
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {}
+      }
+    },
+    "C:\\GITHUB\\Meteobase\\backend\\WIWBDownloader\\WIWBDownloader.vbproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\GITHUB\\Meteobase\\backend\\WIWBDownloader\\WIWBDownloader.vbproj",
+        "projectName": "WIWBDownloader",
+        "projectPath": "C:\\GITHUB\\Meteobase\\backend\\WIWBDownloader\\WIWBDownloader.vbproj",
+        "packagesPath": "C:\\Users\\SiebeBosch\\.nuget\\packages\\",
+        "outputPath": "C:\\GITHUB\\Meteobase\\backend\\WIWBDownloader\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\SiebeBosch\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\GITHUB\\DeNieuweStochastentool\\packages": {},
+          "C:\\GITHUB\\HYDROC01\\packages": {},
+          "C:\\GITHUB\\HYDROC01\\references": {},
+          "C:\\GITHUB\\HYDROC02\\packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBAS.vbproj": {
+                "projectPath": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBAS.vbproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

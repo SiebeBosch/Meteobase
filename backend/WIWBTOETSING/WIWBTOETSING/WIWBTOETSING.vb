@@ -40,6 +40,10 @@ Module WIWBTOETSING
             myArg = Console.ReadLine
             ToetsData.STATS2019 = myArg
             Setup.Log.CmdArgs.Add(myArg)
+            Console.WriteLine("Export 2024 series? (TRUE/FALSE)")
+            myArg = Console.ReadLine
+            ToetsData.STATS2024 = myArg
+            Setup.Log.CmdArgs.Add(myArg)
             Console.WriteLine("Export Huidig? (TRUE/FALSE)")
             myArg = Console.ReadLine
             ToetsData.HUIDIG = myArg
@@ -97,12 +101,13 @@ Module WIWBTOETSING
             ToetsData.MailAdres = myArg
             Setup.Log.CmdArgs.Add(myArg)
 
-        ElseIf My.Application.CommandLineArgs.Count <> 16 Then
+        ElseIf My.Application.CommandLineArgs.Count <> 17 Then
             Console.WriteLine("Error: incorrect number of arguments presented")
             Setup.Log.AddError("Error: incorrect number of arguments presented to the executable.")
         Else
             ToetsData.STATS2015 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(0))
             ToetsData.STATS2019 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(1))
+            ToetsData.STATS2024 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(1))
             ToetsData.HUIDIG = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(2))
             ToetsData.ALL_2030 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(3))
             ToetsData.GL_2050 = Setup.GeneralFunctions.GetBooleanFromString(My.Application.CommandLineArgs(4))
@@ -135,6 +140,7 @@ Module WIWBTOETSING
             Setup.Log.CmdArgs.Add(My.Application.CommandLineArgs(13))
             Setup.Log.CmdArgs.Add(My.Application.CommandLineArgs(14))
             Setup.Log.CmdArgs.Add(My.Application.CommandLineArgs(15))
+            Setup.Log.CmdArgs.Add(My.Application.CommandLineArgs(16))
 
         End If
 

@@ -40,11 +40,9 @@ C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\bin\x64\Release\fr\Npgsql.
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\bin\x64\Release\ja\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\bin\x64\Release\zh-CN\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.vbproj.AssemblyReference.cache
-C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.vbproj.SuggestedBindingRedirects.cache
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.Resources.resources
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.vbproj.GenerateResource.cache
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.vbproj.CoreCompileInputs.cache
-C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.vbproj.CopyComplete
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.exe
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.xml
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOETSING.pdb
@@ -52,3 +50,4 @@ C:\GITHUB\Meteobase\backend\WIWBTOETSING\bin\x64\WIWBTOETSING.exe.config
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\bin\x64\WIWBTOETSING.exe
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\bin\x64\WIWBTOETSING.pdb
 C:\GITHUB\Meteobase\backend\WIWBTOETSING\bin\x64\WIWBTOETSING.xml
+C:\GITHUB\Meteobase\backend\WIWBTOETSING\WIWBTOETSING\obj\x64\Release\WIWBTOET.65FF68F4.Up2Date

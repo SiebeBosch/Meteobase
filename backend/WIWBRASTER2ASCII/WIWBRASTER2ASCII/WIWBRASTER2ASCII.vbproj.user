@@ -17,6 +17,6 @@
     <StartArguments>20200301 20210714 77000 433000 129000 487000 FALSE TRUE FALSE FALSE FALSE ASCII TRUE 8888 99916 siebe siebe%40hydroconsult.nl</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>20230101 20231231 199000 538000 278000 612000 TRUE FALSE FALSE FALSE FALSE ASCII FALSE 8888 99917 siebe siebe%40hydroconsult.nl</StartArguments>
+    <StartArguments>20110101 20120101 133000 370000 201000 427000 TRUE FALSE FALSE FALSE FALSE ASCII FALSE 8888 99917 siebe siebe%40hydroconsult.nl</StartArguments>
   </PropertyGroup>
 </Project>

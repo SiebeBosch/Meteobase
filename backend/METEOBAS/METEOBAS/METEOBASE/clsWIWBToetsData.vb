@@ -12,6 +12,7 @@ Public Class clsWIWBToetsData
     'Lokale variabelen
     Public STATS2015 As Boolean
     Public STATS2019 As Boolean
+    Public STATS2024 As Boolean
     Public HUIDIG As Boolean
     Public ALL_2030 As Boolean
     Public GL_2050 As Boolean
@@ -194,6 +195,73 @@ Public Class clsWIWBToetsData
                     If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
                     FileCollection.Add(FileName)
                 End If
+            End If
+
+            If STATS2024 Then
+                FileName = FilesDir & "Reeksen_2024_Huidig.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2033L.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2050Hd.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2050Hn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2050Md.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2050Mn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Hd.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Hn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Ld.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Ln.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Md.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2100Mn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2150Hd.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2150Mn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2150Md.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
+                FileName = FilesDir & "Reeksen_2024_2150Hn.zip"
+                If Not System.IO.File.Exists(FileName) Then Me.Setup.Log.AddError("Fout: bestand niet gevonden: " & FileName)
+                FileCollection.Add(FileName)
+
             End If
 
 

@@ -1159,8 +1159,39 @@ Public Class clsWIWBRasterData
         End Try
     End Function
 
-    Public Function WriteNSL_ASC() As Boolean
+    Public Function DownloadNSLRastersPre2019(fDate As Integer, tDate As Integer, ZipPath As String) As Boolean
+        Try
+            Dim WIWB As New clsWIWB_API(Me.Setup)
+            'handle the pre-2019 orders
+            If fDate > 0 AndAlso tDate > 0 Then
+                Me.Setup.Log.AddMessage("Processing pre-january 2019 data.")
+                If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, fDate, tDate, "geotiff", ZipPath) Then Throw New Exception("Error retrieving rasterdata from API.")
+                Me.Setup.Log.AddMessage("Raster download pre-january 2019 complete.")
+            End If
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
 
+    Public Function DownloadNSLRastersPost2019(fDate As Integer, tDate As Integer, ZipPath As String) As Boolean
+        Try
+            Dim WIWB As New clsWIWB_API(Me.Setup)
+            'handle the post-2019 orders
+            If fDate > 0 AndAlso tDate > 0 Then
+                Me.Setup.Log.AddMessage("Processing post-january 2019 data.")
+                If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, fDate, tDate, "geotiff", ZipPath) Then Throw New Exception("Error retrieving rasterdata from API.")
+                Me.Setup.Log.AddMessage("Raster download post-january 2019 complete.")
+            End If
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function WriteNSL_ASC() As Boolean
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             Dim TempResultsDir As String = TempDir & "\NSL"

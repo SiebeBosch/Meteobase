@@ -43,11 +43,10 @@ C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\Debug\fr\Npgsql.resources.dl
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\Debug\ja\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\bin\Debug\zh-CN\Npgsql.resources.dll
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.AssemblyReference.cache
-C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.SuggestedBindingRedirects.cache
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.Resources.resources
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.GenerateResource.cache
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.CoreCompileInputs.cache
-C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.CopyComplete
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.exe
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.xml
 C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.pdb
+C:\GITHUB\Meteobase\backend\WIWBBASIS\WIWBBASIS\obj\Debug\WIWBBASIS.vbproj.Up2Date

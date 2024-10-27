@@ -243,8 +243,8 @@ Public Class clsWIWBBasisData
                     If myRecord = "" Then
                         InLocations = False
                     Else
-                        NumStr = Setup.GeneralFunctions.ParseString(myRecord, ",").Trim
-                        LocStr = Setup.GeneralFunctions.ParseString(myRecord, ",").Trim
+                        NumStr = Setup.GeneralFunctions.ParseString(myRecord, ",", 0).Trim
+                        LocStr = Setup.GeneralFunctions.ParseString(myRecord, ",", 0).Trim
                         X = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         Y = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         myMS = Stations.GetByNumber(NumStr.Trim.ToUpper)
@@ -273,7 +273,7 @@ Public Class clsWIWBBasisData
                         myMeteoVal.ValueObserved = Value
                         myMeteoVal.ValueCorrected = Value
                         myMS = Stations.GetByKey(NumStr)
-                        If Not myMS Is Nothing Then myMS.PrecipitationDaily.Add(Format(myMeteoVal.DateTimeVal, "yyyyMMddHHmmss"), myMeteoVal)
+                        If myMS IsNot Nothing Then myMS.PrecipitationDaily.Add(Format(myMeteoVal.DateTimeVal, "yyyyMMddHHmmss"), myMeteoVal)
                     End If
                 End If
             Next
@@ -282,8 +282,7 @@ Public Class clsWIWBBasisData
             Call writeEtmaalNeerslagToExcel(worksheets)
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error processing daily precipitation.")
-            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.AddError("Error processing daily precipitation: " & ex.Message)
             Return False
         End Try
 

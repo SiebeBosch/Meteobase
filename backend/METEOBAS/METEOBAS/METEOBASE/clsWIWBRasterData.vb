@@ -923,39 +923,58 @@ Public Class clsWIWBRasterData
 
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
-            Dim unzipFile As String = TempDir & "\tmp.tif"
-            Dim TempResultsDir As String = TempDir & "\NSL"
-            Dim ZipFilePath As String = TempDir & "\NSL_RAW.zip"
-            Dim ut As New MapWinGIS.Utils
+            Dim ZipFilePre2019Path As String = TempDir & "\NSL_NC_pre_2019.zip"
+            Dim ZipFilePost2019Path As String = TempDir & "\NSL_NC_post_2019.zip"
 
-            If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
+            Dim FDatePre2019 As Integer, TDatePre2019 As Integer      'until 2008 we are dealing with the 'old' Meteobase rasters
+            Dim FDatePost2019 As Integer, TDatePost2019 As Integer    'starting 1 jan 2008 we are dealing with the reanalysis grids by KNMI
+            If Not GetDates(FDate, TDate, FDatePre2019, TDatePre2019, FDatePost2019, TDatePost2019) Then Throw New Exception("Error setting start and end dates for WIWB query. Please contact the meteobase team at info@meteobase.nl.")
+
+            Me.Setup.Log.AddMessage("FDatePre2019=" & FDatePre2019)
+            Me.Setup.Log.AddMessage("TDatePre2019=" & TDatePre2019)
+            Me.Setup.Log.AddMessage("FDatePost2019=" & FDatePost2019)
+            Me.Setup.Log.AddMessage("TDatePost2019=" & TDatePost2019)
+
             FileCollectionNSL = New List(Of String)
-            'If Not WIWB.GetRasters("KNMI.Radar.Uncorrected", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
-            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "geotiff", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            FileCollectionNSL.Add(ZipFilePre2019Path)
 
-            'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
-            Dim zipMS As New MemoryStream()
-            Using zipReceived As ZipFile = Ionic.Zip.ZipFile.Read(ZipFilePath)
-                For Each ZipEntry As ZipEntry In zipReceived.Entries
-                    ZipEntry.Extract(zipMS)
+            If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "geotiff", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            FileCollectionNSL.Add(ZipFilePost2019Path)
 
-                    'write the zipfile entry to a temporary file on the local drive, inside a subdirectory that represents the ordernumber
-                    If System.IO.File.Exists(unzipFile) Then System.IO.File.Delete(unzipFile)
-                    Dim file As New FileStream(unzipFile, FileMode.Create, FileAccess.Write)
-                    zipMS.WriteTo(file)
-                    file.Close()
-                    zipMS.Seek(0, SeekOrigin.Begin)
+            'Dim unzipFile As String = TempDir & "\tmp.tif"
+            'Dim TempResultsDir As String = TempDir & "\NSL"
+            ''Dim ZipFilePath As String = TempDir & "\NSL_RAW.zip"
+            'Dim ut As New MapWinGIS.Utils
 
-                    'use the gdal drivers inside SOBEK utilities to 1) warp to RD and write to NetCDF
-                    'ut.GDALWarp(unzipFile, TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"), " -of NetCDF -s_srs " & Chr(34) & "+proj=stere +lat_0=90 +lat_ts=60 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378.14 +b=6356.75" & Chr(34) & " -t_srs EPSG:28992")
+            'If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
+            'FileCollectionNSL = New List(Of String)
+            ''If Not WIWB.GetRasters("KNMI.Radar.Uncorrected", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
+            'If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath) Then Throw New Exception("Error retrieving rasterdata from API.")
 
-                    'notice that Meteobase rasters are already in RD, so no warping needed
-                    ut.TranslateRaster(unzipFile, TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"), " -of NetCDF" & " -t_srs EPSG:28992")
+            ''now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
+            'Dim zipMS As New MemoryStream()
+            'Using zipReceived As ZipFile = Ionic.Zip.ZipFile.Read(ZipFilePath)
+            '    For Each ZipEntry As ZipEntry In zipReceived.Entries
+            '        ZipEntry.Extract(zipMS)
 
-                    'finally add the newly created file to a collection of paths, for later zipping
-                    FileCollectionNSL.Add(TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"))
-                Next
-            End Using
+            '        'write the zipfile entry to a temporary file on the local drive, inside a subdirectory that represents the ordernumber
+            '        If System.IO.File.Exists(unzipFile) Then System.IO.File.Delete(unzipFile)
+            '        Dim file As New FileStream(unzipFile, FileMode.Create, FileAccess.Write)
+            '        zipMS.WriteTo(file)
+            '        file.Close()
+            '        zipMS.Seek(0, SeekOrigin.Begin)
+
+            '        'use the gdal drivers inside SOBEK utilities to 1) warp to RD and write to NetCDF
+            '        'ut.GDALWarp(unzipFile, TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"), " -of NetCDF -s_srs " & Chr(34) & "+proj=stere +lat_0=90 +lat_ts=60 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378.14 +b=6356.75" & Chr(34) & " -t_srs EPSG:28992")
+
+            '        'notice that Meteobase rasters are already in RD, so no warping needed
+            '        ut.TranslateRaster(unzipFile, TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"), " -of NetCDF" & " -t_srs EPSG:28992")
+
+            '        'finally add the newly created file to a collection of paths, for later zipping
+            '        FileCollectionNSL.Add(TempResultsDir & "\" & Replace(ZipEntry.FileName, ".tif", ".nc"))
+            '    Next
+            'End Using
 
             Return True
         Catch ex As Exception

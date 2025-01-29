@@ -22,4 +22,5 @@ frontend/meteobase/python/wiwb/wiwb_raw/P.zip
 frontend/meteobase/python/wiwb/stats_lib.py.bak
 frontend/meteobase/python/wiwb/stats_app.py.bak
 frontend/local_config.php
+frontend/uploads/
 .vs/ 

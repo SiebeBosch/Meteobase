@@ -6,14 +6,20 @@
       "AbsoluteMoniker": "D:0:0:{4E98C23A-FC2B-4A42-AD83-2CA16568684D}|..\\METEOBAS\\METEOBAS\\METEOBAS.vbproj|c:\\github\\meteobase\\backend\\meteobas\\meteobas\\meteobase\\clswiwbrasterdata.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F8BF337E-3A26-4E5F-9FE5-4205C3774EDB}|WIWNATIVERASTER\\WIWNATIVERASTER.vbproj|C:\\GITHUB\\Meteobase\\backend\\WIWBNATIVERASTER\\wiwnativeraster\\nativeraster.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "AbsoluteMoniker": "D:0:0:{F8BF337E-3A26-4E5F-9FE5-4205C3774EDB}|WIWNATIVERASTER\\WIWNATIVERASTER.vbproj|c:\\github\\meteobase\\backend\\wiwbnativeraster\\wiwnativeraster\\nativeraster.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
       "RelativeMoniker": "D:0:0:{F8BF337E-3A26-4E5F-9FE5-4205C3774EDB}|WIWNATIVERASTER\\WIWNATIVERASTER.vbproj|solutionrelative:wiwnativeraster\\nativeraster.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|WIWNATIVERASTER||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{4E98C23A-FC2B-4A42-AD83-2CA16568684D}|..\\METEOBAS\\METEOBAS\\METEOBAS.vbproj|c:\\github\\meteobase\\backend\\meteobas\\meteobas\\general\\generalfunctions.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{4E98C23A-FC2B-4A42-AD83-2CA16568684D}|..\\METEOBAS\\METEOBAS\\METEOBAS.vbproj|C:\\GITHUB\\Meteobase\\backend\\meteobas\\meteobas\\general\\clssetup.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F8BF337E-3A26-4E5F-9FE5-4205C3774EDB}|WIWNATIVERASTER\\WIWNATIVERASTER.vbproj|c:\\github\\meteobase\\backend\\wiwbnativeraster\\wiwnativeraster\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|6185191f-1008-4fb2-a715-3a4e4f27e610"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,7 +29,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -44,6 +50,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "GeneralFunctions.vb",
+              "DocumentMoniker": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\General\\GeneralFunctions.vb",
+              "RelativeDocumentMoniker": "..\\METEOBAS\\METEOBAS\\General\\GeneralFunctions.vb",
+              "ToolTip": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\General\\GeneralFunctions.vb",
+              "RelativeToolTip": "..\\METEOBAS\\METEOBAS\\General\\GeneralFunctions.vb",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-10-31T18:02:27.269Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "clsSetup.vb",
               "DocumentMoniker": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\General\\clsSetup.vb",
               "RelativeDocumentMoniker": "..\\METEOBAS\\METEOBAS\\General\\clsSetup.vb",
@@ -61,7 +80,7 @@
               "RelativeDocumentMoniker": "..\\METEOBAS\\METEOBAS\\METEOBASE\\clsWIWBRasterData.vb",
               "ToolTip": "C:\\GITHUB\\Meteobase\\backend\\METEOBAS\\METEOBAS\\METEOBASE\\clsWIWBRasterData.vb",
               "RelativeToolTip": "..\\METEOBAS\\METEOBAS\\METEOBASE\\clsWIWBRasterData.vb",
-              "ViewState": "AQIAAJoEAAAAAAAAAAASwNMEAAAcAAAA",
+              "ViewState": "AQIAAOcDAAAAAAAAAIAwwPkDAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2022-06-30T08:14:00.839Z",
               "EditorCaption": ""
@@ -75,7 +94,8 @@
               "ToolTip": "C:\\GITHUB\\Meteobase\\backend\\WIWBNATIVERASTER\\WIWNATIVERASTER\\WIWNATIVERASTER.vbproj",
               "RelativeToolTip": "WIWNATIVERASTER\\WIWNATIVERASTER.vbproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2022-06-28T21:40:36.191Z"
+              "WhenOpened": "2022-06-28T21:40:36.191Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -85,9 +105,10 @@
               "RelativeDocumentMoniker": "WIWNATIVERASTER\\NATIVERASTER.vb",
               "ToolTip": "C:\\GITHUB\\Meteobase\\backend\\WIWBNATIVERASTER\\WIWNATIVERASTER\\NATIVERASTER.vb",
               "RelativeToolTip": "WIWNATIVERASTER\\NATIVERASTER.vb",
-              "ViewState": "AQIAAHYAAAAAAAAAAAAAAJAAAAAjAAAA",
+              "ViewState": "AQIAAHMAAAAAAAAAAAAAAIAAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2022-06-28T21:39:41.438Z"
+              "WhenOpened": "2022-06-28T21:39:41.438Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -1,6 +1,0 @@
-%!PS
-*legal*
-*{ null restore } stopped { pop } if*
-*legal*
-*mark /OutputFile (%pipe%sleep 6.0) currentdevice putdeviceprops*
-*showpage*

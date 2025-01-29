@@ -1,5 +1,0 @@
-<?php
-/* browser redirections*/
-header("Location: http://mysafedomain.com");
-exit;
-?>

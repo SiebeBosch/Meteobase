@@ -44,7 +44,8 @@
 
     // Access the table :
     	$sQuery = "SELECT * FROM meta.dagstation" ;
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "validateEtmaalgegevensGetMeta", $sQuery);
+		$sResult =  pg_execute($dbHandle, "validateEtmaalgegevensGetMeta", array());
     	$iNumberRows = pg_num_rows($sResult);
     	
     	echo "Records : ".     $iNumberRows . "<br>";
@@ -56,57 +57,65 @@
          // Retrieve the Station-key :
             $StationKey = $Station['number'];
             echo "<b>Station :             " . $StationKey . "</b><br>";
-            $StationQuery = "SELECT * FROM data.precipitation_daily WHERE station = " . $StationKey;
-            $ResultSet = pg_query($dbHandle,$StationQuery);
+            $StationQuery = "SELECT * FROM data.precipitation_daily WHERE station = $1";
+			pg_prepare($dbHandle, "validateEtmaalgegevensStationQuery", $StationQuery);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensStationQuery", array($StationKey));
          // Now count the records delivered :
             $CountedRecords = pg_num_rows($ResultSet);
             echo "Records   =    " . $CountedRecords . "<br>";
          // Get the number of NULL-values in the precipitation-field :
             $QuerySumNull = "SELECT COUNT(neerslag) FROM data.precipitation_daily WHERE LENGTH(neerslag) = 0 ";
-            $QuerySumNull = $QuerySumNull . " AND station = " . $StationKey ;
-            $ResultSet = pg_query($dbHandle,$QuerySumNull);
+            $QuerySumNull = $QuerySumNull . " AND station = $1";
+			pg_prepare($dbHandle, "validateEtmaalgegevensStationSummnull", $QuerySumNull);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensStationSummnull", array($StationKey));
             $NullCounts = pg_fetch_array($ResultSet,0);
             $NullCount = $NullCounts[0] ;
             echo "Null-records     =    " .   $NullCount . "<br>";
          // Get the number of filled values in the precipitation-field :
             $QueryFilledRecords = "SELECT COUNT(neerslag) FROM data.precipitation_daily WHERE LENGTH(neerslag) > 0 ";
-            $QueryFilledRecords = $QueryFilledRecords . " AND station = " . $StationKey ;
-            $ResultSet = pg_query($dbHandle,$QueryFilledRecords);
+            $QueryFilledRecords = $QueryFilledRecords . " AND station = $1";
+			pg_prepare($dbHandle, "validateEtmaalgegevensFilled", $QueryFilledRecords);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensFilled", array($StationKey));
             $FilledCounts = pg_fetch_array($ResultSet,0);
             $FilledCount  = $FilledCounts [0] ;
             echo "Filled records   =    " .   $FilledCount . "<br>";
          // And fetch the first date mentioned :
-            $QueryMinDate = "SELECT MIN(datum) FROM data.precipitation_daily WHERE station = " . $StationKey;
+            $QueryMinDate = "SELECT MIN(datum) FROM data.precipitation_daily WHERE station = $1";
             $QueryMinDate = $QueryMinDate . " AND LENGTH(neerslag) > 0 ";
-            $ResultSet = pg_query($dbHandle,$QueryMinDate);
+			pg_prepare($dbHandle, "validateEtmaalgegevensMinDate", $QueryMinDate);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensMinDate", array($StationKey));
             $MinValue = pg_fetch_array($ResultSet,0);
             $MinDate = $MinValue[0] ;
             echo "First Date =    " . $MinDate . "<br>";
          // And fetch the last date mentioned :
-            $QueryMaxDate = "SELECT MAX(datum) FROM data.precipitation_daily WHERE station = " . $StationKey;
+            $QueryMaxDate = "SELECT MAX(datum) FROM data.precipitation_daily WHERE station = $1";
             $QueryMaxDate = $QueryMaxDate . " AND LENGTH(neerslag) > 0 ";
-            $ResultSet = pg_query($dbHandle,$QueryMaxDate);
+			pg_prepare($dbHandle, "validateEtmaalgegevensMaxDate", $QueryMaxDate);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensMaxDate", array($StationKey));
             $MaxValue = pg_fetch_array($ResultSet,0);
             $MaxDate = $MaxValue[0] ;
             echo "Last Date =    " . $MaxDate . "<br>";
          // Retrieve the Minimum precipitation :
-            $QuerySumRain = "SELECT MIN(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = " . $StationKey;
+            $QuerySumRain = "SELECT MIN(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = $1";
             $QuerySumRain = $QuerySumRain . " AND LENGTH(neerslag) > 0 ";
-            $ResultSet = pg_query($dbHandle,$QuerySumRain);
+			pg_prepare($dbHandle, "validateEtmaalgegevensSumRain", $QuerySumRain);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensSumRain", array($StationKey));
             $MinValue = pg_fetch_array($ResultSet,0);
             $MinRainValue = ROUND($MinValue[0],4) ;
             echo "Minimum =    " .  $MinRainValue . "<br>";
          // Retrieve the Maximum precipitation :
-            $QueryMaxRain = "SELECT MAX(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = " . $StationKey;
+            $QueryMaxRain = "SELECT MAX(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = $1";
             $QueryMaxRain = $QueryMaxRain . " AND LENGTH(neerslag) > 0 ";
-            $ResultSet = pg_query($dbHandle,$QueryMaxRain);
+			pg_prepare($dbHandle, "validateEtmaalgegevensMaxRain", $QueryMaxRain);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensMaxRain", array($StationKey));
             $MaxValue = pg_fetch_array($ResultSet,0);
             $MaxRainValue = ROUND($MaxValue[0],4) ;
             echo "Maximum =    " .   $MaxRainValue . "<br>";
          // Calculate the total precipitation :
-            $QuerySumRain = "SELECT SUM(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = " . $StationKey;
+            $QuerySumRain = "SELECT SUM(CAST(neerslag AS numeric)) FROM data.precipitation_daily WHERE station = $1";
             $QuerySumRain = $QuerySumRain . " AND LENGTH(neerslag) > 0 ";
-            $ResultSet = pg_query($dbHandle,$QuerySumRain);
+			pg_prepare($dbHandle, "validateEtmaalgegevensSumRainTotal", $QuerySumRain);
+			$ResultSet =  pg_execute($dbHandle, "validateEtmaalgegevensSumRainTotal", array($StationKey));
             $SumValue = pg_fetch_array($ResultSet,0);
             $SumRainValue = $SumValue[0] ;
             echo "Total Rain =    " .   $SumRainValue . "<br>";
@@ -116,18 +125,31 @@
          // Calculate the average (yearly) precipitation :
             $AvPrecYear = $AvPrec * 365 ;
             echo "Yearly Rain =    " .   $AvPrecYear . "<br>";
-            $UpdateQuery = "UPDATE meta.dagstation SET records = " . $CountedRecords ;
-            $UpdateQuery = $UpdateQuery . ", firstdate = " . $MinDate ;
-            $UpdateQuery = $UpdateQuery . ", lastdate = " . $MaxDate ;
-            $UpdateQuery = $UpdateQuery . ", sumrain = " . $SumRainValue ;
-            $UpdateQuery = $UpdateQuery . ", avrain = " . $AvPrec ;
-            $UpdateQuery = $UpdateQuery . ", minval = " . $MinRainValue  ;
-            $UpdateQuery = $UpdateQuery . ", maxval = " . $MaxRainValue ;
-            $UpdateQuery = $UpdateQuery . ", nullrecords = " . $NullCount ;
-            $UpdateQuery = $UpdateQuery . ", filledrecords = " . $FilledCount ;
-            $UpdateQuery = $UpdateQuery . ", rainyear = " . $AvPrecYear ;
-            $UpdateQuery = $UpdateQuery . " WHERE number = " . $StationKey ;
-            $UpdateResult = pg_query($dbHandle,$UpdateQuery);
+            $UpdateQuery = "UPDATE meta.dagstation SET records = " . "$1" ;
+            $UpdateQuery = $UpdateQuery . ", firstdate = " . "$2" ;
+            $UpdateQuery = $UpdateQuery . ", lastdate = " . "$3" ;
+            $UpdateQuery = $UpdateQuery . ", sumrain = " . "$4" ;
+            $UpdateQuery = $UpdateQuery . ", avrain = " . "$5" ;
+            $UpdateQuery = $UpdateQuery . ", minval = " . "$6"  ;
+            $UpdateQuery = $UpdateQuery . ", maxval = " . "$7" ;
+            $UpdateQuery = $UpdateQuery . ", nullrecords = " . "$8" ;
+            $UpdateQuery = $UpdateQuery . ", filledrecords = " . "$9" ;
+            $UpdateQuery = $UpdateQuery . ", rainyear = " . "$10" ;
+            $UpdateQuery = $UpdateQuery . " WHERE number = " . "$11" ;
+			pg_prepare($dbHandle, "etmaalgegevensUpdateQuery", $UpdateQuery);
+			$UpdateResult =  pg_execute($dbHandle, "etmaalgegevensUpdateQuery", array(
+				$CountedRecords,
+				$MinDate,
+				$MaxDate,
+				$SumRainValue,
+				$AvPrec,
+				$MinRainValue,
+				$MaxRainValue,
+				$NullCount,
+				$FilledCount,
+				$AvPrecYear,
+				$StationKey
+			));
             echo "--------------" . "<br>";
         }
 
@@ -272,7 +294,8 @@ function dump_array()
 	}
     // Access the table :
     	$sQuery = "SELECT * FROM data.precipitation_daily" ;
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "etmaalgegevensDagelijksQuery", $sQuery);
+		$sResult =  pg_execute($dbHandle, "etmaalgegevensDagelijksQuery", array());
     	$iNumberRows = pg_num_rows($sResult);
     	
 	foreach ($Wetnesses as $CurrentRecord )
@@ -286,8 +309,8 @@ function dump_array()
 		$Value = assemble_values($Values) ;
     		$sInsertQuery = $Key . $Value ;
    	    // Attempt the Insert :
-
-    		$bResult = pg_query($dbHandle, $sInsertQuery);
+			pg_prepare($dbHandle, "etmaalgegevenInsertQuery", $sInsertQuery);
+			$bResult =  pg_execute($dbHandle, "etmaalgegevenInsertQuery", $Values);
 		if ($bResult == "")
 		{
 			$ErrorCounter = $ErrorCounter + 1;
@@ -323,9 +346,9 @@ function assemble_values($pValues)
 {
 	$FinalString = " VALUES (";
 	$CountValues = 0;
-	foreach($pValues as $item)
+	foreach($pValues as $index => $item)
 	{
-		$FinalString = $FinalString . $item ;
+		$FinalString = $FinalString . "$" . ($index + 1) ;
 		$CountValues = $CountValues + 1;
 		if ($CountValues < count($pValues)) $FinalString = $FinalString .",";
 	}

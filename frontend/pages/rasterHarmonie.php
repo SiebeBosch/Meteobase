@@ -3,6 +3,7 @@
 // Meteo Database
 // Version 6-7
 // April 2012
+require 'sanitize.php';
 $bericht = '';
 $data = '';
 $waarde_check = '';
@@ -23,7 +24,7 @@ if(isset($_POST['subbg'])){
 	$_SESSION['rasterHarmonieImage'] = $fileName . '.png';
 	$_SESSION['feedbackMsg'] = 'Uw bestelling is in goede orde ontvangen en wordt op dit moment verwerkt. U ontvangt een e-mail met download-link.';
 	//var_dump($cmd);
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
 
 	include('rasterHarmonieView.php');
 }else{

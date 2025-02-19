@@ -76,8 +76,9 @@
 		}
 
     // Access the table :
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-    	$sResult = pg_query($dbHandle,$sQuery);
+    	$sQuery = "SELECT * FROM " .$sTableName ;
+		pg_prepare($dbHandle, "backRasterGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "backRasterGet", array());        
     	$iNumberRows = pg_num_rows($sResult);
     	test_echo("<BR>"."Aantal records : ".$iNumberRows . "<BR>");
 		test_echo("SESSIONID = " . $sessionid . "<BR>");
@@ -100,23 +101,37 @@
 
     // and add the Values :
     	$sInsertQuery .= " VALUES (";
-    	$sInsertQuery .= ($iNumberRows +1). ",";
-    	$sInsertQuery .= "'" . $ValidatedCoord_0 . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedCoord_1 . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedCoord_2 . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedCoord_3 . "'". ",";
-    	$sInsertQuery .= "'" . "_UNSET". "'". ",";
-    	$sInsertQuery .= "'" . $sessionid . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedNeerslag . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedPenman . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedMakkink . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedDatum_van . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedDatum_tot . "')";
+    	$sInsertQuery .= "$1". ",";
+    	$sInsertQuery .= "'" . "$2" . "'". ",";
+    	$sInsertQuery .= "'" . "$3" . "'". ",";
+    	$sInsertQuery .= "'" . "$4" . "'". ",";
+    	$sInsertQuery .= "'" . "$5" . "'". ",";
+    	$sInsertQuery .= "'" . "$6". "'". ",";
+    	$sInsertQuery .= "'" . "$7" . "'". ",";
+    	$sInsertQuery .= "'" . "$8" . "'". ",";
+    	$sInsertQuery .= "'" . "$9" . "'". ",";
+    	$sInsertQuery .= "'" . "$10" . "'". ",";
+    	$sInsertQuery .= "'" . "$11" . "'". ",";
+    	$sInsertQuery .= "'" . "$12" . "')";
 
 		test_echo("<BR>" . $sInsertQuery . "<BR>");
 
     //  ** The actual insertion into the database :
-    	$bResult = pg_query($dbHandle, $sInsertQuery);       
+		pg_prepare($dbHandle, "backrasterinsert", $sInsertQuery);
+		$bResult =  pg_execute($dbHandle, "backrasterinsert", array(
+			($iNumberRows+1),
+			$ValidatedCoord_0,
+			$ValidatedCoord_1,
+			$ValidatedCoord_2,
+			$ValidatedCoord_3,
+			"_UNSET",
+			$sessionid,
+			$ValidatedNeerslag,
+			$ValidatedPenman,
+			$ValidatedMakkink,
+			$ValidatedDatum_van,
+			$ValidatedDatum_tot,
+		));    
         if (!$bResult)
         {
           echo "<BR>"."De bestelling is niet opgeslagen in de database";

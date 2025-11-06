@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <StartArguments>20200301 20210714 77000 433000 129000 487000 FALSE TRUE FALSE FALSE FALSE ASCII TRUE 8888 99916 siebe siebe%40hydroconsult.nl</StartArguments>
@@ -17,6 +17,6 @@
     <StartArguments>20200301 20210714 77000 433000 129000 487000 FALSE TRUE FALSE FALSE FALSE ASCII TRUE 8888 99916 siebe siebe%40hydroconsult.nl</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>20181229 20190102 113000 348000 214000 440000 TRUE FALSE FALSE FALSE FALSE ASCII FALSE 8888 99917 siebe siebe%40hydroconsult.nl</StartArguments>
+    <StartArguments>20050101 20070101 177940 295741 207241 325355 TRUE FALSE FALSE FALSE FALSE ASCII FALSE 8888 99917 siebe siebe%40hydroconsult.nl</StartArguments>
   </PropertyGroup>
 </Project>

@@ -5,7 +5,7 @@
 // Meteobase
 
 include('local_config.php');
-
+require 'sanitize.php';
 
 $bericht = '';
 $data = '';
@@ -92,7 +92,8 @@ if(isset($_POST['subrd'])){
     }
 // Access the table and determine the name of the export-file:
     $sQuery = "SELECT * FROM " .$sTableName ;
-    $sResult = pg_query($dbHandle,$sQuery);
+    pg_prepare($dbHandle, "satdataGET", $sQuery);
+    $sResult =  pg_execute($dbHandle, "satdataGET", array());
     $iNumberRows = pg_num_rows($sResult);
     $NewOrder = $iNumberRows + 1;
     //echo("SessionID : ".$sessionid . "<br>");
@@ -137,19 +138,27 @@ if(isset($_POST['subrd'])){
 
     // sla de bestelling op in de database
     $sInsertQuery .= ") VALUES (";
-    $sInsertQuery .= ($sessionid). ",";
-    $sInsertQuery .= "'" . ($FDATE) . "'". ",";
-    $sInsertQuery .= "'" . ($TDATE) . "'". ",";
-    $sInsertQuery .= "'" . ($iNumberRows +1) . "'". ",";
-    $sInsertQuery .= "'" . ($NSL . ' GRID') . "'" . ",";
-    $sInsertQuery .= "'" . ($PENMAN . ' GRID') . "'" . ",";
-    $sInsertQuery .= "'" . ($MAKKINK . ' GRID') . "'";
+    $sInsertQuery .= "$1". ",";
+    $sInsertQuery .= "$2". ",";
+    $sInsertQuery .= "$3". ",";
+    $sInsertQuery .= "#4'". ",";
+    $sInsertQuery .= "#5" . ",";
+    $sInsertQuery .= "#6" . ",";
+    $sInsertQuery .= "$7";
     $sInsertQuery .= ")";
 
     //echo($sInsertQuery . "<BR>");
     //echo("----------------------------<BR>");
-
-    $bResult = pg_query($dbHandle, $sInsertQuery);
+    pg_prepare($dbHandle, "satDataInsert", $sInsertQuery);
+    $bResult =  pg_execute($dbHandle, "satDataInsert", array(
+        $sessionid,
+        $FDATE,
+        $TDATE,
+        $iNumberRows +1,
+        "$NSL GRID",
+        "$PENMAN GRID",
+        "$MAKKINK GRID"
+    ));
     if (!$bResult)
         {
         echo "<BR>"."Bestelling kon niet in de database worden opgeslagen";
@@ -183,10 +192,10 @@ if(isset($_POST['subrd'])){
     
     $cmd = $cmd_array[$formaat];
     $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
     
     //include('backoffice/backoffice_rasterdata.php');
-    
+
     $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
     //$bericht = $bericht . '<br><br>' . 'Geachte ' . $naam . ',</p><p>Als de bevraging succesvol was, kunnen de opgevraagde gegevens met sessie-ID ' . $sessionid . ' worden gedownload van de ' . $link . '.<br>';
     $bericht = 'Geachte ' . $naam . ',</p><p>Uw bestelling wordt verwerkt. U ontvangt nu een e-mail met een downloadlink.<br />';

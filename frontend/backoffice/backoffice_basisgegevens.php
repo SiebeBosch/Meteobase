@@ -97,11 +97,13 @@
 			test_echo("--------------------------------------------"."<BR>"); 
 
 		}
-
+			echo ("im here");
 	// Next, drop the view 
     	$sKillQuery = "DROP VIEW data.viewmakkink" ;    
     	test_echo("Query : ". $sKillQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sKillQuery);		
+
+		pg_prepare($dbHandle, "backbasiskill", $sKillQuery);
+		$sResult =  pg_execute($dbHandle, "backbasiskill", array());
 		
     // ** Assemble the String representing the Array with Stations :
 		$strStations = "{";
@@ -139,7 +141,8 @@
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
     	$sQuery = "SELECT * FROM " .$sTableName ;    
     	test_echo("Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "backbasisGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "backbasisGet", array());
     	$iNumberRows = pg_num_rows($sResult);
     	test_echo("Aantal records : ".$iNumberRows . "<BR>");
 		$NewOrder = $iNumberRows + 1;
@@ -164,21 +167,32 @@
 
     // and add the Values :
     	$sInsertQuery .= ") VALUES (";
-    	$sInsertQuery .= ($sessionid). ",";
-		$sInsertQuery .= "'" . $ValidatedDatum_van . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedDatum_tot . "'". ",";
-    	$sInsertQuery .= "'" . ($iNumberRows +1) . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedWaarde . "'". ",";
-		$sInsertQuery .= "'" . $strStations  . "'". ",";
-    	$sInsertQuery .= "'" . $ValidatedNeerslag . "'". ",";
-    	$sInsertQuery .= "'" . "FALSE". "',";
-    	$sInsertQuery .= "'" . $ValidatedMakkink . "'";
+    	$sInsertQuery .= "$1". ",";
+		$sInsertQuery .= "$2". ",";
+    	$sInsertQuery .= "$3". ",";
+    	$sInsertQuery .= "$4". ",";
+    	$sInsertQuery .= "$5". ",";
+		$sInsertQuery .= "$6". ",";
+    	$sInsertQuery .= "$7". ",";
+    	$sInsertQuery .= "$8". ",";
+    	$sInsertQuery .= "$9";
     	$sInsertQuery .= ")";
 
     	test_echo($sInsertQuery . "<BR>");
 		test_echo("----------------------------<BR>");
 
-	$bResult = pg_query($dbHandle, $sInsertQuery);
+	pg_prepare($dbHandle, "backbasisinsert", $sInsertQuery);
+	$bResult =  pg_execute($dbHandle, "backbasisinsert", array(
+		$sessionid,
+		$ValidatedDatum_van,
+		$ValidatedDatum_tot,
+		($iNumberRows+1),
+		$ValidatedWaarde,
+		$strStations,
+		$ValidatedNeerslag,
+		"FALSE",
+		$ValidatedMakkink,
+	));
 		
         if (!$bResult)
         	{
@@ -218,8 +232,9 @@
 			exit;
 		}
     // Access the table and determine the name of the export-file:
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-    	$sResult = pg_query($dbHandle,$sQuery);
+    	$sQuery = "SELECT * FROM " .$sTableName ;
+		pg_prepare($dbHandle, "backbasisGetTwo", $sQuery);
+		$sResult =  pg_execute($dbHandle, "backbasisGetTwo", array());    
     	$iNumberRows = pg_num_rows($sResult);
 		test_echo("SessionID : ".$sessionid . "<br>");
 		test_echo("OrderID : ".$NewOrder . "<br>");
@@ -269,6 +284,7 @@
 </html>
 
 <?php
+require 'sanitize.php';
 // This function will check all data entered into the form:
 function check_input($data,$problem='')
 {
@@ -376,7 +392,7 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 		echo($cmd);
 		
         $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-        pclose(popen($cmd, 'r'));
+        pclose(sanitezedPopen($cmd, 'r'));
       
     }
 	
@@ -414,7 +430,7 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 				
       die(cmd);
         $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-        pclose(popen($cmd, 'r'));
+        pclose(sanitezedPopen($cmd, 'r'));
 	}
 }
 
@@ -428,12 +444,17 @@ function ExportPrecipDay($pDbHandle, $pStations, $pDay1, $pDay2, $pFileCSV , $Ex
 
 	// Prepare the timeframe :
 	$DateQuery = "Select DISTINCT datumveld FROM data.precipitation_daily WHERE ";
-	$DateQuery = $DateQuery . "datumveld >= " . $pDay1 . " ";   
-	$DateQuery = $DateQuery . "AND datumveld <= " . $pDay2 . " "; 
+	$DateQuery = $DateQuery . "datumveld >= $1";   
+	$DateQuery = $DateQuery . "AND datumveld <= $2"; 
 	$DateQuery = $DateQuery . "ORDER BY datumveld ASC";
 	test_echo("Date Query  :  " . $DateQuery . "<br>");	
+
+	pg_prepare($pDbHandle, "backbasisdate", $DateQuery);
+	$sResultDate =  pg_execute($pDbHandle, "backbasisdate", array(
+		$pDay1,
+		$pDay2,
+	));
 	
-	$sResultDate = pg_query($pDbHandle,$DateQuery);
 	test_echo("ResultDate :  " . $sResultDate . "<br>");
     $iNumberRowsDate = pg_num_rows($sResultDate);	
 	test_echo("Records :  " . $iNumberRowsDate . "<br>");
@@ -457,8 +478,11 @@ function ExportPrecipDay($pDbHandle, $pStations, $pDay1, $pDay2, $pFileCSV , $Ex
 		{
 			// Select the precipitation belonging to the date/station :
 			$StationQuery = "SELECT neerslag FROM data.vw_" . $value . "_day WHERE ";    
-			$StationQuery = $StationQuery . "datumveld = " . $SingleRowDate[0] . ";"; 
-			$sResult = pg_query($pDbHandle,$StationQuery);
+			$StationQuery = $StationQuery . "datumveld = $1;"; 
+			pg_prepare($pDbHandle, "backbasisstation", $StationQuery);
+			$sResult =  pg_execute($pDbHandle, "backbasisstation", array(
+				$SingleRowDate[0],
+			));
 			$iNumberRows = pg_num_rows($sResult);	
 			$RawResult = trim(pg_fetch_result($sResult,0,0));		
 			$RainItems = $RainItems . $RawResult;
@@ -493,7 +517,8 @@ function CreateStationRope($pStations, $pStationsNummers, $pArrayStationNummers,
 //		test_echo("Geselecteerd stationsnummer is " . $ArrayStationNummers);
 //
 //		//		fwrite($OutputFile, $value . ' ,');
-//		$sResultDate = pg_query($pDbHandle,$DateQuery);
+// REPLACE PG QUERY WITH PG_PREPARE AND PG_EXECUTE IF THIS EVER GET USED AGAIN
+//		$sResultDate = pg query($pDbHandle,$DateQuery);
 //		test_echo("ResultDate :  " . $sResultDate . "<br>");
 //		$iNumberRowsDate = pg_num_rows($sResultDate);	
 //		test_echo("Records :  " . $iNumberRowsDate . "<br>");
@@ -515,8 +540,11 @@ function GetHourStations($pNamesUC , $pNamesOK , $pNumbersOK , $pDbHandle)
 		$GoodName = ucwords(strtolower($Station));
 		$pNamesOK = $pNamesOK . $GoodName . ",";
 		$StationQuery = "SELECT naam, nummer FROM data.uurstations WHERE ";    
-		$StationQuery = $StationQuery . "alias = '" . $GoodName  . "';"; 
-		$sResult = pg_query($pDbHandle,$StationQuery);	
+		$StationQuery = $StationQuery . "alias = $1;"; 
+		pg_prepare($pDbHandle, "backbasisstationtwo", $StationQuery);
+		$sResult =  pg_execute($pDbHandle, "backbasisstationtwo", array(
+			"'$GoodName'",
+		));
 		$iNumberRows = pg_num_rows($sResult);	
 		$RawName = trim(pg_fetch_result($sResult,0,0));		
 		$RawNumber = trim(pg_fetch_result($sResult,0,1));		
@@ -582,13 +610,17 @@ function ExportMakkink($pDbHandle,$pFields, $pNames, $pStations, $pDay1, $pDay2,
 	$ExportView = "CREATE OR REPLACE VIEW data.viewmakkink AS ";
 	$ExportView = $ExportView . "SELECT makkinkraw.datumveld, " . $MakkinkFields . " ";
 	$ExportView = $ExportView . "FROM data.makkinkraw ";
-	$ExportView = $ExportView . "WHERE makkinkraw.datumveld >= " . $pDay1 . " ";
-	$ExportView = $ExportView . "AND makkinkraw.datumveld <= " . $pDay2 . " ; ";
+	$ExportView = $ExportView . "WHERE makkinkraw.datumveld >= $1";
+	$ExportView = $ExportView . "AND makkinkraw.datumveld <= $2; ";
 	$ExportView = $ExportView . "ALTER TABLE data.viewmakkink OWNER TO bas";
 	test_echo("Query to construct the VIEW : <br>" . $ExportView . "<br>");
 	
 	// Perform the query and store it in the view:
-    $sResult = pg_query($pDbHandle,$ExportView);
+	pg_prepare($pDbHandle, "createmakkinkview", $ExportView);
+	$sResult =  pg_execute($pDbHandle, "createmakkinkview", array(
+		$pDay1,
+		$pDay2,
+	));
 	test_echo("View created when ANY return is given : ". $sResult . "<BR>");
 	test_echo("........................."."<BR>");
 	
@@ -597,7 +629,8 @@ function ExportMakkink($pDbHandle,$pFields, $pNames, $pStations, $pDay1, $pDay2,
 		// Anyway, a fresh query against the view solves this....
 		$sQuery = "SELECT datumveld, " . $Mfields . " FROM data.viewmakkink " ;    
 		test_echo("Query against the view : <br>". $sQuery . "<BR>");
-    	$sResult = pg_query($pDbHandle,$sQuery);
+		pg_prepare($pDbHandle, "backbasismfields", $sQuery);
+		$sResult =  pg_execute($pDbHandle, "backbasismfields", array());
     	$iNumberRows = pg_num_rows($sResult);
 		test_echo("Records in ViewMakkink : ". $iNumberRows . "<BR>");
 		test_echo(".........................<br>");
@@ -650,7 +683,8 @@ function FilterMakkink($pDbHandle, $pAll, $pMakkink, $pMakkinkFields, $pMakkinkN
 	// Get all fields :
 	$sQuery = "SELECT * FROM data.makkinkraw WHERE datum = '99/99/1900'" ;    
 	test_echo("Query against the view : <br>". $sQuery . "<BR>");
-    $sResult = pg_query($pDbHandle,$sQuery);
+	pg_prepare($pDbHandle, "backbasisallfields", $sQuery);
+	$sResult =  pg_execute($pDbHandle, "backbasisallfields", array());
     $iNumberRows = pg_num_rows($sResult);
 	// Should be a single record...
 	test_echo("Aantal Records : " . $iNumberRows."<br>");
@@ -669,7 +703,8 @@ function FilterMakkink($pDbHandle, $pAll, $pMakkink, $pMakkinkFields, $pMakkinkN
 				test_echo("*************************************MATCH<br>");
 				$pMakkinkFields[$Mak] = $FieldName;
 				$sQueryStName = "SELECT " . $FieldName . " FROM data.makkinkraw WHERE datum = '88/88/1900'" ;    
-				$sResultStName = pg_query($pDbHandle,$sQueryStName);
+				pg_prepare($pDbHandle, "backbasisstationname", $sQueryStName);
+				$sResultStName =  pg_execute($pDbHandle, "backbasisstationname", array());
 				$iNumberRowsStName = pg_num_rows($sResultStName);
 				$RawResultName = trim(pg_fetch_result($sResultStName,0,$FieldName));
 				$pMakkink = $pMakkink . "," . $RawResultName ;
@@ -694,7 +729,8 @@ function FilterPrecip($pDbHandle, $pAll, $pPrecipitation, $pPrecipFields, $pTime
 	if ($pTimeType == "dag") $sQuery = "SELECT * FROM data.precipitation_daily WHERE datum = '30/01/1982'" ;    
 	if ($pTimeType == "uur") $sQuery = "SELECT * FROM data.precipitation_hourly WHERE datum = '30/01/1982'" ;    
 	test_echo("Query against the view : <br>". $sQuery . "<BR>");
-    $sResult = pg_query($pDbHandle,$sQuery);
+	pg_prepare($pDbHandle, "backbasistimeswitch", $sQuery);
+	$sResult =  pg_execute($pDbHandle, "backbasistimeswitch", array());
     $iNumberRows = pg_num_rows($sResult);
 	// Just to make sure we have a valid query...
 	test_echo("Aantal Records : " . $iNumberRows."<br>");
@@ -713,7 +749,8 @@ function FilterPrecip($pDbHandle, $pAll, $pPrecipitation, $pPrecipFields, $pTime
 				test_echo("*************************************MATCH<br>");
 				$pPrecipFields[$Prec] = $FieldName;
 				$sQueryStName = "SELECT " . $FieldName . " FROM data.makkinkraw WHERE datum = '88/88/1900'" ;    
-				$sResultStName = pg_query($pDbHandle,$sQueryStName);
+				pg_prepare($pDbHandle, "backbasisionstationnametwo", $sQueryStName);
+				$sResultStName =  pg_execute($pDbHandle, "backbasisionstationnametwo", array());
 				$iNumberRowsStName = pg_num_rows($sResultStName);
 				$RawResultName = trim(pg_fetch_result($sResultStName,0,$FieldName));
 				$pPrecipitation = $pPrecipitation . "," . $RawResultName ;
@@ -730,8 +767,12 @@ function GetTimeItems($pArrayStationNummers, $pDay1, $pDateItems,$pDbHandle)
 	$Stats = explode(",",$pArrayStationNummers);
 	$FirstStation = $Stats[0];
 	$Query = "SELECT tijdveld FROM data.precipitation_hourly WHERE station = '" ;
-	$Query = $Query . $FirstStation . "' AND datumveld = " . $pDay1 ;
-	$sResultDate = pg_query($pDbHandle,$Query);
+	$Query = $Query . "$1" . "' AND datumveld = $2";
+	pg_prepare($pDbHandle, "backbasisgettimeitems", $Query);
+	$sResultDate =  pg_execute($pDbHandle, "backbasisgettimeitems", array(
+		$FirstStation,
+		$pDay1,
+	));
     $iNumberRowsDate = pg_num_rows($sResultDate);	
 	while ($SingleRowDate = pg_fetch_row($sResultDate))
 	{

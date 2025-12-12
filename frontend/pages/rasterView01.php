@@ -23,6 +23,10 @@
 
                         </div>
                         <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group" style="position: absolute; left: -9999px;">
+              <label for="website_url_hp">Laat dit veld leeg</label>
+              <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+            </div>
                             <div class="form-group">
                                 <input type='hidden' name="interval-start" id="interval-start" value="-15" />
                                 <input type="hidden" name="interval-end" id="interval-end" value="15" />

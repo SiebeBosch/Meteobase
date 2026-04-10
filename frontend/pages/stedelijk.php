@@ -7,7 +7,7 @@ $data = '';
 $waarde_check = '';
 
 include('local_config.php');
-
+require 'sanitize.php';
 
 // CONFIGURABLE >>>>>>>>>>
    $ExportPath = "C:\Apache24\htdocs\meteobase\downloads";
@@ -16,6 +16,50 @@ include('local_config.php');
 $NewOrder = 0;
 // Stochasten
 if(isset($_POST['dataType'])){
+	// CSRF validation
+	if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+		http_response_code(403);
+		exit('Security validation failed');
+	}
+	
+	// Honeypot check
+	if (!empty($_POST['website_url_hp'])) {
+		http_response_code(403);
+		exit(); 
+	}
+	
+	// Time-based check
+	$min_submission_time = 3;
+	$form_start_time = isset($_POST['form_timestamp']) ? (int)$_POST['form_timestamp'] : 0;
+	if ($form_start_time === 0 || (time() - $form_start_time) < $min_submission_time) {
+		exit(); // Silent fail - too fast
+	}
+	
+	// Rate limiting - max 3 downloads per 5 minutes
+	$max_downloads = 3;
+	$time_window = 300; // 5 minutes
+	
+	if (!isset($_SESSION['stedelijk_download_attempts'])) {
+		$_SESSION['stedelijk_download_attempts'] = [];
+	}
+	
+	// Clean old attempts
+	$_SESSION['stedelijk_download_attempts'] = array_filter(
+		$_SESSION['stedelijk_download_attempts'],
+		function($timestamp) use ($time_window) {
+			return (time() - $timestamp) < $time_window;
+		}
+	);
+	
+	// Check if limit exceeded
+	if (count($_SESSION['stedelijk_download_attempts']) >= $max_downloads) {
+		http_response_code(429);
+		exit('Te veel download aanvragen. Probeer het over 5 minuten opnieuw.');
+	}
+	
+	// Record this attempt
+	$_SESSION['stedelijk_download_attempts'][] = time();
+	
 	if ($_POST['dataType'] == 'stedelijk_2014') {
 		
 		// Verwerken van het formulier
@@ -113,6 +157,10 @@ if(isset($_POST['dataType'])){
 		//echo('Order number ' . $NewOrder);
 		//echo('Session id ' . $sessionid);		
 	}
+    
+    // Regenerate CSRF token after successful submission to prevent resubmission
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    
     $_SESSION['dataFeedbackMsg'] = 'send message';
     include('sted01.php');
 } else {
@@ -132,7 +180,7 @@ if(isset($_POST['dataType'])){
 	$cmd = '"c:/Program Files/Hydroconsult/WIWBSTEDELIJK/WIWBSTEDELIJK.exe" ' . $cmd;
 	//echo($cmd);
     $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
 	}
 	
 	function plaatsBestelling($psessionid, $NewOrder, $tijdreeks, $stochast, $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085)
@@ -178,7 +226,8 @@ if(isset($_POST['dataType'])){
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
     	$sQuery = "SELECT * FROM " .$sTableName ;    
     	test_echo("Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "stedelijkGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "stedelijkGet", array()); 
     	$iNumberRows = pg_num_rows($sResult);
         $NewOrder = $iNumberRows + 1;
     	test_echo("Aantal records : ".$iNumberRows . "<BR>");
@@ -198,21 +247,30 @@ if(isset($_POST['dataType'])){
 
 		// and add the Values :
     	$sInsertQuery .= ") VALUES (";
-    	$sInsertQuery .= ($psessionid). ",";
-    	$sInsertQuery .= ($NewOrder) . ",";
-		$sInsertQuery .= ($tijdreeks) .",";
-		$sInsertQuery .= ($stochast) .",";
-    	$sInsertQuery .= ($ZJ_HUIDIG). ",";
-    	$sInsertQuery .= ($ZJ_2030). ",";
-    	$sInsertQuery .= ($ZJ_2050). ",";
-    	$sInsertQuery .= ($ZJ_2085);
+    	$sInsertQuery .= "$1". ",";
+    	$sInsertQuery .= "$2" . ",";
+		$sInsertQuery .= "$3" .",";
+		$sInsertQuery .= "$4" .",";
+    	$sInsertQuery .= "$5". ",";
+    	$sInsertQuery .= "$6". ",";
+    	$sInsertQuery .= "$7". ",";
+    	$sInsertQuery .= "$8";
     	$sInsertQuery .= ")";
 
 		
     	test_echo($sInsertQuery . "<BR>");
 		test_echo("----------------------------<BR>");
-
-		$bResult = pg_query($dbHandle, $sInsertQuery);
+		pg_prepare($dbHandle, "stedelijkeInsertQuery", $sInsertQuery);
+		$bResult =  pg_execute($dbHandle, "stedelijkeInsertQuery", array(
+			$psessionid,
+			$NewOrder,
+			$tijdreeks,
+			$stochast,
+			$ZJ_HUIDIG,
+			$ZJ_2030,
+			$ZJ_2050,
+			$ZJ_2085
+		));
 		test_echo(pg_last_error($dbHandle));
         if (!$bResult)
         	{

@@ -15,6 +15,16 @@
 				</h2>
 				<div class="form-container">
 					<form method="POST" action="<?php echo($_SERVER["PHP_SELF"]); ?>?tb=stedelijk&dp=toetsingsdata" class="testing-modal" id="testingInfoForm">
+						<!-- CSRF Token -->
+						<input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+						<!-- Timestamp for time-based check -->
+						<input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+						<!-- Honeypot field -->
+						<div class="form-group" style="position: absolute; left: -9999px;">
+              <label for="website_url_hp">Laat dit veld leeg</label>
+              <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+            </div>
+						
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>Scenario</label>

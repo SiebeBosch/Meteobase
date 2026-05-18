@@ -5,11 +5,70 @@
 // Meteobase
 
 include('local_config.php');
+require 'sanitize.php';
 
 $bericht = '';
 $data = '';
 $waarde_check = '';
+
+function check_input($data,$problem='')
+{
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  $data = pg_escape_string($data);
+  if ($problem && strlen($data) == 0)
+  {
+    echo "Fout in Input "."<BR>";
+    die($problem);
+  }
+  return $data ;
+}
+
 if(isset($_POST['subrd'])){
+	// CSRF validation
+	if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+		http_response_code(403);
+		exit('Security validation failed');
+	}
+	
+	// Honeypot check
+	if (!empty($_POST['website_url_hp'])) {
+		exit(); 
+	}
+	
+	// Time-based check
+	$min_submission_time = 3;
+	$form_start_time = isset($_POST['form_timestamp']) ? (int)$_POST['form_timestamp'] : 0;
+	if ($form_start_time === 0 || (time() - $form_start_time) < $min_submission_time) {
+		exit(); // Silent fail - too fast
+	}
+	
+	// Rate limiting - max 5 downloads per 10 minutes
+	$max_downloads = 5;
+	$time_window = 600; // 10 minutes
+	
+	if (!isset($_SESSION['raster_download_attempts'])) {
+		$_SESSION['raster_download_attempts'] = [];
+	}
+	
+	// Clean old attempts
+	$_SESSION['raster_download_attempts'] = array_filter(
+		$_SESSION['raster_download_attempts'],
+		function($timestamp) use ($time_window) {
+			return (time() - $timestamp) < $time_window;
+		}
+	);
+	
+	// Check if limit exceeded
+	if (count($_SESSION['raster_download_attempts']) >= $max_downloads) {
+		http_response_code(429);
+		exit('Te veel download aanvragen. Probeer het over 10 minuten opnieuw.');
+	}
+	
+	// Record this attempt
+	$_SESSION['raster_download_attempts'][] = time();
+	
     // Upload verwerken (Rasterdata, SOBEK)
     $locatie_zip = '';
     $valid_file = true;
@@ -83,6 +142,8 @@ if(isset($_POST['subrd'])){
     $mail = $gebruiker['mail'];
     $naam = $gebruiker['naam'];
     $sessionid = $gebruiker['sessionid'];
+    check_input($datum_van);
+    check_input($datum_tot);
 //    $tel = $gebruiker['tel'];
 
 //Gekopieerd van backoffice_basisgegevens
@@ -109,8 +170,9 @@ if(isset($_POST['subrd'])){
         exit;
     }
 // Access the table and determine the name of the export-file:
-    $sQuery = "SELECT * FROM " .$sTableName ;
-    $sResult = pg_query($dbHandle,$sQuery);
+    $sQuery = "SELECT * FROM $sTableName";
+    pg_prepare($dbHandle, "rasterGetQuery", $sQuery);
+    $sResult = pg_execute($dbHandle, "rasterGetQuery", array());
     $iNumberRows = pg_num_rows($sResult);
     $NewOrder = $iNumberRows + 1;
     //echo("SessionID : ".$sessionid . "<br>");
@@ -125,6 +187,7 @@ if(isset($_POST['subrd'])){
     $TDATE = explode("/", $datum_tot);
     $datum_array[] = $TDATE;
     $TDATE = $TDATE[2].$TDATE[1].$TDATE[0];
+    
     $RasterDataDir = "d:\METEOBASE\RasterData";
 	$XMIN = 0;
 	if(isset($_COOKIE['minX'])){    
@@ -168,19 +231,37 @@ if(isset($_POST['subrd'])){
 
     // sla de bestelling op in de database
     $sInsertQuery .= ") VALUES (";
-    $sInsertQuery .= ($sessionid). ",";
-    $sInsertQuery .= "'" . ($FDATE) . "'". ",";
-    $sInsertQuery .= "'" . ($TDATE) . "'". ",";
-    $sInsertQuery .= "'" . ($iNumberRows +1) . "'". ",";
-    $sInsertQuery .= "'" . ($NSL . ' GRID') . "'" . ",";
-    $sInsertQuery .= "'" . ($PENMAN . ' GRID') . "'" . ",";
-    $sInsertQuery .= "'" . ($MAKKINK . ' GRID') . "'";
+    $sInsertQuery .= "$1". ",";
+    $sInsertQuery .= "$2". ",";
+    $sInsertQuery .= "$3". ",";
+    $sInsertQuery .= "$4". ",";
+    $sInsertQuery .= "$5" . ",";
+    $sInsertQuery .= "$6" . ",";
+    $sInsertQuery .= "$7";
     $sInsertQuery .= ")";
+
+    pg_prepare(
+        $dbHandle,
+        "rasterDataInsert",
+        $sInsertQuery,
+    );
 
     //echo($sInsertQuery . "<BR>");
     //echo("----------------------------<BR>");
+    $bResult = pg_execute(
+        $dbHandle,
+        "rasterDataInsert",
+        array(
+            $sessionid,
+            $FDATE,
+            $TDATE,
+            $iNumberRows +1,
+            "$NSL GRID",
+            "$PENMAN GRID",
+            "$MAKKINK GRID",
+        ),
+    );
 
-    $bResult = pg_query($dbHandle, $sInsertQuery);
     if (!$bResult)
         {
         echo "<BR>"."Bestelling kon niet in de database worden opgeslagen";
@@ -214,7 +295,7 @@ if(isset($_POST['subrd'])){
     
     $cmd = $cmd_array[$formaat];
     $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
     
     //include('backoffice/backoffice_rasterdata.php');
     
@@ -222,6 +303,9 @@ if(isset($_POST['subrd'])){
     //$bericht = $bericht . '<br><br>' . 'Geachte ' . $naam . ',</p><p>Als de bevraging succesvol was, kunnen de opgevraagde gegevens met sessie-ID ' . $sessionid . ' worden gedownload van de ' . $link . '.<br>';
     $bericht = 'Geachte ' . $naam . ',</p><p>Uw bestelling wordt verwerkt. U ontvangt nu een e-mail met een downloadlink.<br />';
     $data = 'Gegevenstype: ' . $gegevenstype . '<br>Datum: ' . $datum_van . ' tot ' . $datum_tot . '<br>RD-Co&ouml;rdinaten (zuidwest): ' . round($coord_0, 0) . ', ' . round($coord_1, 0) . '<br />RD-Co&ouml;rdinaten (noordoost): ' . round($coord_2, 0) . ', ' . round($coord_3, 0) . '</p>';
+    
+    // Regenerate CSRF token after successful submission to prevent resubmission
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     
     $_SESSION['dataFeedbackMsg'] = "send message";
     

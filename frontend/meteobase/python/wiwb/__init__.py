@@ -33,4 +33,5 @@ def hello():
     """return 'Hello, World!', just an example to test the api functioning"""
     return 'Hello, World!'
 
-serve(app, port=5000)
+# Only reachable through Apache (ProxyPass /regenduurlijnen), not directly from outside.
+serve(app, host='127.0.0.1', port=5000)

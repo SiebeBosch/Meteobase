@@ -761,7 +761,7 @@ Public Class clsWIWBRasterData
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             Dim ZipFilePath As String = TempDir & "\" & FileNameBase & ".Zip"
-            If Not WIWB.DownloadRasters(AccessToken, DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "HDF5", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, NextDay(TDate), "HDF5", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
             FileCollection.Add(ZipFilePath)
             Return True
         Catch ex As Exception
@@ -785,7 +785,7 @@ Public Class clsWIWBRasterData
             Dim CurDate As New DateTime(Left(FDate, 4), Left(Right(FDate, 4), 2), Right(FDate, 2))
 
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
-            If Not WIWB.DownloadRasters(AccessToken, DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, NextDay(TDate), "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -1111,12 +1111,20 @@ Public Class clsWIWBRasterData
                 FDatePost2019 = FDate
                 TDatePost2019 = TDate
             End If
+            'include the complete last ordered day; the pre-2019 part of a period across 2018/2019 already ends at 20190101
+            If TDatePre2019 > 0 AndAlso TDatePost2019 = 0 Then TDatePre2019 = NextDay(TDatePre2019)
+            If TDatePost2019 > 0 Then TDatePost2019 = NextDay(TDatePost2019)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
             Me.Setup.Log.AddError("Error in function GetDates of class clsWIWBRasterData.vb.")
             Return False
         End Try
+    End Function
+
+    Private Function NextDay(yyyymmdd As Integer) As Integer
+        'WIWB treats EndDate as exclusive (00:00); the day after the last ordered day includes that day completely
+        Return CInt(DateTime.ParseExact(yyyymmdd.ToString, "yyyyMMdd", Globalization.CultureInfo.InvariantCulture).AddDays(1).ToString("yyyyMMdd"))
     End Function
 
     Public Function ExtractZIP(ZipFilePath As String, ByRef CurDate As DateTime, TempResultsDir As String, ByRef MetaFileContent As String, ByVal WarpFromKNMI As Boolean, GDALOutputFormat As String) As Boolean

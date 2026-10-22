@@ -212,11 +212,11 @@
 		test_echo("<b>EXPORTFILES : </b><br>" );
     	$sConnectionString="UNSET";
     	$dbHandle=0;
-    	$sMasterUser = "bas";
-    	$sMasterPassword = "bas";
-    	$sHost = "localhost";
-    	$sPoort ="5432";
-    	$sDataBase = "meteobase";
+    	$sMasterUser = MASTERUSER;
+    	$sMasterPassword = MASTERPASSWORD;
+    	$sHost = HOST;
+    	$sPoort =POORT;
+    	$sDataBase = DATABASE;
     	$sTableName = "tbbasis";
 
     // ** Compile the connection-string to the DB:
@@ -284,7 +284,7 @@
 </html>
 
 <?php
-require 'sanitize.php';
+require_once 'sanitize.php';
 // This function will check all data entered into the form:
 function check_input($data,$problem='')
 {
@@ -366,71 +366,34 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 	test_echo("Number of Stations : " . count($AllStations)."<br>");
 		
 	// Loop over all stations to retrieve the station key :
-	$cmd = '';
-    $SelectionStations = '';
-	foreach($pStations AS $item => $var) {
-        
-		$cmd = $cmd . ' ' . $var;
-        
+	// Old copy; the live version is pages/backoffice_basisgegevens.php.
+	// Started without a shell (see sanitize.php).
+	$stations = [];
+	foreach((array)$pStations AS $item => $var) {
+		if (valid_token($var) === null) {
+			return;
+		}
+		$stations[] = $var;
 	}
-	
+	$pnaam = valid_text($pnaam, 100);
+	$pmail = valid_mail($pmail);
+	if ($pnaam === null || $pmail === null || in_array(null, array_map('valid_token', [$pDay1, $pDay2, $sessionid, $NewOrder]), true)) {
+		return;
+	}
+
 // Quick and dirty : Add a dummy station
-	$SelectionStations = $SelectionStations . "station = 9999"	;	
+	$SelectionStations = "station = 9999"	;
 	test_echo("Stations Selection String : <br>  " . $SelectionStations . "<br>");
 // Now export, depending on the temporal request :
 	if ($ExportType == "dagstations")
 	{
-		$cmd =  ' "' . $pmail .'" ' . $cmd;
-		$cmd =  ' "' . $pnaam . '" ' . $cmd;
-		$cmd = $sessionid . ' ' . $NewOrder . ' ' . $cmd;
-		$cmd = 'FALSE ' . $cmd; //makkink
-		$cmd = 'TRUE ' . $cmd;	//neerslag
-		$cmd = 'TRUE ' . $cmd; //etmaalbasis
-		$cmd = ' ' . $pDay1 . ' ' . $pDay2 .  ' ' . $cmd;				
-		$cmd = '"c:\Program Files\Hydroconsult\WIWBBASIS\WIWBBASIS.exe" ' . $cmd;
-		
-		echo($cmd);
-		
-        $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-        pclose(sanitezedPopen($cmd, 'r'));
-      
+		start_tool('WIWBBASIS/WIWBBASIS.exe', array_merge([$pDay1, $pDay2, 'TRUE', 'TRUE', 'FALSE', $sessionid, $NewOrder, $pnaam, $pmail], $stations));
     }
-	
-	if ($ExportType == "uurstations") 
-	{
-		$cmd =  ' "' . $pmail .'" ' . $cmd;
-		$cmd =  ' "' . $pnaam . '" ' . $cmd;
-		$cmd = $sessionid . ' ' . $NewOrder . ' ' . $cmd;
-		
-		if ($makkink <> "")
-		{
-			$cmd = 'TRUE ' . $cmd;
-		}
-		else
-		{
-			$cmd = 'FALSE ' . $cmd;
-		}
 
-		if ($neerslag <> "")
-		{
-			$cmd = 'TRUE ' . $cmd;
-		}
-		else
-		{
-			$cmd = 'FALSE ' . $cmd;
-		}
-		
-		$cmd = 'FALSE ' . $cmd;
-		
-		$cmd = ' ' . $pDay1 . ' ' . $pDay2 .  ' ' . $cmd;
-				
-		$cmd = '"c:\Program Files\Hydroconsult\WIWBBASIS\WIWBBASIS.exe" ' . $cmd;
-		
-		echo '<script>alert($cmd)</script>';
-				
-      die(cmd);
-        $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-        pclose(sanitezedPopen($cmd, 'r'));
+	if ($ExportType == "uurstations")
+	{
+		start_tool('WIWBBASIS/WIWBBASIS.exe', array_merge([$pDay1, $pDay2, 'FALSE', $neerslag <> "" ? 'TRUE' : 'FALSE', $makkink <> "" ? 'TRUE' : 'FALSE',
+			$sessionid, $NewOrder, $pnaam, $pmail], $stations));
 	}
 }
 

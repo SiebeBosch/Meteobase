@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Penman </title>
@@ -42,10 +43,10 @@
     // ****** Login-data *********
     $sConnectionString="UNSET";
     $dbHandle=0;
-    $sMasterUser = MASTERUSER;
-    $sMasterPassword = MASTERPASSWORD;
-    $sHost = HOST;
-    $sPoort =POORT;
+    $sMasterUser = DL_USER;
+    $sMasterPassword = DL_PASSWORD;
+    $sHost = DL_HOST;
+    $sPoort =DL_PORT;
     $sDataBase = "dbregendata";
     $sTableName = "tborder";
 

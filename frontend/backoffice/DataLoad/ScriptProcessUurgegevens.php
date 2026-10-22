@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Uurgegevens </title>
@@ -175,11 +176,11 @@ function dump_array()
 	$CurrentRecord ;
 
     // These are the parameters for database-access :
-	$DbAccess[0]= "localhost";
-	$DbAccess[1]= "5432";
-	$DbAccess[2]= "arend";
-	$DbAccess[3]= "arend";
-	$DbAccess[4]= "meteobase" ;
+	$DbAccess[0]= DL_HOST;
+	$DbAccess[1]= DL_PORT;
+	$DbAccess[2]= DL_USER;
+	$DbAccess[3]= DL_PASSWORD;
+	$DbAccess[4]= DL_DATABASE;
 
     // Assemble the Keys for the insertion :
 	$Keys[0] = "station";

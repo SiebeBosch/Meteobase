@@ -1007,10 +1007,14 @@ Public Class clsWIWBRasterData
             Me.Setup.Log.AddMessage("TDatePost2019=" & TDatePost2019)
 
             FileCollectionNSL = New List(Of String)
-            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
+                If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            End If
             FileCollectionNSL.Add(ZipFilePre2019Path)
 
-            If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
+                If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            End If
             FileCollectionNSL.Add(ZipFilePost2019Path)
 
             Return True

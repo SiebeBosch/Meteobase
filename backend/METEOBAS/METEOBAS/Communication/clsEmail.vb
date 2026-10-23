@@ -34,7 +34,6 @@ Public Class clsEmail
                 'smtp.Connect("mail.meteobase.nl", 587, False)
                 'smtp.Connect("mail.meteobase.nl", 25, False)
                 smtp.Authenticate("info@meteobase.nl", EmailPassword)     '
-                'smtp.Authenticate("info@meteobase.nl", "@g3ntM327")     'Dit was de werkende versie vóór de migratie naar STRATO
                 smtp.Send(Message)
                 smtp.Disconnect(True)
             End Using

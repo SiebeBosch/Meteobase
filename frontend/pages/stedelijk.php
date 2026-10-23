@@ -7,7 +7,7 @@ $data = '';
 $waarde_check = '';
 
 include('local_config.php');
-require 'sanitize.php';
+require_once 'sanitize.php';
 
 // CONFIGURABLE >>>>>>>>>>
    $ExportPath = "C:\Apache24\htdocs\meteobase\downloads";
@@ -60,104 +60,37 @@ if(isset($_POST['dataType'])){
 	// Record this attempt
 	$_SESSION['stedelijk_download_attempts'][] = time();
 	
-	if ($_POST['dataType'] == 'stedelijk_2014') {
-		
-		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
-    
-        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
-        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
-        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
-		
-        $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE','TRUE', 'TRUE', 'FALSE', 'FALSE', 'FALSE');
-       
-		//echo('in stedelijk_2014');
-		//echo('Order number ' . $NewOrder);
-		//echo('Session id ' . $sessionid);
-
-		
-		exportStedelijk('TRUE', 'FALSE','FALSE','FALSE', $sessionid, $NewOrder, $naam, $mail);
-	} elseif ($_POST['dataType'] == 'stedelijk_2030') {
-		
-		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
-    
-        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
-        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
-        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
-		
-        $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE','TRUE', 'FALSE', 'TRUE', 'FALSE', 'FALSE');
-       
-		//echo('in stedelijk_2030');
-		//echo('Order number ' . $NewOrder);
-		//echo('Session id ' . $sessionid);
-
-		
-		exportStedelijk('FALSE', 'TRUE','FALSE','FALSE', $sessionid, $NewOrder, $naam, $mail);
-	} elseif ($_POST['dataType'] == 'stedelijk_2050') {
-		
-		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
-    
-        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
-        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
-        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
-		
-        $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE','TRUE', 'FALSE', 'FALSE', 'TRUE', 'FALSE');
-       
-		//echo('in stedelijk_2050');
-		//echo('Order number ' . $NewOrder);
-		//echo('Session id ' . $sessionid);
-
-		
-		exportStedelijk('FALSE', 'FALSE','TRUE','FALSE', $sessionid, $NewOrder, $naam, $mail);
-	} elseif ($_POST['dataType'] == 'stedelijk_2085') {
-		
-		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
-    
-        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
-        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
-        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
-		
-        $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE','TRUE', 'FALSE', 'FALSE', 'FALSE', 'TRUE');
-       
-		//echo('in stedelijk_2085');
-		//echo('Order number ' . $NewOrder);
-		//echo('Session id ' . $sessionid);
-
-		
-		exportStedelijk('FALSE', 'FALSE','FALSE','TRUE', $sessionid, $NewOrder, $naam, $mail);
-    
-    } else {
-
-		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
-    
-        $adres = 'https://www.meteobase.nl/meteobase/downloads/';
-        $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
-        $bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
-
-		//echo('bestelling ongeldig');
-		//echo('Order number ' . $NewOrder);
-		//echo('Session id ' . $sessionid);		
+	// Validate before the order is stored; the values go to WIWBSTEDELIJK (see sanitize.php)
+	$jaren = ['stedelijk_2014' => 0, 'stedelijk_2030' => 1, 'stedelijk_2050' => 2, 'stedelijk_2085' => 3];
+	$user = valid_user_cookie();
+	if ($user === null) {
+		order_error(MSG_INVALID_USER, 'stedelijk: gebruiker-cookie');
+		include('sted01.php');
+		return;
 	}
-    
+	if (!isset($jaren[$_POST['dataType']])) {
+		order_error(MSG_INVALID_INPUT, 'stedelijk: dataType');
+		include('sted01.php');
+		return;
+	}
+	$mail = $user['mail'];
+	$naam = $user['naam'];
+	$sessionid = $user['sessionid'];
+
+	$adres = 'https://www.meteobase.nl/meteobase/downloads/';
+	$link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
+	$bericht = 'De opgevraagde gegevens, met sessie-ID ' . $sessionid . ' kunnen over enkele minuten worden gedownload van de ' . $link . '.';
+
+	// one of STATS2014/2030/2050/2085 (and the matching ZJ_ column) is TRUE
+	$stats = ['FALSE', 'FALSE', 'FALSE', 'FALSE'];
+	$stats[$jaren[$_POST['dataType']]] = 'TRUE';
+	$NewOrder = plaatsBestelling($sessionid, $NewOrder, 'FALSE', 'TRUE', $stats[0], $stats[1], $stats[2], $stats[3]);
+	if (!exportStedelijk($stats[0], $stats[1], $stats[2], $stats[3], $sessionid, $NewOrder, $naam, $mail)) {
+		order_error(MSG_TOOL_FAILED, 'stedelijk: WIWBSTEDELIJK niet gestart');
+		include('sted01.php');
+		return;
+	}
+
     // Regenerate CSRF token after successful submission to prevent resubmission
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     
@@ -175,12 +108,13 @@ if(isset($_POST['dataType'])){
 	function exportStedelijk($STATS2014, $STATS2030, $STATS2050, $STATS2085, $psessionid, $pNewOrder, $pname, $pmail)
 	{
 	
-	$cmd = $STATS2014 . ' ' . $STATS2030 . ' ' . $STATS2050 . ' ' . $STATS2085 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
-	//echo($cmd);
-	$cmd = '"c:/Program Files/Hydroconsult/WIWBSTEDELIJK/WIWBSTEDELIJK.exe" ' . $cmd;
-	//echo($cmd);
-    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(sanitezedPopen($cmd, 'r'));
+	$args = [$STATS2014, $STATS2030, $STATS2050, $STATS2085, $psessionid, $pNewOrder];
+	$pname = valid_text($pname, 100);
+	$pmail = valid_mail($pmail);
+	if ($pname === null || $pmail === null || in_array(null, array_map('valid_token', $args), true)) {
+		return false;
+	}
+	return start_tool('WIWBSTEDELIJK/WIWBSTEDELIJK.exe', array_merge($args, [$pname, $pmail]));
 	}
 	
 	function plaatsBestelling($psessionid, $NewOrder, $tijdreeks, $stochast, $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085)
@@ -206,14 +140,14 @@ if(isset($_POST['dataType'])){
     	IF (!pg_ping($dbHandle) )
 		{
 		echo "Geen PostgreSQL server verbinding" . "<BR>";
-    		pg_free_result($dbHandle);
+    		// (PHP 8: geen pg_free_result op een verbinding)
     		pg_close($dbHandle);
 		}
 		ELSE
 		{
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
-    		test_echo("Database-handle     = ".$dbHandle . "<BR>");
+    		test_echo("Database-handle     = (verbinding)<BR>");
     		test_echo("PostgreSQL-client   = ".$version['client']. "<BR>");
     		test_echo("          -protocol = ".$version['protocol']. "<BR>");
     		test_echo("          -server   = ".$version['server']. "<BR><BR>");
@@ -224,13 +158,8 @@ if(isset($_POST['dataType'])){
 		
 		// Access the table :
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-    	test_echo("Query : ". $sQuery . "<BR>");
-		pg_prepare($dbHandle, "stedelijkGet", $sQuery);
-		$sResult =  pg_execute($dbHandle, "stedelijkGet", array()); 
-    	$iNumberRows = pg_num_rows($sResult);
-        $NewOrder = $iNumberRows + 1;
-    	test_echo("Aantal records : ".$iNumberRows . "<BR>");
+        // New order number from the sequence (see next_id in sanitize.php)
+        $NewOrder = next_id($dbHandle, SEQ_BESTELLINGNR);
     	test_echo("Actueel Ordernummer : <b> ".$NewOrder . "</b><BR>");
 		test_echo("----------------------------<BR>");
 
@@ -279,7 +208,7 @@ if(isset($_POST['dataType'])){
         	}
         else
         	{
-          	test_echo("Resulaat : ". $bResult . "<BR>");
+          	test_echo("Resulaat : OK<BR>");
         	}
 
 		// ** Clean-up :

@@ -66,16 +66,45 @@ if(isset($_POST['subbg'])){
 		$datum_van = $_POST['fromDate'];
 		$datum_tot = $_POST['toDate'];
 		$area = 6; //Gebiedsreductiefactor verwijderd! $_POST['area'];
-		$gebruiker = $_COOKIE['gebruiker'];
-		$mail = $gebruiker['mail'];
-		$naam = $gebruiker['naam'];
-		$sessionid = $gebruiker['sessionid'];
 		$ms_go = TRUE;
 		if(isset($_COOKIE['ms'])){
 			$meteostations = $_COOKIE['ms'];
 		}
+
+		// Validate before the order is stored; the values go to WIWBBASIS (see sanitize.php)
+		require_once 'sanitize.php';
+		$user = valid_user_cookie();
+		$stationsOk = isset($meteostations) && is_array($meteostations) && count($meteostations) > 0;
+		foreach ($stationsOk ? $meteostations : [] as $stationNummer) {
+			if (!is_string($stationNummer) || !preg_match('/^\d{1,6}$/', $stationNummer)) {
+				$stationsOk = false;
+			}
+		}
+		$geweigerd = true;
+		if ($user === null) {
+			order_error(MSG_INVALID_USER, 'basisgegevens: gebruiker-cookie');
+		} elseif (!in_array($waarde, ['Dagstations', 'Uurstations'], true) || !$stationsOk
+			|| !preg_match('/^\d{8}$/', (string)$datum_van) || !preg_match('/^\d{8}$/', (string)$datum_tot)) {
+			order_error('Uw bestelling is niet verwerkt: kies uurstations of dagstations, selecteer minstens 1 station op de kaart en controleer de datums.', 'basisgegevens: invoer');
+		} else {
+			$geweigerd = false;
+		}
+		if ($geweigerd) {
+			include('pages/basis01.php');
+			return;
+		}
+		$mail = $user['mail'];
+		$naam = $user['naam'];
+		$sessionid = $user['sessionid'];
+
+		$basisGestart = false;
 		include('backoffice_basisgegevens.php');
-		
+		if (!$basisGestart) {
+			order_error(MSG_TOOL_FAILED, 'basisgegevens: WIWBBASIS niet gestart');
+			include('pages/basis01.php');
+			return;
+		}
+
         $adres = 'http://62.148.170.210/meteobase/downloads/';
         $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';		
 		$bericht = 'Geachte ' . $naam . ',</p><p> Uw bestelling met sessie-ID ' . $sessionid . ' wordt klaargezet op ' . $link . '. <br> U ontvangt een e-mail met een rechtstreekse download-link.<br>';

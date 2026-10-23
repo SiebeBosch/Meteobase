@@ -5,7 +5,7 @@
 // Meteobase
 
 include('local_config.php');
-require 'sanitize.php';
+require_once 'sanitize.php';
 
 $bericht = '';
 $data = '';
@@ -138,12 +138,39 @@ if(isset($_POST['subrd'])){
     //$waarde = $_POST['waarde'];
     $datum_van = $_POST['fromDate'];
     $datum_tot = $_POST['toDate'];
-    $gebruiker = $_COOKIE['gebruiker'];
-    $mail = $gebruiker['mail'];
-    $naam = $gebruiker['naam'];
-    $sessionid = $gebruiker['sessionid'];
-    check_input($datum_van);
-    check_input($datum_tot);
+    // Validate everything before the order is stored; the values go to a tool (see sanitize.php)
+    $user = valid_user_cookie();
+    if ($user === null) {
+        order_error(MSG_INVALID_USER, 'rasterdata: gebruiker-cookie');
+        include('pages/raster01.php');
+        return;
+    }
+    $coordsOk = true;
+    foreach (['minX', 'minY', 'maxX', 'maxY'] as $c) {
+        if (isset($_COOKIE[$c]) && !is_numeric($_COOKIE[$c])) {
+            $coordsOk = false;
+        }
+    }
+    $zipNaam = null;
+    if ($formaat == 'csv' || $formaat == 'sobek') {
+        // the ZIPFILE cookie holds the full path of the upload (pages/rasterDataUpload.php)
+        $zipNaam = valid_filename(basename(str_replace('\\', '/', (string)($_COOKIE['ZIPFILE'] ?? ''))), 'zip');
+        $veldnaam = valid_text($_POST['veldnaam'] ?? null, 64);
+        if ($zipNaam === null || $veldnaam === null || !is_file('C:/Apache24/htdocs/meteobase/uploads/' . $zipNaam)) {
+            order_error(MSG_INVALID_INPUT, 'rasterdata: shapefile/veldnaam');
+            include('pages/raster01.php');
+            return;
+        }
+    }
+    if (!in_array($formaat, ['ascii', 'hdf5', 'modflow', 'simgro', 'sobek', 'csv'], true) || !$coordsOk
+        || !preg_match('#^\d{2}/\d{2}/\d{4}$#', (string)$datum_van) || !preg_match('#^\d{2}/\d{2}/\d{4}$#', (string)$datum_tot)) {
+        order_error(MSG_INVALID_INPUT, 'rasterdata: formaat/datum/coordinaten');
+        include('pages/raster01.php');
+        return;
+    }
+    $mail = $user['mail'];
+    $naam = $user['naam'];
+    $sessionid = $user['sessionid'];
 //    $tel = $gebruiker['tel'];
 
 //Gekopieerd van backoffice_basisgegevens
@@ -165,16 +192,12 @@ if(isset($_POST['subrd'])){
     IF (!pg_ping($dbHandle) )
     {
         echo "Geen PostgreSQL server verbinding" . "<BR>";
-        pg_free_result($dbHandle);
+        // (PHP 8: geen pg_free_result op een verbinding)
         pg_close($dbHandle);
         exit;
     }
-// Access the table and determine the name of the export-file:
-    $sQuery = "SELECT * FROM $sTableName";
-    pg_prepare($dbHandle, "rasterGetQuery", $sQuery);
-    $sResult = pg_execute($dbHandle, "rasterGetQuery", array());
-    $iNumberRows = pg_num_rows($sResult);
-    $NewOrder = $iNumberRows + 1;
+// New order number from the sequence (see next_id in sanitize.php)
+    $NewOrder = next_id($dbHandle, SEQ_BESTELLINGNR);
     //echo("SessionID : ".$sessionid . "<br>");
     //echo("OrderID : ".$NewOrder . "<br>");
     //Gekopieerd van backoffice_basisgegevens
@@ -255,7 +278,7 @@ if(isset($_POST['subrd'])){
             $sessionid,
             $FDATE,
             $TDATE,
-            $iNumberRows +1,
+            $NewOrder,
             "$NSL GRID",
             "$PENMAN GRID",
             "$MAKKINK GRID",
@@ -284,19 +307,33 @@ if(isset($_POST['subrd'])){
     
     $adres = 'http://62.148.170.210/meteobase/downloads/';
     
-    $cmd_array = array(
-    'ascii' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' . $EVTSHO . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'hdf5' => '"c:/Program Files/Hydroconsult/NATIVERASTER/WIWBNATIVERASTER.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' . $EVTSHO . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'modflow' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' . $EVTSHO . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" ' . $mail,
-    'simgro' => '"c:/Program Files/Hydroconsult/RASTER2ASCII/WIWBRASTER2ASCII.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $XMIN . ' ' . $YMIN . ' ' . $XMAX . ' ' . $YMAX . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' . $EVTSHO . ' ' . strtoupper($formaat) . ' false ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail,
-    'sobek' => '"c:/Program Files/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' . $EVTSHO . ' SOBEK ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"',
-    'csv' => '"c:/Program Files/Hydroconsult/RASTERBYPOLY/WIWBRASTERBYPOLY.exe" ' . $FDATE . ' ' . $TDATE . ' ' . $NSL . ' ' . $MAKKINK . ' ' . $PENMAN . ' ' . $EVTACT . ' ' .$EVTSHO . ' CSV ' .$sessionid . ' ' . $NewOrder . ' "' . $naam . '" "' . $mail . '" "' . $locatie_zip . '" "' . $veldnaam . '"'
+    // Arguments for the tool; started without a shell (see sanitize.php)
+    $grid = [$FDATE, $TDATE, $XMIN, $YMIN, $XMAX, $YMAX, $NSL, $MAKKINK, $PENMAN, $EVTACT, $EVTSHO];
+    $poly = [$FDATE, $TDATE, $NSL, $MAKKINK, $PENMAN, $EVTACT, $EVTSHO];
+    $order = [$sessionid, $NewOrder, $naam, $mail];
+    if ($zipNaam !== null) {
+        $order[] = 'c:\Apache24\htdocs\meteobase\uploads\\' . $zipNaam;
+        $order[] = $veldnaam;
+    }
+    $tools = array(
+    'ascii' => ['RASTER2ASCII/WIWBRASTER2ASCII.exe', array_merge($grid, ['ASCII', 'false'], $order)],
+    'hdf5' => ['NATIVERASTER/WIWBNATIVERASTER.exe', array_merge($grid, ['false'], $order)],
+    'modflow' => ['RASTER2ASCII/WIWBRASTER2ASCII.exe', array_merge($grid, ['MODFLOW', 'false'], $order)],
+    'simgro' => ['RASTER2ASCII/WIWBRASTER2ASCII.exe', array_merge($grid, ['SIMGRO', 'false'], $order)],
+    'sobek' => ['RASTERBYPOLY/WIWBRASTERBYPOLY.exe', array_merge($poly, ['SOBEK'], $order)],
+    'csv' => ['RASTERBYPOLY/WIWBRASTERBYPOLY.exe', array_merge($poly, ['CSV'], $order)],
     );
-    
-    $cmd = $cmd_array[$formaat];
-    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(sanitezedPopen($cmd, 'r'));
-    
+    if (in_array(null, array_map('valid_token', array_merge($grid, [$sessionid, $NewOrder])), true)) {
+        order_error(MSG_INVALID_INPUT, 'rasterdata: argumenten ' . implode(' ', $grid));
+        include('pages/raster01.php');
+        return;
+    }
+    if (!start_tool($tools[$formaat][0], $tools[$formaat][1])) {
+        order_error(MSG_TOOL_FAILED, 'rasterdata: ' . $tools[$formaat][0] . ' niet gestart');
+        include('pages/raster01.php');
+        return;
+    }
+
     //include('backoffice/backoffice_rasterdata.php');
     
     $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';

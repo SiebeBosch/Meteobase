@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userFullNameFeedback'
         
         $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
         $recaptcha_secret = RECAPTCHA_SECRET_KEY;
-        $recaptcha_verify = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+        $recaptcha_verify = file_get_contents($recaptcha_url . '?secret=' . urlencode($recaptcha_secret) . '&response=' . urlencode((string)$recaptcha_response));
         $recaptcha_result = json_decode($recaptcha_verify);
         
         if (!$recaptcha_result->success) {
@@ -66,16 +66,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userFullNameFeedback'
     }
     
     // All validations passed - process the feedback
-    $naam = escapeshellarg($_POST['userFullNameFeedback']);
-    $mail = escapeshellarg($_POST['userEmailFeedback']);
-    $feedbackType = escapeshellarg($_POST['feedbackType']);
-    $feedbackMessage = escapeshellarg($_POST['feedbackMessage']);
+    $naam = valid_text($_POST['userFullNameFeedback'] ?? null, 100);
+    $mail = valid_mail($_POST['userEmailFeedback'] ?? null);
+    $feedbackType = $_POST['feedbackType'] ?? '';
+    $feedbackMessage = valid_text($_POST['feedbackMessage'] ?? null, 2000, true, true);
 
-    $cmd = '"c:\Program Files\Hydroconsult\WIWBFEEDBACK\WIWBFEEDBACK.exe" ' . $naam . ' ' . $mail . ' ' . $feedbackType . ' ' . $feedbackMessage . ' ';
-    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    
-    pclose(sanitezedPopen($cmd, 'r'));
-    
+    if ($naam === null || $mail === null || $feedbackMessage === null
+        || !in_array($feedbackType, ['vraag', 'bug', 'probleem', 'opmerking'], true)) {
+        $_SESSION["errorMsg"] = 'Controleer uw naam, e-mailadres en bericht (max. 2000 tekens).';
+        header("Location: index.php?tb=feedback");
+        exit;
+    }
+
+    if (!start_tool('WIWBFEEDBACK/WIWBFEEDBACK.exe', [$naam, $mail, $feedbackType, $feedbackMessage])) {
+        $_SESSION["errorMsg"] = 'Er is een fout opgetreden. Probeer het later opnieuw.';
+        header("Location: index.php?tb=feedback");
+        exit;
+    }
+
     $_SESSION["feedbackMsg"] = 'Bedankt voor je bericht.';
     header("Location: index.php?tb=feedback");
     exit;
@@ -262,11 +270,16 @@ if(isset($_POST['userFullName'])) {
 	if(!isset($naam) or !isset($org) or !isset($mail_checked)){
 		$_SESSION["errorMsg"]='Graag alle velden invullen.';
 	}else{
+		$registratieGelukt = false;
 		include('backoffice/ScriptLoginApplication.php');
-		setcookie('gebruiker[naam]',$naam);
-		setcookie('gebruiker[org]',$org);
-		setcookie('gebruiker[mail]',$mail);
-		$_SESSION['feedbackMsg'] = 'Je bent succesvol geregistreerd!';
+		if ($registratieGelukt) {
+			setcookie('gebruiker[naam]',$naam);
+			setcookie('gebruiker[org]',$org);
+			setcookie('gebruiker[mail]',$mail);
+			$_SESSION['feedbackMsg'] = 'Je bent succesvol geregistreerd!';
+		} else {
+			$_SESSION['errorMsg'] = 'Aanmelden is niet gelukt door een technische fout. Probeer het later opnieuw of neem contact op via info@meteobase.nl.';
+		}
 		header("Refresh: 0; URL=index.php");
 	}
 }

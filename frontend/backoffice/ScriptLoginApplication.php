@@ -57,7 +57,7 @@
     // ** Test for access to the database :
     	IF (!pg_ping($dbHandle) )
 		{
-    		pg_free_result($dbHandle);
+    		// (PHP 8: geen pg_free_result op een verbinding)
     		pg_close($dbHandle);
 		exit;
 		}
@@ -65,19 +65,16 @@
 		{
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
-			test_echo("Database-handle     = ".$dbHandle . "<BR>");
+			test_echo("Database-handle     = (verbinding)<BR>");
 			test_echo("PostgreSQL-client   = ".$version['client']. "<BR>");
 			test_echo("          -protocol = ".$version['protocol']. "<BR>");
 			test_echo("          -server   = ".$version['server']. "<BR>");
 		}
 
-    // Access the table :
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-		test_echo("<BR>" . "Query : ". $sQuery . "<BR>");
-		pg_prepare($dbHandle, "loginGet", $sQuery);
-		$sResult =  pg_execute($dbHandle, "loginGet", array());
-    	$iNumberRows = pg_num_rows($sResult);
-		test_echo("<BR>"."Aantal records : ".$iNumberRows);
+    // New session id from the sequence (see next_id in sanitize.php)
+		require_once __DIR__ . '/../sanitize.php';
+		$sessionid = next_id($dbHandle, SEQ_SESSIONID);
+		test_echo("<BR>"."Nieuw sessie-ID : ".$sessionid);
 
     // Compile the insertion-string, start with the Keys :
     	$sInsertQuery = "INSERT INTO $sTableName (" ;
@@ -91,7 +88,7 @@
     // and add the Values :
 
     	$sInsertQuery .= ") VALUES (";
-    	$sInsertQuery .= ($iNumberRows +1). ",";
+    	$sInsertQuery .= $sessionid . ",";
     	$sInsertQuery .= "'" . $ValidatedUser . "'". ",";
     	$sInsertQuery .= "'" . $ValidatedEmail . "'". ",";
     	$sInsertQuery .= "'" . $dStartDate . "'". ",";
@@ -102,7 +99,7 @@
 
 		test_echo("<BR>" . $sInsertQuery . "<BR>");
 
-		$sInsertQuery2= "INSERT INTO ".$sTableName . " (sessionid,givenemail) VALUES (" .($iNumberRows + 1).", ". "'" . $ValidatedEmail . "')" ;
+		$sInsertQuery2= "INSERT INTO ".$sTableName . " (sessionid,givenemail) VALUES (" .$sessionid.", ". "'" . $ValidatedEmail . "')" ;
     
     // Compile the insertion-string, start with the Keys :
     	$sInsertKeys = "INSERT INTO $sTableName (" ;
@@ -130,34 +127,35 @@
 
 		test_echo("<BR>"."VALUES = " . $sInsertValues) ;
 
-    // ADD SESSION ID TO USER COOKIE
-	$sessionid = $iNumberRows +1;
-	setcookie('gebruiker[sessionid]', $sessionid);
-
     // And combine :
     	$sInsertQuery = $sInsertKeys . $sInsertValues ;
 		test_echo("<BR>"."<BR>".$sInsertQuery . "<BR>");
-		pg_prepare($dbHandle, "logininsert", $sInsertQuery);
-		$bResult =  pg_execute($dbHandle, "logininsert", array(
-			($iNumberRows+1),
-			$ValidatedUser,
-			$ValidatedEmail,
-			$dStartDate,
-			$dStartTime,
-			$ValidatedCompany,
-			$ValidatedPhone
-		));
+		$bResult = false;
+		if ($sessionid !== null && pg_prepare($dbHandle, "logininsert", $sInsertQuery) !== false) {
+			$bResult =  pg_execute($dbHandle, "logininsert", array(
+				$sessionid,
+				$ValidatedUser,
+				$ValidatedEmail,
+				$dStartDate,
+				$dStartTime,
+				$ValidatedCompany,
+				$ValidatedPhone
+			));
+		}
 
-        if (!$bResult)
+    // Only a stored registration gets a session id; index.php shows an error message otherwise
+		$registratieGelukt = ($bResult !== false);
+        if ($registratieGelukt)
         	{
-          	echo "<BR>"."Aanmelden bij database mislukt";
+			setcookie('gebruiker[sessionid]', (string)$sessionid);
+          	test_echo("<BR>Resulaat : OK<BR>");
+          	pg_free_result($bResult);
         	}
         else
         	{
-          	test_echo("<BR>"."Resulaat : ". $bResult . "<BR>");
-        	}  
+          	error_log('Meteobase: registratie niet opgeslagen (sessie ' . var_export($sessionid, true) . '): ' . pg_last_error($dbHandle));
+        	}
     // ** Clean-up :
-    	pg_free_result($bResult);
     	pg_close($dbHandle);
 ?>
 

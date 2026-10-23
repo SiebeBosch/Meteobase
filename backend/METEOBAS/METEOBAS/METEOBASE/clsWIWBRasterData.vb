@@ -266,9 +266,11 @@ Public Class clsWIWBRasterData
                 body &= vbCrLf
                 body &= "Uw bestanden staan klaar in de download-directory van Meteobase. Klik op de onderstaande link om ze op te halen." & vbCrLf
                 body &= DownloadURL & ZipFile & vbCrLf
+                body &= "De downloadlink is 30 dagen geldig." & vbCrLf
             Else
                 body &= "Uw bestelling is met succes afgehandeld en staat klaar in de download-directory van Meteobase. Klik op de onderstaande link om hem op te halen." & vbCrLf
                 body &= DownloadURL & ZipFile & vbCrLf
+                body &= "De downloadlink is 30 dagen geldig." & vbCrLf
             End If
 
 

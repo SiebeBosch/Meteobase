@@ -191,6 +191,7 @@ Public Class clsMBRasterData
             body &= vbCrLf
             body &= "Uw bestelling staat klaar in de download-directory van Meteobase. Klik op de onderstaande link om hem op te halen." & vbCrLf
             body &= DownloadURL & ZipFile & vbCrLf
+            body &= "De downloadlink is 30 dagen geldig." & vbCrLf
 
             If Me.Setup.Log.Warnings.Count > 0 Then
                 body &= vbCrLf

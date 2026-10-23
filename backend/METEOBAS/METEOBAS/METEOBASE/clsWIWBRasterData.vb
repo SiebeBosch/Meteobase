@@ -152,14 +152,14 @@ Public Class clsWIWBRasterData
                 End If
             End If
             If MAKKINK Then
-                If Not writeMAK() Then
+                If Not WithAvailableEndDate(LastDateMeteobaseEvaporation, "Verdamping volgens Makkink", Function() writeMAK()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de Makkink-verdamping")
                 Else
                     Me.Setup.Log.AddMessage("Makkink-verdamping werd met succes weggeschreven.")
                 End If
             End If
             If PM Then
-                If Not WritePM() Then
+                If Not WithAvailableEndDate(LastDateMeteobaseEvaporation, "Verdamping volgens Penman-Monteith", Function() WritePM()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de Penman-verdamping")
                 Else
                     Me.Setup.Log.AddMessage("Penman-verdamping werd met succes weggeschreven.")
@@ -171,7 +171,7 @@ Public Class clsWIWBRasterData
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
                 If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare actuele verdampingsgegevens uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
                 If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente actuele verdampingsgegevens uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
-                If Not WriteEVT_ACT() Then
+                If Not WithAvailableEndDate(LastDateSatdata, "SATDATA 3.0 actuele evapotranspiratie", Function() WriteEVT_ACT()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de SATDATA 3.0 actuele evapotranspiratie.")
                 Else
                     Me.Setup.Log.AddMessage("SATDATA 3.0 actuele evapotranspiratie werd met succes weggeschreven.")
@@ -183,7 +183,7 @@ Public Class clsWIWBRasterData
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
                 If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare verdampingstekorten uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
                 If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente verdampingstekorten uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
-                If Not WriteEVT_SHO() Then
+                If Not WithAvailableEndDate(LastDateSatdata, "SATDATA 3.0 evapotranspiratietekort", Function() WriteEVT_SHO()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van het SATDATA 3.0 evapotranspiratietekort.")
                 Else
                     Me.Setup.Log.AddMessage("SATDATA 3.0 evapotranspiratietekort werd met succes weggeschreven.")
@@ -1119,6 +1119,29 @@ Public Class clsWIWBRasterData
             Me.Setup.Log.AddError(ex.Message)
             Me.Setup.Log.AddError("Error in function GetDates of class clsWIWBRasterData.vb.")
             Return False
+        End Try
+    End Function
+
+    'last date for which the evaporation grids are available in WIWB
+    Private Const LastDateMeteobaseEvaporation As Integer = 20231231  'Makkink and Penman-Monteith grids by HKV, last added to WIWB up to and including 2023
+    Private Const LastDateSatdata As Integer = 20251031               'SATDATA 3.0 reanalysis V2 has stopped; succeeded by LIBV
+
+    Private Function WithAvailableEndDate(LastDate As Integer, Description As String, Action As Func(Of Boolean)) As Boolean
+        'limits the end date to the last available date for one data source, so the customer gets a clear message instead of empty or zero values
+        Dim OriginalTDate As Integer = TDate
+        Dim LastDateText As String = DateTime.ParseExact(LastDate.ToString, "yyyyMMdd", Globalization.CultureInfo.InvariantCulture).ToString("dd-MM-yyyy")
+        Try
+            If FDate > LastDate Then
+                Me.Setup.Log.AddError(Description & " is uitsluitend beschikbaar t/m " & LastDateText & ". Voor de gekozen periode zijn deze gegevens niet geleverd.")
+                Return True
+            End If
+            If TDate > LastDate Then
+                Me.Setup.Log.AddError(Description & " is uitsluitend beschikbaar t/m " & LastDateText & ". Deze gegevens zijn geleverd t/m die datum.")
+                TDate = LastDate
+            End If
+            Return Action()
+        Finally
+            TDate = OriginalTDate
         End Try
     End Function
 

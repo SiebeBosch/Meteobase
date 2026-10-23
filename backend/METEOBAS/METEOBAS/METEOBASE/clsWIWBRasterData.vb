@@ -1124,7 +1124,7 @@ Public Class clsWIWBRasterData
 
     'last date for which the evaporation grids are available in WIWB
     Private Const LastDateMeteobaseEvaporation As Integer = 20231231  'Makkink and Penman-Monteith grids by HKV, last added to WIWB up to and including 2023
-    Private Const LastDateSatdata As Integer = 20251031               'SATDATA 3.0 reanalysis V2 has stopped; succeeded by LIBV
+    Private Const LastDateSatdata As Integer = 20251030               'SATDATA 3.0 reanalysis V2 has stopped (WIWB end date 31-10-2025 is exclusive); succeeded by LIBV
 
     Private Function WithAvailableEndDate(LastDate As Integer, Description As String, Action As Func(Of Boolean)) As Boolean
         'limits the end date to the last available date for one data source, so the customer gets a clear message instead of empty or zero values

@@ -226,7 +226,7 @@ Public Class clsWIWBBasisData
     Public Function processNeerslagBasisDaily(ByVal worksheets As ExcelWorksheetCollection) As Boolean
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.IrisValidated", "P", Stations, FDate, TDate, "hydronet.csv", 1440, AccessToken)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.IrisValidated", "P", Stations, ShiftDate(FDate, -1), ShiftDate(TDate, 1), "hydronet.csv", 1440, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double
@@ -294,7 +294,7 @@ Public Class clsWIWBBasisData
 
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Evaporation", "Evaporation", Stations, FDate, TDate, "hydronet.csv", 1440, AccessToken)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Evaporation", "Evaporation", Stations, FDate, ShiftDate(TDate, 1), "hydronet.csv", 1440, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double
@@ -361,7 +361,7 @@ Public Class clsWIWBBasisData
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             'Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.AwsTenMinutes", "P", Stations, FDate, TDate, "hydronet.csv", 60)
-            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Synops", "P", Stations, FDate, TDate, "hydronet.csv", 60, AccessToken)
+            Dim myResponse As List(Of String) = WIWB.GetTimeSeries("Knmi.Synops", "P", Stations, FDate, ShiftDate(TDate, 1), "hydronet.csv", 60, AccessToken)
             Dim myRecord As String, i As Long, X As Double, Y As Double
             Dim myMS As clsMeteoStation, myMeteoVal As clsMeteoValue
             Dim DateStr As String, LocStr As String, NumStr As String, ParStr As String, Value As Double
@@ -705,6 +705,16 @@ Public Class clsWIWBBasisData
             Return False
         End Try
 
+    End Function
+
+    'WIWB returns values whose timestamp (= end of the period) lies in (StartDate, EndDate]:
+    '  Knmi.IrisValidated (daily precipitation): day D has timestamp D 08:00 UTC  -> request F-1 .. T+1
+    '  Knmi.Evaporation (daily):                 day D has timestamp D+1 00:00     -> request F .. T+1
+    '  Knmi.Synops (hourly):                     day D runs D 01:00 .. D+1 00:00   -> request F .. T+1
+    'Verified against WIWB on 25-10-2026 (De Bilt, June 2024 and full year 2023).
+    Private Function ShiftDate(ByVal yyyymmdd As Integer, ByVal days As Integer) As Integer
+        Dim d As Date = Date.ParseExact(yyyymmdd.ToString(), "yyyyMMdd", Globalization.CultureInfo.InvariantCulture)
+        Return Integer.Parse(d.AddDays(days).ToString("yyyyMMdd", Globalization.CultureInfo.InvariantCulture))
     End Function
 
     Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T

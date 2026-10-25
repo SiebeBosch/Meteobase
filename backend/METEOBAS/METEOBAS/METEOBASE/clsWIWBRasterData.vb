@@ -152,14 +152,14 @@ Public Class clsWIWBRasterData
                 End If
             End If
             If MAKKINK Then
-                If Not writeMAK() Then
+                If Not WithAvailableEndDate(LastDateMeteobaseEvaporation, "Verdamping volgens Makkink", Function() writeMAK()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de Makkink-verdamping")
                 Else
                     Me.Setup.Log.AddMessage("Makkink-verdamping werd met succes weggeschreven.")
                 End If
             End If
             If PM Then
-                If Not WritePM() Then
+                If Not WithAvailableEndDate(LastDateMeteobaseEvaporation, "Verdamping volgens Penman-Monteith", Function() WritePM()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de Penman-verdamping")
                 Else
                     Me.Setup.Log.AddMessage("Penman-verdamping werd met succes weggeschreven.")
@@ -171,7 +171,7 @@ Public Class clsWIWBRasterData
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
                 If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare actuele verdampingsgegevens uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
                 If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente actuele verdampingsgegevens uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
-                If Not WriteEVT_ACT() Then
+                If Not WithAvailableEndDate(LastDateSatdata, "SATDATA 3.0 actuele evapotranspiratie", Function() WriteEVT_ACT()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van de SATDATA 3.0 actuele evapotranspiratie.")
                 Else
                     Me.Setup.Log.AddMessage("SATDATA 3.0 actuele evapotranspiratie werd met succes weggeschreven.")
@@ -183,7 +183,7 @@ Public Class clsWIWBRasterData
                 Dim EndDate As New Date(Left(TDate.ToString.Trim, 4), Left(Right(TDate.ToString.Trim, 4), 2), Right(TDate.ToString.Trim, 2))
                 If StartDate < FirstAvailableDate Then Me.Setup.Log.AddError("Startdatum ligt vóór de eerst beschikbare verdampingstekorten uit SATDATA 3.0. Beschikbaarheid begint op 24 juli 2012.")
                 If EndDate > Now.AddDays(-62) Then Me.Setup.Log.AddWarning("Einddatum is mogelijk later dan de meest recente verdampingstekorten uit SATDATA 3.0. De verwerkingstijd bedraagt doorgaans 1 tot 2 maanden.")
-                If Not WriteEVT_SHO() Then
+                If Not WithAvailableEndDate(LastDateSatdata, "SATDATA 3.0 evapotranspiratietekort", Function() WriteEVT_SHO()) Then
                     Me.Setup.Log.AddError("Er is een fout opgetreden bij het wegschrijven van het SATDATA 3.0 evapotranspiratietekort.")
                 Else
                     Me.Setup.Log.AddMessage("SATDATA 3.0 evapotranspiratietekort werd met succes weggeschreven.")
@@ -266,9 +266,11 @@ Public Class clsWIWBRasterData
                 body &= vbCrLf
                 body &= "Uw bestanden staan klaar in de download-directory van Meteobase. Klik op de onderstaande link om ze op te halen." & vbCrLf
                 body &= DownloadURL & ZipFile & vbCrLf
+                body &= "De downloadlink is 30 dagen geldig." & vbCrLf
             Else
                 body &= "Uw bestelling is met succes afgehandeld en staat klaar in de download-directory van Meteobase. Klik op de onderstaande link om hem op te halen." & vbCrLf
                 body &= DownloadURL & ZipFile & vbCrLf
+                body &= "De downloadlink is 30 dagen geldig." & vbCrLf
             End If
 
 
@@ -761,7 +763,7 @@ Public Class clsWIWBRasterData
         Try
             Dim WIWB As New clsWIWB_API(Me.Setup)
             Dim ZipFilePath As String = TempDir & "\" & FileNameBase & ".Zip"
-            If Not WIWB.DownloadRasters(AccessToken, DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "HDF5", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, Parameter, Xmin, Ymin, Xmax, Ymax, FDate, NextDay(TDate), "HDF5", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
             FileCollection.Add(ZipFilePath)
             Return True
         Catch ex As Exception
@@ -785,7 +787,7 @@ Public Class clsWIWBRasterData
             Dim CurDate As New DateTime(Left(FDate, 4), Left(Right(FDate, 4), 2), Right(FDate, 2))
 
             If Not System.IO.Directory.Exists(TempResultsDir) Then System.IO.Directory.CreateDirectory(TempResultsDir)
-            If Not WIWB.DownloadRasters(AccessToken, DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, TDate, "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If Not WIWB.DownloadRasters(AccessToken, DataSource, DataParameter, Xmin, Ymin, Xmax, Ymax, FDate, NextDay(TDate), "geotiff", ZipFilePath,, DailySum) Then Throw New Exception("Error retrieving rasterdata from API.")
 
             'now that the zipfile has been downloaded, read each individual file from the file and warp & translate it
             Dim zipMS As New MemoryStream()
@@ -1007,10 +1009,14 @@ Public Class clsWIWBRasterData
             Me.Setup.Log.AddMessage("TDatePost2019=" & TDatePost2019)
 
             FileCollectionNSL = New List(Of String)
-            If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If FDatePre2019 > 0 AndAlso TDatePre2019 > 0 Then
+                If Not WIWB.DownloadRasters(AccessToken, "Meteobase.Precipitation", "P", Xmin, Ymin, Xmax, Ymax, FDatePre2019, TDatePre2019, "HDF5", ZipFilePre2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            End If
             FileCollectionNSL.Add(ZipFilePre2019Path)
 
-            If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            If FDatePost2019 > 0 AndAlso TDatePost2019 > 0 Then
+                If Not WIWB.DownloadRasters(AccessToken, "Knmi.International.Radar.Composite.Final.Reanalysis", "P", Xmin, Ymin, Xmax, Ymax, FDatePost2019, TDatePost2019, "HDF5", ZipFilePost2019Path) Then Throw New Exception("Error retrieving rasterdata from API.")
+            End If
             FileCollectionNSL.Add(ZipFilePost2019Path)
 
             Return True
@@ -1107,12 +1113,43 @@ Public Class clsWIWBRasterData
                 FDatePost2019 = FDate
                 TDatePost2019 = TDate
             End If
+            'include the complete last ordered day; the pre-2019 part of a period across 2018/2019 already ends at 20190101
+            If TDatePre2019 > 0 AndAlso TDatePost2019 = 0 Then TDatePre2019 = NextDay(TDatePre2019)
+            If TDatePost2019 > 0 Then TDatePost2019 = NextDay(TDatePost2019)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
             Me.Setup.Log.AddError("Error in function GetDates of class clsWIWBRasterData.vb.")
             Return False
         End Try
+    End Function
+
+    'last date for which the evaporation grids are available in WIWB
+    Private Const LastDateMeteobaseEvaporation As Integer = 20231231  'Makkink and Penman-Monteith grids by HKV, last added to WIWB up to and including 2023
+    Private Const LastDateSatdata As Integer = 20251030               'SATDATA 3.0 reanalysis V2 has stopped (WIWB end date 31-10-2025 is exclusive); succeeded by LIBV
+
+    Private Function WithAvailableEndDate(LastDate As Integer, Description As String, Action As Func(Of Boolean)) As Boolean
+        'limits the end date to the last available date for one data source, so the customer gets a clear message instead of empty or zero values
+        Dim OriginalTDate As Integer = TDate
+        Dim LastDateText As String = DateTime.ParseExact(LastDate.ToString, "yyyyMMdd", Globalization.CultureInfo.InvariantCulture).ToString("dd-MM-yyyy")
+        Try
+            If FDate > LastDate Then
+                Me.Setup.Log.AddError(Description & " is uitsluitend beschikbaar t/m " & LastDateText & ". Voor de gekozen periode zijn deze gegevens niet geleverd.")
+                Return True
+            End If
+            If TDate > LastDate Then
+                Me.Setup.Log.AddError(Description & " is uitsluitend beschikbaar t/m " & LastDateText & ". Deze gegevens zijn geleverd t/m die datum.")
+                TDate = LastDate
+            End If
+            Return Action()
+        Finally
+            TDate = OriginalTDate
+        End Try
+    End Function
+
+    Private Function NextDay(yyyymmdd As Integer) As Integer
+        'WIWB treats EndDate as exclusive (00:00); the day after the last ordered day includes that day completely
+        Return CInt(DateTime.ParseExact(yyyymmdd.ToString, "yyyyMMdd", Globalization.CultureInfo.InvariantCulture).AddDays(1).ToString("yyyyMMdd"))
     End Function
 
     Public Function ExtractZIP(ZipFilePath As String, ByRef CurDate As DateTime, TempResultsDir As String, ByRef MetaFileContent As String, ByVal WarpFromKNMI As Boolean, GDALOutputFormat As String) As Boolean

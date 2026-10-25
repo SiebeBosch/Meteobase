@@ -2232,7 +2232,7 @@ Public Class GeneralFunctions
 
             smtp.EnableSsl = False
             smtp.UseDefaultCredentials = False
-            smtp.Credentials = New System.Net.NetworkCredential("info@meteobase.nl", "@g3ntM327")
+            smtp.Credentials = New System.Net.NetworkCredential("info@meteobase.nl", GetEmailPasswordFromFile("", ""))   'wachtwoord uit licenses\email.txt, nooit in de code
             smtp.DeliveryMethod = Net.Mail.SmtpDeliveryMethod.Network
 
             smtp.Send(message)

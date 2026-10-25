@@ -587,6 +587,7 @@ Public Class clsWIWBBasisData
             body &= vbCrLf
             body &= "Uw bestelling staat klaar in de download-directory van Meteobase. Klik op de onderstaande link om hem op te halen." & vbCrLf
             body &= DownloadURL & ExcelFile & vbCrLf
+            body &= "De downloadlink is 30 dagen geldig." & vbCrLf
             body &= vbCrLf
             body &= "Met vriendelijke groet," & vbCrLf
             body &= "namens STOWA:" & vbCrLf

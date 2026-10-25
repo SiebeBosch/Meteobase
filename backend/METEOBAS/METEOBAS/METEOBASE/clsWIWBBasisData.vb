@@ -336,7 +336,8 @@ Public Class clsWIWBBasisData
                         NumStr = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         ParStr = Setup.GeneralFunctions.ParseString(myRecord, ",")
                         Value = Setup.GeneralFunctions.ParseString(myRecord, ",")
-                        myMeteoVal.DateTimeVal = New DateTime(Left(DateStr, 4), Right(Left(DateStr, 7), 2), Right(Left(DateStr, 10), 2), Right(Left(DateStr, 13), 2), Right(Left(DateStr, 16), 2), Right(Left(DateStr, 19), 2))
+                        myMeteoVal.DateTimeVal = New DateTime(Left(DateStr, 4), Right(Left(DateStr, 7), 2), Right(Left(DateStr, 10), 2), Right(Left(DateStr, 13), 2), Right(Left(DateStr, 16), 2), Right(Left(DateStr, 19), 2))                           'WIWB stamps evaporation of measuring day D at D+1 00:00 (end of the day); label it as day D
+                        myMeteoVal.DateTimeVal = myMeteoVal.DateTimeVal.AddDays(-1)
                         myMeteoVal.ValueAdjusted = Value
                         myMeteoVal.ValueObserved = Value
                         myMeteoVal.ValueCorrected = Value

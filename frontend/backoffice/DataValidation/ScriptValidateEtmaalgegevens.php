@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Validate Daggegevens </title>
@@ -25,11 +26,11 @@
         echo $dStartTime . "<br><br>";
     // Connect to the Database :
     // These are the parameters for database-access :
-	$DbAccess[0]= "localhost";
-	$DbAccess[1]= "5432";
-	$DbAccess[2]= "arend";
-	$DbAccess[3]= "arend";
-	$DbAccess[4]= "meteobase" ;
+	$DbAccess[0]= DL_HOST;
+	$DbAccess[1]= DL_PORT;
+	$DbAccess[2]= DL_USER;
+	$DbAccess[3]= DL_PASSWORD;
+	$DbAccess[4]= DL_DATABASE;
     // Access the Database :
 	$DbAccessString = assemble_dbaccess($DbAccess);
     	$dbHandle= pg_connect($DbAccessString );

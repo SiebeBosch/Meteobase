@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/backoffice/dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Uurgegevens </title>
@@ -40,10 +41,10 @@
     // ****** Login-data *********
     $sConnectionString="UNSET";
     $dbHandle=0;
-    $sMasterUser = "postgres";
-    $sMasterPassword = "W8Meester";
-    $sHost = "localhost";
-    $sPoort ="5432";
+    $sMasterUser = DL_USER;
+    $sMasterPassword = DL_PASSWORD;
+    $sHost = DL_HOST;
+    $sPoort =DL_PORT;
     $sDataBase = "dbregendata";
     $sTableName = "tborder";
 

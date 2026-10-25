@@ -50,7 +50,7 @@
 <?php 
 
 	include('local_config.php');
-	require 'sanitize.php';
+	require_once 'sanitize.php';
 
 
 	// Determine which actions are to be taken :
@@ -92,14 +92,14 @@
     	IF (!pg_ping($dbHandle) )
 		{
 		echo "Geen PostgreSQL server verbinding" . "<BR>";
-    		pg_free_result($dbHandle);
+    		// (PHP 8: geen pg_free_result op een verbinding)
     		pg_close($dbHandle);
 		}
 		ELSE
 		{
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
-    		test_echo("Database-handle     = ".$dbHandle . "<BR>");
+    		test_echo("Database-handle     = (verbinding)<BR>");
     		test_echo("PostgreSQL-client   = ".$version['client']. "<BR>");
     		test_echo("          -protocol = ".$version['protocol']. "<BR>");
     		test_echo("          -server   = ".$version['server']. "<BR><BR>");
@@ -147,13 +147,8 @@
 		test_echo("--------------------------------------------"."<BR>"); 
     // Access the table :
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-    	test_echo("Query : ". $sQuery . "<BR>");
-		pg_prepare($dbHandle, "backofficebasisgettablequery", $sQuery);
-		$sResult =  pg_execute($dbHandle, "backofficebasisgettablequery", array());
-    	$iNumberRows = pg_num_rows($sResult);
-    	test_echo("Aantal records : ".$iNumberRows . "<BR>");
-		$NewOrder = $iNumberRows + 1;
+		// New order number from the sequence (see next_id in sanitize.php)
+		$NewOrder = next_id($dbHandle, SEQ_BESTELLINGNR);
     	test_echo("Actueel Ordernummer : <b> ".$NewOrder . "</b><BR>");		
 		test_echo("----------------------------<BR>");
 		if($ValidatedWaarde == 'Uurstations'){
@@ -202,7 +197,7 @@
 			$sessionid,
 			$ValidatedDatum_van,
 			$ValidatedDatum_tot,
-			($iNumberRows + 1),
+			$NewOrder,
 			$ValidatedWaarde,
 			$strStations,
 			"FALSE",
@@ -222,7 +217,7 @@
         	}
         else
         	{
-          	test_echo("Resulaat : ". $bResult . "<BR>");
+          	test_echo("Resulaat : OK<BR>");
         	}
 
     // ** Clean-up :
@@ -249,15 +244,11 @@
     	IF (!pg_ping($dbHandle) )
 		{
 			echo "Geen PostgreSQL server verbinding" . "<BR>";
-    		pg_free_result($dbHandle);
+    		// (PHP 8: geen pg_free_result op een verbinding)
     		pg_close($dbHandle);
 			exit;
 		}
-    // Access the table and determine the name of the export-file:
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-		pg_prepare($dbHandle, "backofficebasisgettablequerytwo", $sQuery);
-		$sResult =  pg_execute($dbHandle, "backofficebasisgettablequerytwo", array());
-    	$iNumberRows = pg_num_rows($sResult);
+    // Determine the name of the export-file (the order number was taken from the sequence above):
 		test_echo("SessionID : ".$sessionid . "<br>");
 		test_echo("OrderID : ".$NewOrder . "<br>");
 		$ExportFileName = "Bestelling_" . $sessionid . "_" . $NewOrder . "_Basis_OBSOLETE.csv" ;
@@ -289,7 +280,7 @@
 	// Perform the exports as demanded :
 
 	// Export precipitation, when required
-	ExportPrecipitation($dbHandle, $meteostations, $ValidatedDatum_van, $ValidatedDatum_tot, $area, $FileCsvNeerslag, $waarde, $NamesString, $StationsString, $sessionid, $NewOrder, $neerslag, $makkink, $naam, $mail);
+	$basisGestart = ExportPrecipitation($dbHandle, $meteostations, $ValidatedDatum_van, $ValidatedDatum_tot, $area, $FileCsvNeerslag, $waarde, $NamesString, $StationsString, $sessionid, $NewOrder, $neerslag, $makkink, $naam, $mail);
 
 	
 	// Export Penman, when required
@@ -371,7 +362,7 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 {
 	test_echo("--------------------------------------------"."<BR>");
 	test_echo( "<b>Export Precipitation </b>"  . "<BR>");	
-	test_echo( "DatabaseHandle :  <br>" . $pDbHandle . "<BR>");
+	test_echo( "DatabaseHandle :  <br>(verbinding)<BR>");
 	test_echo( "Stations    AS String :  <br>" . implode(" ", $pStations) . "<BR>");
 	test_echo( "StartDay    AS STRING :  <br>" . $pDay1 . "<BR>");
 	test_echo( "StopDay     AS STRING :  <br>" . $pDay2 . "<BR>");
@@ -385,72 +376,38 @@ function ExportPrecipitation($pDbHandle, $pStations, $pDay1, $pDay2, $pArea, $pF
 	$AllStations = explode(",",implode(" ", $pStations));
 	test_echo("Number of Stations : " . count($AllStations)."<br>");
 	// Loop over all stations to retrieve the station key :
-	$cmd = '';
-    $SelectionStations = '';
-	foreach($pStations AS $item => $var) {
-        
-		$cmd = $cmd . ' ' . $var;
-        
+	// Arguments for WIWBBASIS; started without a shell (see sanitize.php)
+	$stations = [];
+	foreach((array)$pStations AS $item => $var) {
+		if (valid_token($var) === null) {
+			return false;
+		}
+		$stations[] = $var;
 	}
-	
+	$pnaam = valid_text($pnaam, 100);
+	$pmail = valid_mail($pmail);
+	if ($pnaam === null || $pmail === null || in_array(null, array_map('valid_token', [$pDay1, $pDay2, $sessionid, $NewOrder]), true)) {
+		return false;
+	}
+
 // Quick and dirty : Add a dummy station
-	$SelectionStations = $SelectionStations . "station = 9999"	;	
+	$SelectionStations = "station = 9999"	;
 	test_echo("Stations Selection String : <br>  " . $SelectionStations . "<br>");
 // Now export, depending on the temporal request :
 	if ($ExportType == "Dagstations")
 	{
-		$cmd =  ' "' . $pmail .'" ' . $cmd;
-		$cmd =  ' "' . $pnaam . '" ' . $cmd;
-		$cmd = $sessionid . ' ' . $NewOrder . ' ' . $cmd;
-		$cmd = 'FALSE ' . $cmd; //makkink
-		$cmd = 'TRUE ' . $cmd;	//neerslag
-		$cmd = 'TRUE ' . $cmd; //etmaalbasis
-		$cmd = ' ' . $pDay1 . ' ' . $pDay2 .  ' ' . $cmd;				
-		$cmd = '"c:\Program Files\Hydroconsult\WIWBBASIS\WIWBBASIS.exe" ' . $cmd;
-
-		// echo $cmd;
-      
-        $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-        pclose(sanitezedPopen($cmd, 'r'));
-	
+		// etmaalbasis, neerslag, makkink
+		$args = array_merge([$pDay1, $pDay2, 'TRUE', 'TRUE', 'FALSE', $sessionid, $NewOrder, $pnaam, $pmail], $stations);
+		return start_tool('WIWBBASIS/WIWBBASIS.exe', $args);
 	}
-	
-	if ($ExportType == "Uurstations") 
+
+	if ($ExportType == "Uurstations")
 	{
-		$cmd =  ' "' . $pmail .'" ' . $cmd;
-		$cmd =  ' "' . $pnaam . '" ' . $cmd;
-		$cmd = $sessionid . ' ' . $NewOrder . ' ' . $cmd;
-		
-		if ($makkink <> "")
-		{
-			$cmd = 'TRUE ' . $cmd;
-		}
-		else
-		{
-			$cmd = 'FALSE ' . $cmd;
-		}
-
-		if ($neerslag <> "")
-		{
-			$cmd = 'TRUE ' . $cmd;
-		}
-		else
-		{
-			$cmd = 'FALSE ' . $cmd;
-		}
-		
-		$cmd = 'FALSE ' . $cmd;
-		
-		$cmd = ' ' . $pDay1 . ' ' . $pDay2 .  ' ' . $cmd;
-				
-		$cmd = '"c:\Program Files\Hydroconsult\WIWBBASIS\WIWBBASIS.exe" ' . $cmd;
-
-		// echo $cmd;
-      
-        $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-		//var_dump($datum_van, $datum_tot, $cmd);
-        pclose(sanitezedPopen($cmd, 'r'));
+		$args = array_merge([$pDay1, $pDay2, 'FALSE', $neerslag <> "" ? 'TRUE' : 'FALSE', $makkink <> "" ? 'TRUE' : 'FALSE',
+			$sessionid, $NewOrder, $pnaam, $pmail], $stations);
+		return start_tool('WIWBBASIS/WIWBBASIS.exe', $args);
 	}
+	return false;
 }
 
 function ExportPrecipDay($pDbHandle, $pStations, $pDay1, $pDay2, $pFileCSV , $ExportType, $pSelectionStations, $pNamesString, $pStationsString)
@@ -629,7 +586,7 @@ function ExportMakkink($pDbHandle,$pFields, $pNames, $pStations, $pDay1, $pDay2,
 	// Perform the query and store it in the view:
 	pg_prepare($pDbHandle, "basisgegevensEXPORTVIEW", $ExportView);
 	$sResult =  pg_execute($pDbHandle, "basisgegevensEXPORTVIEW", array($pDay1, $pDay2));
-	test_echo("View created when ANY return is given : ". $sResult . "<BR>");
+	test_echo("View created when ANY return is given<BR>");
 	test_echo("........................."."<BR>");
 	
 		// Just for fun : report the number of records...
@@ -680,7 +637,7 @@ function ExportPenman()
 function FilterMakkink($pDbHandle, $pAll, $pMakkink, $pMakkinkFields, $pMakkinkNames)
 {
 	test_echo("FILTER STATIONS THAT CONTAIN DATA(MAKKINK)<br>");
-	test_echo ($pDbHandle."<br>");
+	test_echo ("(verbinding)<br>");
 	test_echo ($pAll."<br>");
 	$AllStations = explode(",",$pAll);
 	test_echo("Number of Stations : " . count($AllStations)."<br>");
@@ -725,7 +682,7 @@ function FilterMakkink($pDbHandle, $pAll, $pMakkink, $pMakkinkFields, $pMakkinkN
 function FilterPrecip($pDbHandle, $pAll, $pPrecipitation, $pPrecipFields, $pTimeType)
 {
 	test_echo("FILTER STATIONS THAT CONTAIN DATA(Precipitation)<br>");
-	test_echo ($pDbHandle."<br>");
+	test_echo ("(verbinding)<br>");
 	test_echo ($pAll."<br>");
 	$AllStations = explode(",",$pAll);
 	test_echo("Number of Stations : " . count($AllStations)."<br>");

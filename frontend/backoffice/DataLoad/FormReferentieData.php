@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   	<head>
     		<title>Neerslag Database --> Data Processing Referentiebestanden</title>

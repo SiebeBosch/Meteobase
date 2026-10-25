@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Stations </title>
@@ -149,11 +150,11 @@ function dump_array()
 	$CurrentStation ;
 
     // These are the parameters for database-access :
-	$DbAccess[0]= "localhost";
-	$DbAccess[1]= "5432";
-	$DbAccess[2]= "arend";
-	$DbAccess[3]= "arend";
-	$DbAccess[4]= "meteobase" ;
+	$DbAccess[0]= DL_HOST;
+	$DbAccess[1]= DL_PORT;
+	$DbAccess[2]= DL_USER;
+	$DbAccess[3]= DL_PASSWORD;
+	$DbAccess[4]= DL_DATABASE;
 
     // Assemble the Keys for the insertion :
 	$Keys[0] = "nummer";
@@ -183,7 +184,7 @@ function dump_array()
 	foreach ($Stations as $CurrentStation )
 	{
 		$LineCounter = $RecordCounter + 1;
-		$Values[0] = (integer) strip_double_quote($CurrentStation[0]);
+		$Values[0] = (int) strip_double_quote($CurrentStation[0]);
 		$Values[1] = "'". strip_double_quote($CurrentStation[3]) . "'";
 		$Values[2] = "'". strip_double_quote($CurrentStation[1]) . "'";
 		$Values[3] = "'". strip_double_quote($CurrentStation[2]) . "'";

@@ -2,7 +2,7 @@
 // Meteo Database
 // Version 6-7
 // April 2012
-require 'sanitize.php';
+require_once 'sanitize.php';
 
 if(isset($_POST['userFullNameFeedback'])) {
     if (!empty($_POST['website_url_hp'])) {
@@ -24,17 +24,18 @@ if(isset($_POST['userFullNameFeedback'])) {
 }
 
 if(isset($_POST['userFullNameFeedback'])) {
-	$naam = escapeshellarg($_POST['userFullNameFeedback']);
-	$mail = escapeshellarg($_POST['userEmailFeedback']);
-	$feedbackType = escapeshellarg($_POST['feedbackType']);
-	$feedbackMessage = escapeshellarg($_POST['feedbackMessage']);
+	$naam = valid_text($_POST['userFullNameFeedback'] ?? null, 100);
+	$mail = valid_mail($_POST['userEmailFeedback'] ?? null);
+	$feedbackType = $_POST['feedbackType'] ?? '';
+	$feedbackMessage = valid_text($_POST['feedbackMessage'] ?? null, 2000, true, true);
 
-	$cmd = '"c:\Program Files\Hydroconsult\WIWBFEEDBACK\WIWBFEEDBACK.exe" ' . $naam . ' ' . $mail . ' ' . $feedbackType . ' ' . $feedbackMessage . ' ';
-	$cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    
-	pclose(sanitezedPopen($cmd, 'r'));
-    
-	$_SESSION["feedbackMsg"]='Bedankt voor je bericht.';
+	if ($naam !== null && $mail !== null && $feedbackMessage !== null
+		&& in_array($feedbackType, ['vraag', 'bug', 'probleem', 'opmerking'], true)
+		&& start_tool('WIWBFEEDBACK/WIWBFEEDBACK.exe', [$naam, $mail, $feedbackType, $feedbackMessage])) {
+		$_SESSION["feedbackMsg"]='Bedankt voor je bericht.';
+	} else {
+		$_SESSION['errorMsg'] = 'Controleer uw naam, e-mailadres en bericht (max. 2000 tekens).';
+	}
 	include('aanmeld01.php');
     
 } else {

@@ -156,11 +156,11 @@
 	// ****** Login-data *********
     	$sConnectionString="UNSET";
     	$dbHandle=0;
-    	$sMasterUser = "bas";
-    	$sMasterPassword = "bas";
-    	$sHost = "localhost";
-    	$sPoort ="5432";
-    	$sDataBase = "meteobase";
+    	$sMasterUser = MASTERUSER;
+    	$sMasterPassword = MASTERPASSWORD;
+    	$sHost = HOST;
+    	$sPoort =POORT;
+    	$sDataBase = DATABASE;
     	$sTableName = "tijdreeksen";
 
     // ** Compile the connection-string to the DB:

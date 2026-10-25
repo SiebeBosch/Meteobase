@@ -8,7 +8,7 @@ $data = '';
 $waarde_check = '';
 
 include('local_config.php');
-require 'sanitize.php';
+require_once 'sanitize.php';
 
 // CONFIGURABLE >>>>>>>>>>
    $ExportPath = "C:\Apache24\htdocs\meteobase\downloads";
@@ -63,16 +63,33 @@ if(isset($_POST['dataType'])){
 	$_SESSION['toets_download_attempts'][] = time();
 	
     if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") {
+        order_error('Uw bestelling is niet verwerkt: accepteer eerst de cookies, die zijn nodig om uw gegevens te onthouden.', 'toetsingsdata: cookies geweigerd');
+        include('toets01.php');
         return;
     }
+
+	// Validate before the order is stored; the values go to a tool (see sanitize.php)
+	$user = valid_user_cookie();
+	if ($user === null) {
+		order_error(MSG_INVALID_USER, 'toetsingsdata: gebruiker-cookie');
+		include('toets01.php');
+		return;
+	}
+	if (!in_array($_POST['dataType'], ['stochasten_2015', 'stochasten_2019', 'stochasten_2024',
+			'tijdreeksen_2015', 'tijdreeksen_2019', 'tijdreeksen_2024'], true)) {
+		order_error(MSG_INVALID_INPUT, 'toetsingsdata: dataType');
+		include('toets01.php');
+		return;
+	}
+	$gestart = false;
 
 	if ($_POST['dataType'] == 'stochasten_2024') {
 		
 		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
+        // validated at the start of the order
+        $mail = $user['mail'];
+        $naam = $user['naam'];
+        $sessionid = $user['sessionid'];
     
         $adres = 'https://www.meteobase.nl/meteobase/downloads/';
         $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
@@ -84,14 +101,14 @@ if(isset($_POST['dataType'])){
 		//echo('Session id ' . $sessionid);
 
 		
-		exportStochasten('FALSE', 'FALSE', 'TRUE', $sessionid, $NewOrder, $naam, $mail);
+		$gestart = exportStochasten('FALSE', 'FALSE', 'TRUE', $sessionid, $NewOrder, $naam, $mail);
 	} elseif ($_POST['dataType'] == 'stochasten_2019') {
 		
 		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
+        // validated at the start of the order
+        $mail = $user['mail'];
+        $naam = $user['naam'];
+        $sessionid = $user['sessionid'];
     
         $adres = 'https://www.meteobase.nl/meteobase/downloads/';
         $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
@@ -103,15 +120,15 @@ if(isset($_POST['dataType'])){
 		//echo('Session id ' . $sessionid);
 
 		
-		exportStochasten('FALSE', 'TRUE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
+		$gestart = exportStochasten('FALSE', 'TRUE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
 		
 	} elseif ($_POST['dataType'] == 'stochasten_2015') {
 		
 		// Verwerken van het formulier
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
+        // validated at the start of the order
+        $mail = $user['mail'];
+        $naam = $user['naam'];
+        $sessionid = $user['sessionid'];
     
         $adres = 'https://www.meteobase.nl/meteobase/downloads/';
         $link = '<a href="'.$adres.'" target="_blank">downloadpagina</a>';
@@ -123,13 +140,13 @@ if(isset($_POST['dataType'])){
 		//echo('Session id ' . $sessionid);
 
 		
-		exportStochasten('TRUE', 'FALSE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
+		$gestart = exportStochasten('TRUE', 'FALSE', 'FALSE', $sessionid, $NewOrder, $naam, $mail);
     
     }else {
-        $gebruiker = $_COOKIE['gebruiker'];
-        $mail = $gebruiker['mail'];
-        $naam = $gebruiker['naam'];
-        $sessionid = $gebruiker['sessionid'];
+        // validated at the start of the order
+        $mail = $user['mail'];
+        $naam = $user['naam'];
+        $sessionid = $user['sessionid'];
 		
 		$STATS2015='FALSE';
 		$STATS2019='FALSE';
@@ -255,9 +272,15 @@ if(isset($_POST['dataType'])){
         }
         $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'TRUE','FALSE', $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085);
         
-	exportTijdreeksen($STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $sessionid, $NewOrder, $naam, $mail);
+	$gestart = exportTijdreeksen($STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $sessionid, $NewOrder, $naam, $mail);
     }
-    
+
+    if (!$gestart) {
+        order_error(MSG_TOOL_FAILED, 'toetsingsdata: ' . $_POST['dataType'] . ' niet gestart');
+        include('toets01.php');
+        return;
+    }
+
     // Regenerate CSRF token after successful submission to prevent resubmission
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     
@@ -274,23 +297,25 @@ if(isset($_POST['dataType'])){
 	function exportTijdreeksen($STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $psessionid, $pNewOrder, $pname, $pmail)
 	{
 	
-	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $STATS2024 . ' ' . $HUIDIG . ' ' . $ALL_2030 . ' ' . $GL_2050 . ' ' . $GH_2050 . ' ' . $WL_2050 . ' ' . $WH_2050 . ' ' . $GL_2085 . ' ' . $GH_2085 . ' ' . $WL_2085 . ' ' . $WH_2085 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
-	//echo($cmd);
-	$cmd = '"c:/Program Files/Hydroconsult/WIWBTOETSING/WIWBTOETSING.exe" ' . $cmd ;
-	//echo($cmd);
-    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(sanitezedPopen($cmd, 'r'));
+	$args = [$STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $psessionid, $pNewOrder];
+	$pname = valid_text($pname, 100);
+	$pmail = valid_mail($pmail);
+	if ($pname === null || $pmail === null || in_array(null, array_map('valid_token', $args), true)) {
+		return false;
+	}
+	return start_tool('WIWBTOETSING/WIWBTOETSING.exe', array_merge($args, [$pname, $pmail]));
 	}
 	
 	function exportStochasten($STATS2015, $STATS2019, $STATS2024, $psessionid, $pNewOrder, $pname, $pmail)
 	{
 	
-	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $STATS2024 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
-	//echo($cmd);
-	$cmd = '"c:/Program Files/Hydroconsult/WIWBSTOCHASTEN/WIWBSTOCHASTEN.exe" ' . $cmd;
-	//echo($cmd);
-    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(sanitezedPopen($cmd, 'r'));
+	$args = [$STATS2015, $STATS2019, $STATS2024, $psessionid, $pNewOrder];
+	$pname = valid_text($pname, 100);
+	$pmail = valid_mail($pmail);
+	if ($pname === null || $pmail === null || in_array(null, array_map('valid_token', $args), true)) {
+		return false;
+	}
+	return start_tool('WIWBSTOCHASTEN/WIWBSTOCHASTEN.exe', array_merge($args, [$pname, $pmail]));
 	}
 	
 	function plaatsBestelling($psessionid, $NewOrder, $tijdreeks, $stochast, $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085)
@@ -316,14 +341,14 @@ if(isset($_POST['dataType'])){
     	IF (!pg_ping($dbHandle) )
 		{
 		echo "Geen PostgreSQL server verbinding" . "<BR>";
-    		pg_free_result($dbHandle);
+    		// (PHP 8: geen pg_free_result op een verbinding)
     		pg_close($dbHandle);
 		}
 		ELSE
 		{
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
-    		test_echo("Database-handle     = ".$dbHandle . "<BR>");
+    		test_echo("Database-handle     = (verbinding)<BR>");
     		test_echo("PostgreSQL-client   = ".$version['client']. "<BR>");
     		test_echo("          -protocol = ".$version['protocol']. "<BR>");
     		test_echo("          -server   = ".$version['server']. "<BR><BR>");
@@ -334,13 +359,8 @@ if(isset($_POST['dataType'])){
 		
 		// Access the table :
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
-    	$sQuery = "SELECT * FROM " .$sTableName ;    
-    	test_echo("Query : ". $sQuery . "<BR>");
-        pg_prepare($dbHandle, "toetsingdataGet", $sQuery);
-		$sResult =  pg_execute($dbHandle, "toetsingdataGet", array()); 
-    	$iNumberRows = pg_num_rows($sResult);
-        $NewOrder = $iNumberRows + 1;
-    	test_echo("Aantal records : ".$iNumberRows . "<BR>");
+        // New order number from the sequence (see next_id in sanitize.php)
+        $NewOrder = next_id($dbHandle, SEQ_BESTELLINGNR);
     	test_echo("Actueel Ordernummer : <b> ".$NewOrder . "</b><BR>");
 		test_echo("----------------------------<BR>");
 
@@ -389,7 +409,7 @@ if(isset($_POST['dataType'])){
         	}
         else
         	{
-          	test_echo("Resulaat : ". $bResult . "<BR>");
+          	test_echo("Resulaat : OK<BR>");
         	}
 
 		// ** Clean-up :

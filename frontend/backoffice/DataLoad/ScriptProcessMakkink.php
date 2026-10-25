@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Makkink</title>
@@ -30,7 +31,7 @@
 	$UserFromForm = $_POST['GebruikerMakkink'];
 	$RemarkFromForm = $_POST['OpmerkingMakkink'];
 	$StartLineFromForm = $_POST['StartMakkink'];
-	$StopLineFromForm = (integer)$_POST['StopMakkink'];
+	$StopLineFromForm = (int)$_POST['StopMakkink'];
 // *************************************************************************
 //      Foldername is hard-coded :                                      // *
 	$FolderHardCoded = "D:\METEOBASE\Dataload\Makkink";      // *
@@ -91,9 +92,9 @@ function process_file($pFilename)
 
 
 	$StartValue = 0;
-	if ($StartLineFromForm > 0) {$StartValue = (integer)$StartLineFromForm;}
+	if ($StartLineFromForm > 0) {$StartValue = (int)$StartLineFromForm;}
 	$StopValue = count($linearray);
-	if ((integer)$StopLineFromForm  < count($linearray)) {$StopValue = (integer)$StopLineFromForm ;}
+	if ((int)$StopLineFromForm  < count($linearray)) {$StopValue = (int)$StopLineFromForm ;}
 
 	$BatchGrootte = 100;
 	$Batches = round((($StopValue-$StartValue)/$BatchGrootte),0,PHP_ROUND_HALF_DOWN);
@@ -212,11 +213,11 @@ function dump_array()
 	$CurrentRecord ;
 
     // These are the parameters for database-access :
-	$DbAccess[0]= "localhost";
-	$DbAccess[1]= "5432";
-	$DbAccess[2]= "arend";
-	$DbAccess[3]= "arend";
-	$DbAccess[4]= "meteobase" ;
+	$DbAccess[0]= DL_HOST;
+	$DbAccess[1]= DL_PORT;
+	$DbAccess[2]= DL_USER;
+	$DbAccess[3]= DL_PASSWORD;
+	$DbAccess[4]= DL_DATABASE;
 
     // Assemble the Keys for the insertion :
 	$Keys[0] = "datum";

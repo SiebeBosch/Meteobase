@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Process Tijdreeksen Scenario's</title>
@@ -42,11 +43,11 @@
     // ****** Login-data *********
     $sConnectionString="UNSET";
     $dbHandle=0;
-    $sMasterUser = MASTERUSER;
-    $sMasterPassword = MASTERPASSWORD;
-    $sHost = HOST;
-    $sPoort =POORT;
-    $sDataBase = DATABASE;
+    $sMasterUser = DL_USER;
+    $sMasterPassword = DL_PASSWORD;
+    $sHost = DL_HOST;
+    $sPoort =DL_PORT;
+    $sDataBase = DL_DATABASE;
     $sTableName = "tijdreeksen";
 
     // ** Compile the connection-string to the DB:

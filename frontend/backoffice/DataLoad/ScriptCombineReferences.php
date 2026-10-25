@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../dataload_bootstrap.php'; ?>
 <html>
   <head>
     <title>Combineer Referentiegegevens </title>
@@ -38,11 +39,11 @@
      // Open the database for writing :
 
     // These are the parameters for database-access :
-	$DbAccess[0]= HOST;
-	$DbAccess[1]= POORT;
-	$DbAccess[2]= MASTERUSER;
-	$DbAccess[3]= MASTERPASSWORD;
-	$DbAccess[4]= DATABASE;
+	$DbAccess[0]= DL_HOST;
+	$DbAccess[1]= DL_PORT;
+	$DbAccess[2]= DL_USER;
+	$DbAccess[3]= DL_PASSWORD;
+	$DbAccess[4]= DL_DATABASE;
 
             // Access the Database :
 	$DbAccessString = assemble_dbaccess($DbAccess);

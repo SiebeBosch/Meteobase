@@ -24,3 +24,26 @@ frontend/meteobase/python/wiwb/stats_app.py.bak
 frontend/local_config.php
 frontend/uploads/
 .vs/ 
+
+# --- toegevoegd 23-10-2026 (security/php8-oktober-2026) ---
+# configuratie met wachtwoorden en sleutels: niet committen, zie frontend/local_config.example.php
+frontend/local_config.php
+# logbestanden
+**/*.log
+# phpinfo- en test-/backupkopieën van de website
+frontend/tijd.php
+frontend/index_test.php
+frontend/indexbu.php
+# onderhoudspagina en oude kopie van de python-backend (alleen op de server)
+frontend/onderhoud/
+frontend/meteobase/python met kortedurenfout/
+**/__pycache__/
+# bestellingen en uploads van klanten, gegenereerde rasterviews
+frontend/meteobase/downloads/
+frontend/meteobase/uploads/
+frontend/images/rasterviews/*.png
+frontend/images/rasterviews/*.aux.xml
+# restbestanden van oude tool-aanroepen in de webroot
+frontend/1
+frontend/Click
+frontend/prj

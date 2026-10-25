@@ -57,7 +57,8 @@
 	}
     // Access the common table :
     	$sQueryCommon = "SELECT * FROM data.regionhour" ;
-    	$sResult = pg_query($dbHandle,$sQueryCommon);
+        pg_prepare($dbHandle, "combinecommonget", $sQueryCommon);
+        $sResult =  pg_execute($dbHandle, "combinecommonget", array());
     	$iNumberRows = pg_num_rows($sResult);
         echo "DBACCESS : " . $iNumberRows . "<br>";
 
@@ -129,9 +130,12 @@ function fetch_daytime($pDbHandle, $pID)
         global $CurrentDay;
         global $CurrentTime;
 
-        $SelString = "SELECT datum,hour FROM data.regionhour WHERE id = " . $pID;
+        $SelString = "SELECT datum,hour FROM data.regionhour WHERE id = $1";
 //        echo $SelString . "" . "<br>";
-       	$CurrentDayData = pg_query($pDbHandle,$SelString);
+        pg_prepare($pDbHandle, "combinefetchdaytime", $SelString);
+        $CurrentDayData =  pg_execute($pDbHandle, "combinefetchdaytime", array(
+                $pID
+        ));
        	$CurrentRecord = pg_fetch_array($CurrentDayData);
         $CurrentDay = $CurrentRecord[0];
         $CurrentTime = $CurrentRecord[1];
@@ -145,9 +149,13 @@ function fetch_H($pDbHandle, $pDate, $pTime)
         global $ExtraH;
 //echo "Date   " . $pDate . "<br>";
 //echo "Time   " . $pTime . "<br>";
-        $SelString = "SELECT hourh,extrah FROM data.regionhraw WHERE datum = '" . $pDate . "' AND time = '" . $pTime . "'";
+        $SelString = "SELECT hourh,extrah FROM data.regionhraw WHERE datum = '" . "$1" . "' AND time = '" . "$2" . "'";
 //        echo $SelString . "" . "<br>";
-       	$CurrentDayData = pg_query($pDbHandle,$SelString);
+        pg_prepare($pDbHandle, "combinefetchH", $SelString);
+        $CurrentDayData =  pg_execute($pDbHandle, "combinefetchH", array(
+                $pDate,
+                $pTime
+        ));
        	$CurrentRecord = pg_fetch_array($CurrentDayData);
         $HourH = $CurrentRecord[0];
         $ExtraH = $CurrentRecord[1];
@@ -159,8 +167,12 @@ function fetch_HPlus($pDbHandle, $pDate, $pTime)
 {
         global $HourHP;
         global $ExtraHP;
-        $SelString = "SELECT hourhp,extrahp FROM data.regionhpraw WHERE datum = '" . $pDate . "' AND time = '" . $pTime . "'";
-       	$CurrentDayData = pg_query($pDbHandle,$SelString);
+        $SelString = "SELECT hourhp,extrahp FROM data.regionhpraw WHERE datum = '" . "$1" . "' AND time = '" . "$2" . "'";
+        pg_prepare($pDbHandle, "combinefetchHplus", $SelString);
+        $CurrentDayData =  pg_execute($pDbHandle, "combinefetchHplus", array(
+                $pDate,
+                $pTime
+        ));
        	$CurrentRecord = pg_fetch_array($CurrentDayData);
         $HourHP = $CurrentRecord[0];
         $ExtraHP = $CurrentRecord[1];
@@ -172,8 +184,12 @@ function fetch_L($pDbHandle, $pDate, $pTime)
 {
         global $HourL;
         global $ExtraL;
-        $SelString = "SELECT hourl,extral FROM data.regionlraw WHERE datum = '" . $pDate . "' AND time = '" . $pTime . "'";
-       	$CurrentDayData = pg_query($pDbHandle,$SelString);
+        $SelString = "SELECT hourl,extral FROM data.regionlraw WHERE datum = '" . "$1" . "' AND time = '" . "$2" . "'";
+        pg_prepare($pDbHandle, "combinefetchL", $SelString);
+        $CurrentDayData =  pg_execute($pDbHandle, "combinefetchL", array(
+                $pDate,
+                $pTime
+        ));
        	$CurrentRecord = pg_fetch_array($CurrentDayData);
         $HourL = $CurrentRecord[0];
         $ExtraL = $CurrentRecord[1];

@@ -31,6 +31,7 @@ bounds = pygeoj.load(data=geojson).bbox
 
 r = from_wiwb('Knmi.International.Radar.Composite','P',bounds,start_date,end_date)
 
+print(f'${r.status_code}')
 if r.status_code == 200:
     with open(os.path.join(wiwb_dir,'P.zip'),'wb') as f:
         for chunk in r:

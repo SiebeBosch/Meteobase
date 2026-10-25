@@ -77,7 +77,8 @@
     $sQuery = "SELECT * FROM " .$sTableName ;    
     echo "<BR>" . "Query : ". $sQuery . "<BR>";
     
-    $sResult = pg_query($dbHandle,$sQuery);
+    pg_prepare($dbHandle, "stochastenGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "stochastenGet", array()); 
     $iNumberRows = pg_num_rows($sResult);
     echo "<BR>"."Aantal records : ".$iNumberRows;
 
@@ -167,8 +168,8 @@ echo    "<BR>"."VALUES = " . $sInsertValues ;
 
 //    echo "<BR>" . $sInsertQuery2 . "<BR>";
 
-
-//    $bResult = pg_query($dbHandle, $sInsertQuery);
+// REPLACE WITH PG_EXECUTE AND PG_PREPARE IF THIS EVER GET USED AGAIN
+//    $bResult = pg query($dbHandle, $sInsertQuery);
 
         if (!$bResult)
         {

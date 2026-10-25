@@ -5,7 +5,87 @@
 include('local_config.php');
 
 session_start();
+
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// ============================================
+// FEEDBACK FORM PROCESSING (before any HTML output)
+// ============================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userFullNameFeedback'])) {
+    require_once __DIR__ . '/sanitize.php';
+    
+    // CSRF validation
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION["errorMsg"] = 'Beveiligingsvalidatie mislukt.';
+        header("Location: index.php?tb=feedback");
+        exit;
+    }
+    
+    // Honeypot check
+    if (!empty($_POST['website_url_hp'])) {
+        // Silent fail - pretend success to fool bots
+        $_SESSION["feedbackMsg"] = 'Bedankt voor je bericht.';
+        header("Location: index.php?tb=feedback");
+        exit;
+    }
+    
+    // Time-based check
+    $min_submission_time = 3;
+    $form_start_time = isset($_POST['form_timestamp']) ? (int)$_POST['form_timestamp'] : 0;
+    $time_taken = time() - $form_start_time;
+    
+    if ($form_start_time === 0 || $time_taken < $min_submission_time) {
+        // Too fast - likely a bot
+        $_SESSION["feedbackMsg"] = 'Bedankt voor je bericht.';
+        header("Location: index.php?tb=feedback");
+        exit;
+    }
+    
+    // reCAPTCHA validation (only if cookies not allowed)
+    if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") {
+        $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
+        if (empty($recaptcha_response)) {
+            $_SESSION["errorMsg"] = 'Vul de reCAPTCHA in.';
+            header("Location: index.php?tb=feedback");
+            exit;
+        }
+        
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $recaptcha_secret = RECAPTCHA_SECRET_KEY;
+        $recaptcha_verify = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+        $recaptcha_result = json_decode($recaptcha_verify);
+        
+        if (!$recaptcha_result->success) {
+            $_SESSION["errorMsg"] = 'reCAPTCHA validatie mislukt. Probeer het opnieuw.';
+            header("Location: index.php?tb=feedback");
+            exit;
+        }
+    }
+    
+    // All validations passed - process the feedback
+    $naam = escapeshellarg($_POST['userFullNameFeedback']);
+    $mail = escapeshellarg($_POST['userEmailFeedback']);
+    $feedbackType = escapeshellarg($_POST['feedbackType']);
+    $feedbackMessage = escapeshellarg($_POST['feedbackMessage']);
+
+    $cmd = '"c:\Program Files\Hydroconsult\WIWBFEEDBACK\WIWBFEEDBACK.exe" ' . $naam . ' ' . $mail . ' ' . $feedbackType . ' ' . $feedbackMessage . ' ';
+    $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
+    
+    pclose(sanitezedPopen($cmd, 'r'));
+    
+    $_SESSION["feedbackMsg"] = 'Bedankt voor je bericht.';
+    header("Location: index.php?tb=feedback");
+    exit;
+}
+// ============================================
+// END FEEDBACK PROCESSING
+// ============================================
+
 //IE browser detector
+
 if (isset($_SERVER['HTTP_REFERER'])){
 	$redirect = strpos($_SERVER['HTTP_REFERER'], 'meteobase.nl')?true:false;
 }
@@ -18,11 +98,29 @@ if($browser_ie && $redirect) {
 	exit;
 }
 
+$allowTabs = [
+    "basisgegevens",
+    "rasterdata",
+    "rasterview",
+    "satdata",
+    "toetsingsdata",
+    "stedelijk",
+    "aanmelden",
+    "feedback",
+    "rasterHarmonie",
+    "rasterDataUpload",
+    "onderhoud"
+];
+
 // URL
 if(isset($_GET['tb'])){
-	$tab = $_GET['tb'];
-	$url = '?tb=' . $tab . '&';
-	$urlsub = '?tb=' . $tab;
+    if (in_array($_GET['tb'], $allowTabs)) {
+	    $tab = $_GET['tb'];
+	    $url = '?tb=' . $tab . '&';
+	    $urlsub = '?tb=' . $tab;
+    } else {
+        header("Refresh: 0; URL=index.php");
+    }
 }else{
 	$tab = 'aanmelden';
 	$url = '?tb=' . $tab . '&';
@@ -98,11 +196,39 @@ if(!isset($_COOKIE['gebruiker'])){
 }
 
 //Gegevenspaneel - Content
-$content = 'pages/' . $tab . '.php';
+// Feedback tab uses aanmeld01.php directly (no separate feedback.php needed)
+if ($tab === 'feedback') {
+    $content = 'pages/aanmeld01.php';
+} else {
+    $content = 'pages/' . $tab . '.php';
+}
 $bericht = '';
 
 // Aanmeld script
 if(isset($_POST['userFullName'])) {
+	// CSRF validation
+	if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+		$_SESSION["errorMsg"] = 'Beveiligingsvalidatie mislukt.';
+		header("Location: index.php");
+		exit;
+	}
+	
+	// Honeypot check
+	if (!empty($_POST['website_url_hp'])) {
+		$_SESSION["feedbackMsg"] = 'Je bent succesvol geregistreerd!';
+		header("Location: index.php");
+		exit;
+	}
+	
+	// Time-based check
+	$min_submission_time = 3;
+	$form_start_time = isset($_POST['form_timestamp']) ? (int)$_POST['form_timestamp'] : 0;
+	if ($form_start_time === 0 || (time() - $form_start_time) < $min_submission_time) {
+		$_SESSION["feedbackMsg"] = 'Je bent succesvol geregistreerd!';
+		header("Location: index.php");
+		exit;
+	}
+	
 	if(isset($_POST['userFullName']) && $_POST['userFullName'] != ''){
 		$naam = $_POST['userFullName'];
 	}else{
@@ -655,6 +781,16 @@ $docu_menu = array(
 
                     <form method="POST" id="registerModalForm" action="<?php echo($_SERVER["PHP_SELF"]); ?>"
                         class="register-modal">
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                        <!-- Timestamp for time-based check -->
+                        <input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+                        <!-- Honeypot field -->
+                        <div style="position: absolute; left: -9999px;">
+                            <label for="website_url_hp">Leave this field empty</label>
+                            <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+                        </div>
+                        
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label for="userFullName">Naam</label>
                             <div class="input-group">
@@ -697,67 +833,76 @@ $docu_menu = array(
     <!--End of Register Modal-->
     <!--Feedback Modal -->
     <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="feedbackModalLabel"></h4>
-                </div>
-                <?php if (isset($_COOKIE['cookiebar']) && $_COOKIE['cookiebar'] == "CookieAllowed") { ?>
-                <div class="modal-body">
-                    <form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
-                        <div class="form-group col-md-6 col-sm-12 col-xs-12">
-                            <label for="userFullNameFeedback">Naam</label>
-                            <input type="text" name="userFullNameFeedback" id="userFullNameFeedback"
-                                class="form-control" placeholder="Name" aria-describedby="name">
-                        </div>
-                        <div class="form-group col-md-6 col-sm-12 col-xs-12">
-                            <label for="userEmailFeedback">E-mail</label>
-                            <input type="text" id="userEmailFeedback" name="userEmailFeedback" class="form-control"
-                                placeholder="Email" aria-describedby="email">
-                        </div>
-
-                        <div class="form-group  col-md-12 col-sm-12 col-xs-12">
-                            <label for="feedbackType"> U heeft een:</label>
-                            <select id="feedbackType" name="feedbackType" class="form-control">
-                                <option selected value="vraag">Vraag</option>
-                                <option value="bug">Bug</option>
-                                <option value="probleem">Probleem</option>
-                                <option value="opmerking">Opmerking</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label for="feedbackMessage">Vul hieronder uw vraag, bug, probleem of opmerking in:</label>
-                            <textarea id="feedbackMessage" name="feedbackMessage" class="form-control" rows="3">
-						</textarea>
-                        </div>
-                        <?php if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") { ?>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <div class="g-recaptcha" data-sitekey="6Lf1lHQiAAAAAPhNBL1Ue4Q14RU744b-OzHgEtq1"></div>
-                            <span id="error-captcha"></span>
-                        </div>
-                        <?php } ?>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                            <input class="btn submit-btn btn-primary" type="submit" value="Stuur bericht">
-
-                        </div>
-                    </form>
-                </div>
-                <?php } else {?>
-                <div class="modal-body">
-                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                        <label>Zorg dat de cookies geaccepteerd zijn om feedback te plaatsen.</label>
-                        <button class="btn btn-primary" onclick="requestCookieBar()">
-                            Accepteer cookies
-                        </button>
-                    </div>
-                </div>
-                <?php } ?>
-            </div>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="feedbackModalLabel"></h4>
         </div>
+        <?php if (isset($_COOKIE['cookiebar']) && $_COOKIE['cookiebar'] == "CookieAllowed") { ?>
+        <div class="modal-body">
+          <form method="POST" id="feedbackModalForm" action="index.php?tb=feedback" class="register-modal">
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="userFullNameFeedback">Naam</label>
+              <input type="text" name="userFullNameFeedback" id="userFullNameFeedback"
+                class="form-control" placeholder="Name" aria-describedby="name">
+            </div>
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="userEmailFeedback">E-mail</label>
+              <input type="text" id="userEmailFeedback" name="userEmailFeedback" class="form-control"
+                placeholder="Email" aria-describedby="email">
+            </div>
+
+            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              <label for="feedbackType"> U heeft een:</label>
+              <select id="feedbackType" name="feedbackType" class="form-control">
+                <option selected value="vraag">Vraag</option>
+                <option value="bug">Bug</option>
+                <option value="probleem">Probleem</option>
+                <option value="opmerking">Opmerking</option>
+              </select>
+            </div>
+            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              <label for="feedbackMessage">Vul hieronder uw vraag, bug, probleem of opmerking in:</label>
+              <textarea id="feedbackMessage" name="feedbackMessage" class="form-control" rows="3">
+						</textarea>
+            </div>
+
+            <div class="form-group" style="position: absolute; left: -9999px;">
+              <label for="website_url_hp">Laat dit veld leeg</label>
+              <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+            </div>
+            <input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            
+            <?php if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") { ?>
+            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
+              <span id="error-captcha"></span>
+            </div>
+            <?php } ?>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+              <input class="btn submit-btn btn-primary" type="submit" value="Stuur bericht">
+
+            </div>
+          </form>
+        </div>
+        <?php } else {?>
+        <div class="modal-body">
+          <div class="form-group col-md-12 col-sm-12 col-xs-12">
+            <label>Zorg dat de cookies geaccepteerd zijn om feedback te plaatsen.</label>
+            <button class="btn btn-primary" onclick="requestCookieBar()">
+              Accepteer cookies
+            </button>
+          </div>
+        </div>
+        <?php } ?>
+      </div>
     </div>
+  </div>
     <!--End of Feedback Modal-->
     <!--Introduction Modal -->
     <div class=" modal fade" id="introductionModal" tabindex="-1" role="dialog"
@@ -1200,6 +1345,13 @@ $docu_menu = array(
                         </ul>
                         <h5>WIWB</h5>
                         <ul>
+                        <li>
+                        Landelijke Informatieservice Bodemvocht,
+                                <a href="https://servicedesk-hydrologic.atlassian.net/wiki/spaces/HS/pages/23593159/LIBV"
+                                    target="_blank">
+                                    “documentatie van LIBV”
+                                </a>
+                            </li>
                             <li>
                                 Het Waterschapshuis,
                                 <a href="https://portal.hydronet.com/data/files/Technische%20Instructies%20WIWB%20API.pdf"
@@ -1292,6 +1444,22 @@ $docu_menu = array(
                                     The Potential of Operational Radar”
                                 </a>
                                 , J. Hydrometeorol. 8, pp. 1204-1224.
+                            </li>
+                            <li>
+                                HKV (2024),
+                                <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/memo_verwachtingskwaliteit_2023.pdf"
+                                    target="_blank">
+                                    “Nauwkeurigheid meteorologische verwachtingen 2023.”
+                                </a>
+                                , PR3663.303 [Memo].
+                            </li>
+                            <li>
+                                HKV (2024),
+                                <a href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/validatie_IRC_2023.pdf"
+                                    target="_blank">
+                                    “Statistische kentallen KNMI Final Reanalysis 2023.”
+                                </a>
+                                , [Intern rapport].
                             </li>
                         </ul>
                         <h5>Referentiegewasverdamping</h5>
@@ -1520,7 +1688,7 @@ $docu_menu = array(
     <script src="js/stations_number.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/dropzone.js" type="text/javascript" charset="utf-8"></script>
     <script
-        src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL">
+        src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0">
     </script>
     <script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
@@ -3086,14 +3254,6 @@ $docu_menu = array(
             "De begindatum mag niet eerder dan 01/01/2014 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
         );
 
-        jQuery.validator.addMethod("herhalingMinDate", function(value, element) {
-                return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrAfter(
-                    moment(
-                        '15/01/1990', 'DD/MM/YYYY'));
-            },
-            "De begindatum mag niet eerder dan 15/01/1990 zijn. De datum moet de notatie DD/MM/JJJJ hebben."
-        );
-
         jQuery.validator.addMethod("dateRangeCheck", function(value, element) {
             if (moment($('#dateTo').val(), 'DD/MM/YYYY').isBefore(moment($('#dateFrom')
                     .val(),
@@ -3102,6 +3262,24 @@ $docu_menu = array(
             }
             return this.optional(element) || true;
         }, "De startdatum moet voor de einddatum liggen.");
+
+        jQuery.validator.addMethod("dateRangeCheck", function(value, element) {
+    var startDate = moment($('#dateFrom').val(), 'DD/MM/YYYY');
+    var endDate = moment($('#dateTo').val(), 'DD/MM/YYYY');
+    
+
+    if (endDate.isBefore(startDate)) {
+        return false;
+    }
+
+    var twoYearsAfterStart = startDate.clone().add(2, 'years');
+    
+    if (endDate.isAfter(twoYearsAfterStart)) {
+        return false; 
+    }
+
+    return this.optional(element) || true;
+}, "De periode mag niet langer zijn dan 2 jaar."); 
 
         jQuery.validator.addMethod("basicInfoMaxDate", function(value, element) {
                 return this.optional(element) || moment(value, 'DD/MM/YYYY').isSameOrBefore(
@@ -3229,7 +3407,7 @@ $docu_menu = array(
             rules: {
                 rasterViewDateFrom: {
                     required: true,
-                    herhalingMinDate: true,
+                    
                     rasterDataMaxDate: true
                 },
             },
@@ -3685,6 +3863,7 @@ $docu_menu = array(
         }
         if ($('#rasterViewForm').length) {
             var rasterViewData = readCookie('rasterViewFormData');
+            console.log(rasterViewData)
             if (!_.isEmpty(rasterViewData)) {
                 var rasterViewCookie = {};
                 rasterViewData.split('&').forEach(function(

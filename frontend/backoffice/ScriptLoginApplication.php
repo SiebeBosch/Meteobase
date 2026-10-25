@@ -26,7 +26,7 @@
     // Validating input of the Table Name :
     $ValidatedUser = check_input($naam,"");
     $ValidatedCompany = check_input($org,"");
-    
+    $ValidatedPhone = "0600000000";
     $ValidatedEmail = check_input($mail,"");
 
   ?>
@@ -53,18 +53,16 @@
 
     // ** and connect to the database Server:
     	$dbHandle= pg_connect($sConnectionString);
-		echo($dbHandle);
+
     // ** Test for access to the database :
     	IF (!pg_ping($dbHandle) )
 		{
-	echo "Geen PostgreSQL server verbinding" . "<BR>";
     		pg_free_result($dbHandle);
     		pg_close($dbHandle);
 		exit;
 		}
 	ELSE
 		{
-			var_dump(pg_last_error());
         	$version = pg_version($dbHandle);
 			test_echo(".....Pingen naar de PostgreSQL server succesvol :" . "<BR>");
 			test_echo("Database-handle     = ".$dbHandle . "<BR>");
@@ -76,7 +74,8 @@
     // Access the table :
     	$sQuery = "SELECT * FROM " .$sTableName ;    
 		test_echo("<BR>" . "Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "loginGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "loginGet", array());
     	$iNumberRows = pg_num_rows($sResult);
 		test_echo("<BR>"."Aantal records : ".$iNumberRows);
 
@@ -120,13 +119,13 @@
 
     // Add the Values :
     	$sInsertValues  = " VALUES (";
-    	$sInsertValues .= ($iNumberRows +1) ;
-    	$sInsertValues .= "," . "'" . $ValidatedUser . "'";
-    	$sInsertValues .= "," .  "'" . $ValidatedEmail . "'";  
-    	$sInsertValues .= "," .  "'" . $dStartDate . "'";  
-    	$sInsertValues .= "," .  "'" . $dStartTime . "'";  
-    	$sInsertValues .= "," .  "'" . $ValidatedCompany . "'";  
-    	$sInsertValues .= "," .  "'" . $ValidatedPhone . "'";  
+    	$sInsertValues .= "$1" ;
+    	$sInsertValues .= "," . "$2";
+    	$sInsertValues .= "," . "$3";  
+    	$sInsertValues .= "," . "$4";  
+    	$sInsertValues .= "," . "$5";  
+    	$sInsertValues .= "," . "$6" ;  
+    	$sInsertValues .= "," . "$7" ;  
     	$sInsertValues .=  ")";
 
 		test_echo("<BR>"."VALUES = " . $sInsertValues) ;
@@ -134,11 +133,20 @@
     // ADD SESSION ID TO USER COOKIE
 	$sessionid = $iNumberRows +1;
 	setcookie('gebruiker[sessionid]', $sessionid);
-	
+
     // And combine :
     	$sInsertQuery = $sInsertKeys . $sInsertValues ;
 		test_echo("<BR>"."<BR>".$sInsertQuery . "<BR>");
-    	$bResult = pg_query($dbHandle, $sInsertQuery);
+		pg_prepare($dbHandle, "logininsert", $sInsertQuery);
+		$bResult =  pg_execute($dbHandle, "logininsert", array(
+			($iNumberRows+1),
+			$ValidatedUser,
+			$ValidatedEmail,
+			$dStartDate,
+			$dStartTime,
+			$ValidatedCompany,
+			$ValidatedPhone
+		));
 
         if (!$bResult)
         	{
@@ -148,11 +156,9 @@
         	{
           	test_echo("<BR>"."Resulaat : ". $bResult . "<BR>");
         	}  
-
     // ** Clean-up :
-    	pg_free_result($result);
+    	pg_free_result($bResult);
     	pg_close($dbHandle);
-echo "<BR>";
 ?>
 
   </body>

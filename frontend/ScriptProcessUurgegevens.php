@@ -76,7 +76,9 @@
     $sQuery = "SELECT * FROM " .$sTableName ;    
     echo "<BR>" . "Query : ". $sQuery . "<BR>";
     
-    $sResult = pg_query($dbHandle,$sQuery);
+    pg_prepare($dbHandle, "processUurGet", $sQuery);
+    $sResult =  pg_execute($dbHandle, "processUurGet", array());
+    
     $iNumberRows = pg_num_rows($sResult);
     echo "<BR>"."Aantal records : ".$iNumberRows;
 
@@ -166,8 +168,11 @@ echo    "<BR>"."VALUES = " . $sInsertValues ;
 
 //    echo "<BR>" . $sInsertQuery2 . "<BR>";
 
-
-//    $bResult = pg_query($dbHandle, $sInsertQuery);
+      // if this ever get used again, rewrite to pg_prepare and pg_execute
+      //  pg_prepare($dbHandle, "processUurGet", $sInsertQuery);
+      //  $sResult = pg_execute($dbHandle, "processUurGet", array(...));
+      // DON'T use pg query 
+//    $bResult = pg query($dbHandle, $sInsertQuery); 
 
         if (!$bResult)
         {

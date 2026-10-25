@@ -1,4 +1,14 @@
-    	<form name="toetsingsdata02" action="?tb=toetsingsdata&dp=toetsingsdata" method="post">
+<form name="toetsingsdata02" action="?tb=toetsingsdata&dp=toetsingsdata" method="post">
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+    <!-- Timestamp for time-based check -->
+    <input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+    <!-- Honeypot field -->
+    <div style="position: absolute; left: -9999px;">
+        <label for="website_url_hp">Leave this field empty</label>
+        <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+    </div>
+    
     <div style="width:250px; float:left">
     <input type="hidden" name="subtds">
     <input type="hidden" name="subtd">

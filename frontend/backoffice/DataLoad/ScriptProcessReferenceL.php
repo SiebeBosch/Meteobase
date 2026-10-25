@@ -230,8 +230,8 @@ function dump_array()
 
     // Access the table :
     	$sQuery = "SELECT * FROM data.regionlraw" ;
-
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "referenceLGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "referenceLGet", array());
     	$iNumberRows = pg_num_rows($sResult);
 
 	foreach ($Wetnesses as $CurrentRecord )
@@ -245,7 +245,8 @@ function dump_array()
     		$sInsertQuery = $Key . $Value ;
 
    	    // Attempt the Insert :
-    		$bResult = pg_query($dbHandle, $sInsertQuery);
+			pg_prepare($dbHandle, "processReferenceLWetness", $sInsertQuery);
+			$bResult =  pg_execute($dbHandle, "processReferenceLWetness", $Values);
 		if ($bResult == "")
 		{
 			$ErrorCounter= $ErrorCounter + 1;
@@ -287,9 +288,9 @@ function assemble_values($pValues)
 {
 	$FinalString = " VALUES (";
 	$CountValues = 0;
-	foreach($pValues as $item)
+	foreach($pValues as $index => $item)
 	{
-		$FinalString = $FinalString . $item ;
+		$FinalString = $FinalString . "$" . ($index + 1);
 		$CountValues = $CountValues + 1;
 		if ($CountValues < count($pValues)) $FinalString = $FinalString .",";
 	}

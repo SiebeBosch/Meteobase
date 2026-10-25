@@ -33,6 +33,16 @@
                 <div class="form-container">
                     <form method="POST" name="basisgegevens" action="index.php?tb=basisgegevens&dp=basisgegevens" id="basicInfoForm" class="basic-info-form">
                         <input type="hidden" name="subbg">
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                        <!-- Timestamp for time-based check -->
+                        <input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+                        <!-- Honeypot field -->
+                        <div style="position: absolute; left: -9999px;">
+                            <label for="website_url_hp">Leave this field empty</label>
+                            <input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+                        </div>
+                        
                         <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="form-group">
                                 <label>Gegevenstype</label>

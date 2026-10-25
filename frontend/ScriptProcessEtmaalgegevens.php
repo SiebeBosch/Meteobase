@@ -273,7 +273,8 @@ function insert_record($pKeys, $pValues, $pDbAccess, $pTable)
     // Access the table :
     	$sQuery = "SELECT * FROM " . $pTable ;    
     	debug_echo( "Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "processEtmaalGET", $sQuery);
+		$sResult =  pg_execute($dbHandle, "processEtmaalGET", array());
     	$iNumberRows = pg_num_rows($sResult);
    	debug_echo( "Aantal records : ".$iNumberRows. "<BR>". "<BR>");
 
@@ -284,7 +285,8 @@ function insert_record($pKeys, $pValues, $pDbAccess, $pTable)
     	debug_echo( $sInsertQuery . "<BR>");
 
     // Attempt the Insert :
-    	$bResult = pg_query($dbHandle, $sInsertQuery);
+		pg_prepare($dbHandle, "processEtmaalInsert", $sInsertQuery);
+		$bResult =  pg_execute($dbHandle, "processEtmaalInsert", $pValues);
     // Clean-up :
     	pg_free_result($result);
     	pg_close($dbHandle);
@@ -343,15 +345,19 @@ function assemble_values($pValues)
     // This function will assemble the VALUES for insertion into the database :
 	$FinalString = " VALUES (";
 	$CountValues = 0;
-	foreach($pValues as $item)
+	foreach($pValues as $index => $item)
 	{
-		$FinalString = $FinalString . $item ;
+		$FinalString = $FinalString . "$" . ($index + 1) ;
 		$CountValues = $CountValues + 1;
 		if ($CountValues < count($pValues)) $FinalString = $FinalString .",";
 	}
 	$FinalString = $FinalString .")";
 	return $FinalString;
-}
+
+	$FinalString = " VALUES (";
+    $CountValues = 0;
+    $placeholders = [];
+
 ?>
 
 <?php

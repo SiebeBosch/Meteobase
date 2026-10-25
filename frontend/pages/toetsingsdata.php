@@ -8,15 +8,64 @@ $data = '';
 $waarde_check = '';
 
 include('local_config.php');
-
+require 'sanitize.php';
 
 // CONFIGURABLE >>>>>>>>>>
    $ExportPath = "C:\Apache24\htdocs\meteobase\downloads";
 // CONFIGURABLE >>>>>>>>>>
 
 $NewOrder = 0;
+
+
 // Stochasten
 if(isset($_POST['dataType'])){
+	// CSRF validation
+	if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+		http_response_code(403);
+		exit('Security validation failed');
+	}
+	
+	// Honeypot check
+	if (!empty($_POST['website_url_hp'])) {
+		exit();
+	}
+	
+	// Time-based check
+	$min_submission_time = 3;
+	$form_start_time = isset($_POST['form_timestamp']) ? (int)$_POST['form_timestamp'] : 0;
+	if ($form_start_time === 0 || (time() - $form_start_time) < $min_submission_time) {
+		exit(); // Silent fail - too fast
+	}
+	
+	// Rate limiting - max 3 downloads per 5 minutes
+	$max_downloads = 3;
+	$time_window = 300; // 5 minutes
+	
+	if (!isset($_SESSION['toets_download_attempts'])) {
+		$_SESSION['toets_download_attempts'] = [];
+	}
+	
+	// Clean old attempts
+	$_SESSION['toets_download_attempts'] = array_filter(
+		$_SESSION['toets_download_attempts'],
+		function($timestamp) use ($time_window) {
+			return (time() - $timestamp) < $time_window;
+		}
+	);
+	
+	// Check if limit exceeded
+	if (count($_SESSION['toets_download_attempts']) >= $max_downloads) {
+		http_response_code(429);
+		exit('Te veel download aanvragen. Probeer het over 5 minuten opnieuw.');
+	}
+	
+	// Record this attempt
+	$_SESSION['toets_download_attempts'][] = time();
+	
+    if (!isset($_COOKIE['cookiebar']) || $_COOKIE['cookiebar'] == "CookieDisallowed") {
+        return;
+    }
+
 	if ($_POST['dataType'] == 'stochasten_2024') {
 		
 		// Verwerken van het formulier
@@ -84,10 +133,13 @@ if(isset($_POST['dataType'])){
 		
 		$STATS2015='FALSE';
 		$STATS2019='FALSE';
+		$STATS2024='FALSE';
 		if ($_POST['dataType'] == 'tijdreeksen_2015') {
 			$STATS2015='TRUE';
 		} elseif ($_POST['dataType'] == 'tijdreeksen_2019') {
 			$STATS2019='TRUE';
+		} elseif ($_POST['dataType'] == 'tijdreeksen_2024') {
+			$STATS2024='TRUE';
 		}
     
         $adres = 'https://www.meteobase.nl/meteobase/downloads/';
@@ -203,8 +255,12 @@ if(isset($_POST['dataType'])){
         }
         $NewOrder = plaatsBestelling($sessionid, $NewOrder, 'TRUE','FALSE', $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085);
         
-	exportTijdreeksen($STATS2015, $STATS2019, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $sessionid, $NewOrder, $naam, $mail);
+	exportTijdreeksen($STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $sessionid, $NewOrder, $naam, $mail);
     }
+    
+    // Regenerate CSRF token after successful submission to prevent resubmission
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    
     $_SESSION['dataFeedbackMsg'] = 'send message';
     include('toets01.php');
 } else {
@@ -215,15 +271,15 @@ if(isset($_POST['dataType'])){
 		
 <?php
 
-	function exportTijdreeksen($STATS2015, $STATS2019, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $psessionid, $pNewOrder, $pname, $pmail)
+	function exportTijdreeksen($STATS2015, $STATS2019, $STATS2024, $HUIDIG, $ALL_2030, $GL_2050, $GH_2050, $WL_2050, $WH_2050, $GL_2085, $GH_2085, $WL_2085, $WH_2085, $psessionid, $pNewOrder, $pname, $pmail)
 	{
 	
-	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $HUIDIG . ' ' . $ALL_2030 . ' ' . $GL_2050 . ' ' . $GH_2050 . ' ' . $WL_2050 . ' ' . $WH_2050 . ' ' . $GL_2085 . ' ' . $GH_2085 . ' ' . $WL_2085 . ' ' . $WH_2085 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
+	$cmd = $STATS2015 . ' ' . $STATS2019 . ' ' . $STATS2024 . ' ' . $HUIDIG . ' ' . $ALL_2030 . ' ' . $GL_2050 . ' ' . $GH_2050 . ' ' . $WL_2050 . ' ' . $WH_2050 . ' ' . $GL_2085 . ' ' . $GH_2085 . ' ' . $WL_2085 . ' ' . $WH_2085 . ' ' . $psessionid . ' ' . $pNewOrder . ' "' . $pname . '" "' . $pmail . '"';
 	//echo($cmd);
 	$cmd = '"c:/Program Files/Hydroconsult/WIWBTOETSING/WIWBTOETSING.exe" ' . $cmd ;
 	//echo($cmd);
     $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
 	}
 	
 	function exportStochasten($STATS2015, $STATS2019, $STATS2024, $psessionid, $pNewOrder, $pname, $pmail)
@@ -234,7 +290,7 @@ if(isset($_POST['dataType'])){
 	$cmd = '"c:/Program Files/Hydroconsult/WIWBSTOCHASTEN/WIWBSTOCHASTEN.exe" ' . $cmd;
 	//echo($cmd);
     $cmd = 'start /B cmd /C "' . $cmd . ' >NUL 2>NUL"';
-    pclose(popen($cmd, 'r'));
+    pclose(sanitezedPopen($cmd, 'r'));
 	}
 	
 	function plaatsBestelling($psessionid, $NewOrder, $tijdreeks, $stochast, $ZJ_HUIDIG, $ZJ_2030, $ZJ_2050, $ZJ_2085)
@@ -280,7 +336,8 @@ if(isset($_POST['dataType'])){
 		test_echo("<b>VASTLEGGING BESTELLING : </b><br>" );
     	$sQuery = "SELECT * FROM " .$sTableName ;    
     	test_echo("Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+        pg_prepare($dbHandle, "toetsingdataGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "toetsingdataGet", array()); 
     	$iNumberRows = pg_num_rows($sResult);
         $NewOrder = $iNumberRows + 1;
     	test_echo("Aantal records : ".$iNumberRows . "<BR>");
@@ -300,21 +357,30 @@ if(isset($_POST['dataType'])){
 
 		// and add the Values :
     	$sInsertQuery .= ") VALUES (";
-    	$sInsertQuery .= ($psessionid). ",";
-    	$sInsertQuery .= ($NewOrder) . ",";
-		$sInsertQuery .= ($tijdreeks) .",";
-		$sInsertQuery .= ($stochast) .",";
-    	$sInsertQuery .= ($ZJ_HUIDIG). ",";
-    	$sInsertQuery .= ($ZJ_2030). ",";
-    	$sInsertQuery .= ($ZJ_2050). ",";
-    	$sInsertQuery .= ($ZJ_2085);
+    	$sInsertQuery .= "$1". ",";
+    	$sInsertQuery .= "$2" . ",";
+		$sInsertQuery .= "$3" .",";
+		$sInsertQuery .= "$4" .",";
+    	$sInsertQuery .= "$5". ",";
+    	$sInsertQuery .= "$6". ",";
+    	$sInsertQuery .= "$7". ",";
+    	$sInsertQuery .= "$8";
     	$sInsertQuery .= ")";
 
 		
     	test_echo($sInsertQuery . "<BR>");
 		test_echo("----------------------------<BR>");
-
-		$bResult = pg_query($dbHandle, $sInsertQuery);
+        pg_prepare($dbHandle, "toetsingdataInsertQuery", $sInsertQuery);
+        $bResult =  pg_execute($dbHandle, "toetsingdataInsertQuery", array(
+            $psessionid,
+            $NewOrder,
+            $tijdreeks,
+            $stochast,
+            $ZJ_HUIDIG,
+            $ZJ_2030,
+            $ZJ_2050,
+            $ZJ_2085
+        ));
 		test_echo(pg_last_error($dbHandle));
         if (!$bResult)
         	{

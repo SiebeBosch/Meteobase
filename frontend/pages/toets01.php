@@ -6,6 +6,51 @@
 <!--		<div class="gegevenspaneel_btn"><a style="color:#000" href="javascript: document.forms.toetsingsdata01.submit()">Verder</a></div>-->
 <!--    </form>-->
 <!--Starting About Meteobase Section-->
+
+<script>
+$(function () {
+
+
+	var mbAlert = function(message, typeClass) {
+		$('#alert_placeholder').html(
+			'<div class="alert ' + typeClass + '">' + message + '</div>'
+		);
+		$('#alert_placeholder').fadeIn();
+		setTimeout(function() {
+			$('#alert_placeholder').fadeOut();
+		}, 3000);
+	};
+
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    $('#testingInfoForm').on('submit', function (e) {
+
+        var cookiebar = getCookie('cookiebar');
+
+        if (!cookiebar || cookiebar === 'CookieDisallowed') {
+            e.preventDefault(); // stop form submit
+
+			console.log('cookies not allowed')
+
+            mbAlert(
+                'U dient eerst de cookies te accepteren om gegevens te downloaden.',
+                'alert-warning'
+            );
+
+            // Optional: open your cookie bar
+            // if (typeof requestCookieBar === 'function') {
+                // requestCookieBar();
+            // }
+
+            return false;
+        }
+    });
+
+});
+</script>
 <div class="row">
 	<div class="content-row form-row-container">
 		<div class="col-md-12">
@@ -15,6 +60,16 @@
 				</h2>
 				<div class="form-container">
 					<form method="POST" action="index.php?tb=toetsingsdata&dp=toetsingsdata" class="testing-modal" id="testingInfoForm">
+						<!-- CSRF Token -->
+						<input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+						<!-- Timestamp for time-based check -->
+						<input type="hidden" name="form_timestamp" value="<?php echo time(); ?>">
+						<!-- Honeypot field -->
+						<div style="position: absolute; left: -9999px;">
+							<label for="website_url_hp">Leave this field empty</label>
+							<input type="text" name="website_url_hp" id="website_url_hp" tabindex="-1" autocomplete="off">
+						</div>
+						
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>Gegevenstype</label>
@@ -26,7 +81,7 @@
 									</div>
 									<div class="col-md-9">
 										<label>
-											<input type="radio" name="dataType" value="tijdreeksen_2024" disabled> Tijdreeksen STOWA 2024
+											<input type="radio" name="dataType" value="tijdreeksen_2024"> Tijdreeksen STOWA 2024
 										</label>
 									</div>
 									<div class="col-md-9">

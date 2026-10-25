@@ -202,7 +202,8 @@ function dump_array()
 	}
     // Access the table :
     	$sQuery = "SELECT * FROM data.precipitation_daily" ;
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "etmaaldataGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "etmaaldataGet", array());
     	$iNumberRows = pg_num_rows($sResult);
     	
 	foreach ($Wetnesses as $CurrentRecord )
@@ -216,8 +217,9 @@ function dump_array()
 		$Value = assemble_values($Values) ;
     		$sInsertQuery = $Key . $Value ;
    	    // Attempt the Insert :
+			pg_prepare($dbHandle, "processetmaalgegevenswetnesses", $sInsertQuery);
+			$bResult =  pg_execute($dbHandle, "processetmaalgegevenswetnesses", $Values);
 
-    		$bResult = pg_query($dbHandle, $sInsertQuery);
 		if ($bResult == "")
 		{
 			$ErrorCounter = $ErrorCounter + 1;
@@ -255,9 +257,9 @@ function assemble_values($pValues)
 {
 	$FinalString = " VALUES (";
 	$CountValues = 0;
-	foreach($pValues as $item)
+	foreach($pValues as $index => $item)
 	{
-		$FinalString = $FinalString . $item ;
+		$FinalString = $FinalString . "$" . ($index + 1) ;
 		$CountValues = $CountValues + 1;
 		if ($CountValues < count($pValues)) $FinalString = $FinalString .",";
 	}

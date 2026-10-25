@@ -74,7 +74,8 @@
     // Access the table :
     	$sQuery = "SELECT * FROM " .$sTableName ;    
     	test_echo("<BR>" . "Query : ". $sQuery . "<BR>");
-    	$sResult = pg_query($dbHandle,$sQuery);
+		pg_prepare($dbHandle, "backToetsGet", $sQuery);
+		$sResult =  pg_execute($dbHandle, "backToetsGet", array());
     	$iNumberRows = pg_num_rows($sResult);
     	test_echo("<BR>"."Aantal records : ".$iNumberRows . "<BR>");
  
@@ -90,18 +91,26 @@
 
     // Add the Values :
     	$sInsertValues  = " VALUES (";
-    	$sInsertValues .= "'" . $sessionid . "'" . ",";
-    	$sInsertValues .= ($iNumberRows +1) . ",";
-    	$sInsertValues .= "'" . "Stochasten" . "'" . ",";
-    	$sInsertValues .= "'" . $ValidatedKlimaat . "'" . ",";
-    	$sInsertValues .= "'" . $ValidatedShapefile . "'" . ",";
-    	$sInsertValues .= "'" . $ValidatedARF . "'";
+    	$sInsertValues .= "'" . "$1" . "'" . ",";
+    	$sInsertValues .= "$2" . ",";
+    	$sInsertValues .= "'" . "$3" . "'" . ",";
+    	$sInsertValues .= "'" . "$4" . "'" . ",";
+    	$sInsertValues .= "'" . "$5" . "'" . ",";
+    	$sInsertValues .= "'" . "$6" . "'";
     	$sInsertValues .=  ")";
 
     // And combine :
     	$sInsertQuery = $sInsertKeys . $sInsertValues ;
     	test_echo("<BR>"."<BR>".$sInsertQuery . "<BR>");
-    	$bResult = pg_query($dbHandle, $sInsertQuery);
+		pg_prepare($dbHandle, "backtoetsinsert", $sInsertQuery);
+		$bResult =  pg_execute($dbHandle, "backtoetsinsert", array(
+			$sessionid,
+			($iNumberRows + 1),
+			"Stochasten",
+			$ValidatedKlimaat,
+			$ValidatedShapefile,
+			$ValidatedARF,
+		));
         if (!$bResult)
         {
           echo "<BR>"."De bestelling is niet opgeslagen in de database";

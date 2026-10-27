@@ -102,7 +102,7 @@ if (isset($_SERVER["HTTP_USER_AGENT"])) {
 }
 
 if($browser_ie && $redirect) {
-	echo '<script>window.open("https://www.meteobase.nl:8080/meteobase/","_blank");</script>';
+	echo '<script>window.open("https://www.meteobase.nl/meteobase/","_blank");</script>';
 	exit;
 }
 
@@ -296,11 +296,11 @@ if(isset($_GET['dp_sub'])){
 	$urlsub = $url . 'dp=' . $dp . '&dp_sub=' . $dp_sub . '&';
 }
 
-$adres = 'https://www.meteobase.nl:8080/meteobase/downloads/fixed/Regios.zip';
-$adresARF = 'https://www.meteobase.nl:8080/meteobase/downloads/fixed/Neerslagreductie.zip';
-$adresRapp = 'https://www.meteobase.nl:8080/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf';
-$adresRapp2 = 'https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2015_10_webversie_LR2.pdf';
-$adresVerslagDec2015 = 'https://www.meteobase.nl:8080/meteobase/downloads/fixed/Verslag_17_december_2015.zip';
+$adres = 'https://www.meteobase.nl/meteobase/downloads/fixed/Regios.zip';
+$adresARF = 'https://www.meteobase.nl/meteobase/downloads/fixed/Neerslagreductie.zip';
+$adresRapp = 'https://www.meteobase.nl/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf';
+$adresRapp2 = 'https://www.meteobase.nl/meteobase/downloads/fixed/STOWA_2015_10_webversie_LR2.pdf';
+$adresVerslagDec2015 = 'https://www.meteobase.nl/meteobase/downloads/fixed/Verslag_17_december_2015.zip';
 $adresHKV = 'https://www.hkv.nl';
 $adresHC = 'https://www.hydroconsult.nl';
 $adresGP = 'https://www.geopro.nl';
@@ -319,7 +319,7 @@ $docu_menu = array(
 				  <p>Het achtergrondrapport voor informatie over basisgegevens en rasterdata vindt u ' . $linkRapp . '. Dit rapport bevat ook nog informatie over de toetsingsdata die tot medio oktober 2015 op Meteobase aangeboden werden. Per medio oktober 2015 zijn deze data geactualiseerd. Uitgebreide toelichting op deze nieuwe data vindt u in dit ' . $linkRapp2 .'.</p>
                   <p> In een bijeenkomst op 17 december 2015 is dit laatste onderzoek toegelicht, het verslag en de presentaties vindt u ' . $linkVerslagDec2015 .'.</p>
 				  <p>Deze online dienst is in het leven geroepen om medewerkers van waterschappen en adviesbureaus in de watersector te ondersteunen bij het uitvoeren van modelstudies waarvoor meteorologische gegevens nodig zijn.</p>
-				  <p>Let op: deze website maakt gebruik van cookies. Klik <a href="https://www.meteobase.nl:8080/meteobase/index.php?tb=aanmelden&dp=aanmelden">hier</a> voor meer informatie.</p>',
+				  <p>Let op: deze website maakt gebruik van cookies. Klik <a href="https://www.meteobase.nl/index.php?tb=aanmelden&dp=aanmelden">hier</a> voor meer informatie.</p>',
 //				  <p>Nadat u zich heeft aangemeld, kunt u bestellingen plaatsen op de volgende tabbladen:</p>
 //				  <p>- Basisgegevens (neerslag en verdamping van KNMI-meetstations)
 //				  <br>- Rasterdata (geijkte neerslagradargegevens)
@@ -938,26 +938,26 @@ $docu_menu = array(
                         <p>
                             Het achtergrondrapport voor informatie over basisgegevens en rasterdata
                             vindt u <a
-                                href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf"
+                                href="https://www.meteobase.nl/meteobase/downloads/fixed/Rapport_Meteobase_definitief.pdf"
                                 target="_blank">hier</a>.
                             Dit rapport bevat ook nog informatie over de toetsingsdata die tot medio
                             oktober 2015
                             op Meteobase aangeboden werden. Per medio oktober 2015 zijn deze data
                             geactualiseerd.
                             Uitgebreide toelichting op deze nieuwe data vindt u in dit <a
-                                href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2015_10_webversie_LR2.pdf"
+                                href="https://www.meteobase.nl/meteobase/downloads/fixed/STOWA_2015_10_webversie_LR2.pdf"
                                 target="_blank">rapport</a>.
                         </p>
                         <p>
                             In een bijeenkomst op 17 december 2015 is het onderzoek van oktober 2025
                             onderzoek toegelicht,
                             het verslag en de presentaties vindt u <a
-                                href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/Verslag_17_december_2015.zip"
+                                href="https://www.meteobase.nl/meteobase/downloads/fixed/Verslag_17_december_2015.zip"
                                 target="_blank">hier</a>.
                         </p>
                         <p>
                             In mei 2024 zijn nieuwe neerslagstatistieken <a
-                                href="https://www.meteobase.nl:8080/meteobase/downloads/fixed/STOWA_2023-35_meteo_basisstatistiek.pdf"
+                                href="https://www.meteobase.nl/meteobase/downloads/fixed/literatuur/STOWA_2023-35_meteo_basisstatistiek.pdf"
                                 target="_blank">gepubliceerd</a>. Deze zijn per 16 mei 2024 verwerkt
                             in alle producten op Meteobase: de regenduurlijnen-app, de
                             herhalingstijdenrasters en de toetsingsdata.
@@ -1059,7 +1059,7 @@ $docu_menu = array(
                             correctie worden uitgerekend met de app onder het menu Statistiek -
                             Oppervlaktereductie.
                             Voor de 'oude' statistiek uit 2015 is hiervoor een Excel-macro beschikbaar
-                            dit kan <a href="https://85.214.197.176:8080/meteobase/downloads/fixed/Neerslagreductie.zip"
+                            dit kan <a href="https://www.meteobase.nl/meteobase/downloads/fixed/Neerslagreductie.zip"
                                 target="_blank">hier</a> worden gevonden.
                         </p>
                         <p>

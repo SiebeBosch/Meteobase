@@ -141,6 +141,12 @@ if($tab == 'onderhoud'){
 	exit;
 }
 
+// Shapefile upload (Dropzone, tab Rasterdata): its own response with HTTP status, before any HTML output
+if($tab == 'rasterDataUpload'){
+	include('pages/rasterDataUpload.php');
+	exit;
+}
+
 function rd2wgs ($x, $y){
     // Calculate WGS84 coordinates
     $dX = ($x - 155000) * pow(10, - 5);
@@ -2726,19 +2732,48 @@ $docu_menu = array(
                 $('.fileUpload').fadeOut();
             }
         })
+        // text from the server or the file is shown as text, never as HTML
+        function mbEscape(text) {
+            return $('<div>').text(String(text)).html();
+        }
+
+        // after a successful upload the field "veldnaam" becomes a list of the fields in the .dbf
+        function setVeldnamen(velden) {
+            var current = $('#veldnaam').val();
+            var select = $('<select>', {id: 'veldnaam', name: 'veldnaam', 'class': 'form-control'});
+            select.append($('<option>', {value: ''}).text('Kies het veld met het gebieds-ID'));
+            $.each(velden, function(i, veld) {
+                select.append($('<option>', {value: veld}).text(veld));
+            });
+            if ($.inArray(current, velden) >= 0) {
+                select.val(current);
+            } else if (velden.length == 1) {
+                select.val(velden[0]);
+            }
+            $('#veldnaam').replaceWith(select);
+        }
+
         $(".upload-files-wrapper").dropzone({
             url: "<?php echo($_SERVER["PHP_SELF"]); ?>?tb=rasterDataUpload",
             maxFilesize: 20,
+            params: {csrf_token: <?php echo json_encode($_SESSION['csrf_token']); ?>},
             dictDefaultMessage: "Drop your files here",
-            success: function($status, $data) {
-                var text = $status.name;
-                createCookie('ZIPFILE', text);
-                $('#fileUploaded').val(text);
-                mbAlert('Uw bestand is geüpload', 'alert-success');
+            dictFileTooBig: "Het bestand is te groot (maximaal {{maxFilesize}} MB).",
+            dictInvalidFileType: "Upload een zip-bestand met daarin de shapefile (.shp, .shx en .dbf).",
+            dictResponseError: "Het uploaden is mislukt (foutcode {{statusCode}}). Probeer het opnieuw.",
+            success: function(file, response) {
+                // the server keeps the stored file name in the cookie ZIPFILE itself
+                var info = (typeof response === 'string') ? JSON.parse(response) : response;
+                $('#fileUploaded').val(info.bestand);
+                setVeldnamen(info.velden);
+                mbAlert('Uw bestand ' + mbEscape(info.bestand) + ' is geüpload (' + info.aantal +
+                    ' polygonen). Kies hieronder het veld met het gebieds-ID.', 'alert-success');
             },
             acceptedFiles: '.zip',
-            error: function() {
-                mbAlert('Upload een geldige zip-file.', 'alert-danger');
+            error: function(file, message) {
+                $('#fileUploaded').val('');
+                var text = (typeof message === 'string' && message !== '') ? message : 'Upload een geldige zip-file.';
+                mbAlert(mbEscape(text), 'alert-danger');
             },
             init: function() {
                 this.on('sending', function() {

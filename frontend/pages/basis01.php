@@ -48,11 +48,12 @@
                                 <label>Gegevenstype</label>
                                 <div class="input-group">
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" id="neerslag" name="neerslag" value="neerslag"> Neerslag
+                                        <input type="checkbox" id="neerslag" name="neerslag" value="neerslag"<?php if (!empty($behoudKeuzes) && ($_POST['neerslag'] ?? '') === 'neerslag') { echo ' checked'; } ?>> Neerslag
                                     </label>
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" id="verdamping" name="makkink" value="makkink"> Verdamping (Makkink)
+                                        <input type="checkbox" id="verdamping" name="makkink" value="makkink"<?php if (!empty($behoudKeuzes) && ($_POST['makkink'] ?? '') === 'makkink') { echo ' checked'; } ?>> Verdamping (Makkink)
                                     </label>
+                                    <span id="gegevenstype-melding" class="text-danger" role="alert" style="display:none; margin-left:10px; font-weight:bold;">Kies minstens één gegevenstype (Neerslag en/of Verdamping).</span>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +97,32 @@
                             <button class="btn btn-primary pull-right submit-btn" type="submit">Downloaden</button>
                         </div>
                     </form>
+                    <script>
+                    // Zonder gegevenstype niet versturen. Luistert in de capture-fase op document, dus vóór de
+                    // klikhandler in index.php en vóór jQuery Validate. De pagina wordt niet herladen, zodat
+                    // CSRF-token en form_timestamp geldig blijven.
+                    (function () {
+                        var form = document.getElementById('basicInfoForm');
+                        if (!form) { return; }
+                        var knop = form.querySelector('.submit-btn');
+                        var neerslag = document.getElementById('neerslag');
+                        var verdamping = document.getElementById('verdamping');
+                        var melding = document.getElementById('gegevenstype-melding');
+                        function gekozen() { return neerslag.checked || verdamping.checked; }
+                        function tegenhouden(e) {
+                            var verzenden = e.type === 'submit' ? e.target === form : (knop && (e.target === knop || knop.contains(e.target)));
+                            if (!verzenden || gekozen()) { return; }
+                            e.preventDefault();
+                            e.stopPropagation();
+                            melding.style.display = 'inline';
+                        }
+                        function wissen() { if (gekozen()) { melding.style.display = 'none'; } }
+                        document.addEventListener('click', tegenhouden, true);
+                        document.addEventListener('submit', tegenhouden, true);
+                        neerslag.addEventListener('change', wissen);
+                        verdamping.addEventListener('change', wissen);
+                    })();
+                    </script>
                 </div>
             </div>
         </div>

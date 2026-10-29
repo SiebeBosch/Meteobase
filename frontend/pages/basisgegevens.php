@@ -80,9 +80,18 @@ if(isset($_POST['subbg'])){
 				$stationsOk = false;
 			}
 		}
+		// Gegevenstype: alleen de waarden 'neerslag' en 'makkink' (whitelist). Zonder een van beide
+		// kan backoffice_basisgegevens.php geen geldige INSERT maken en volgt een foutpagina.
+		$neerslagGekozen = isset($_POST['neerslag']) && $_POST['neerslag'] === 'neerslag';
+		$makkinkGekozen = isset($_POST['makkink']) && $_POST['makkink'] === 'makkink';
+		$gegevenstypeGeldig = (!isset($_POST['neerslag']) || $neerslagGekozen) && (!isset($_POST['makkink']) || $makkinkGekozen);
 		$geweigerd = true;
 		if ($user === null) {
 			order_error(MSG_INVALID_USER, 'basisgegevens: gebruiker-cookie');
+		} elseif (!$gegevenstypeGeldig) {
+			order_error(MSG_INVALID_INPUT, 'basisgegevens: invoer (ongeldig gegevenstype)');
+		} elseif (!$neerslagGekozen && !$makkinkGekozen) {
+			order_error('Uw bestelling is niet verwerkt: kies minstens één gegevenstype (Neerslag en/of Verdamping).', 'basisgegevens: invoer (geen gegevenstype)');
 		} elseif (!in_array($waarde, ['Dagstations', 'Uurstations'], true) || !$stationsOk
 			|| !preg_match('/^\d{8}$/', (string)$datum_van) || !preg_match('/^\d{8}$/', (string)$datum_tot)) {
 			order_error('Uw bestelling is niet verwerkt: kies uurstations of dagstations, selecteer minstens 1 station op de kaart en controleer de datums.', 'basisgegevens: invoer');
@@ -90,6 +99,7 @@ if(isset($_POST['subbg'])){
 			$geweigerd = false;
 		}
 		if ($geweigerd) {
+			$behoudKeuzes = true; // basis01.php vinkt de gekozen gegevenstypes weer aan
 			include('pages/basis01.php');
 			return;
 		}

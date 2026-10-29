@@ -18,9 +18,6 @@
 					Meteobase is tijdelijk niet in staat om e-mails naar de gebruiker te sturen. Dit i.v.m. het migreren van de domeinnaam en het aanvragen van een domein-certificaat (SSL). 
 					<br>
 					<br>
-					Indien nodig kunt u ook zonder bevestiging per e-mail uw bestelling vinden, namelijk op <a href="http://meteobase.nl:8080/meteobase/downloads/">deze pagina</a>.<br>Onthoud dan het bestelnummer dat Meteobase geeft en zoek het op in de lijst. 
-					<br> 
-					<br> 
 					Merk op dat het doorgaans enkele minuten duurt voordat uw bestelling gereed staat.<br> Bij rasterbevragingen kan dit nog iets langer zijn.
 					<br>
 					<br>

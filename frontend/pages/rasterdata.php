@@ -153,11 +153,34 @@ if(isset($_POST['subrd'])){
     }
     $zipNaam = null;
     if ($formaat == 'csv' || $formaat == 'sobek') {
-        // the ZIPFILE cookie holds the full path of the upload (pages/rasterDataUpload.php)
+        // the ZIPFILE cookie holds the stored name of the upload; it must be an upload of this
+        // session and this user (pages/rasterDataUpload.php, checks in shapefile_check.php)
+        require_once 'shapefile_check.php';
         $zipNaam = valid_filename(basename(str_replace('\\', '/', (string)($_COOKIE['ZIPFILE'] ?? ''))), 'zip');
-        $veldnaam = valid_text($_POST['veldnaam'] ?? null, 64);
-        if ($zipNaam === null || $veldnaam === null || !is_file('C:/Apache24/htdocs/meteobase/uploads/' . $zipNaam)) {
-            order_error(MSG_INVALID_INPUT, 'rasterdata: shapefile/veldnaam');
+        $upload = $zipNaam !== null ? ($_SESSION['shape_uploads'][$zipNaam] ?? null) : null;
+        if ($upload === null || strpos($zipNaam, $user['sessionid'] . '_') !== 0 || !is_file(SHAPE_UPLOAD_DIR . $zipNaam)) {
+            order_error('Uw bestelling is niet verwerkt: er is geen geldige shapefile geüpload in deze sessie. Upload uw shapefile (zip) opnieuw.',
+                'rasterdata: shapefile niet van deze sessie');
+            include('pages/raster01.php');
+            return;
+        }
+        // the field must exist in the .dbf; the tool gets the name as it is written there
+        $opgegeven = valid_text($_POST['veldnaam'] ?? null, 64);
+        $veldnaam = null;
+        foreach ($upload['velden'] as $veld) {
+            if ($opgegeven !== null && strcasecmp($veld, $opgegeven) === 0) {
+                $veldnaam = $veld;
+            }
+        }
+        if ($veldnaam === null) {
+            order_error('Uw bestelling is niet verwerkt: kies het veld met het gebieds-ID. Beschikbare velden: '
+                . implode(', ', $upload['velden']) . '.', 'rasterdata: veldnaam niet in .dbf');
+            include('pages/raster01.php');
+            return;
+        }
+        if (!shape_field_values_ok(SHAPE_UPLOAD_DIR . $zipNaam, $veldnaam)) {
+            order_error('Het veld ' . $veldnaam . ' bevat lege of dubbele waarden. Ieder polygoon moet in dit veld een eigen, ingevulde waarde hebben.',
+                'rasterdata: lege/dubbele waarden in ' . $veldnaam);
             include('pages/raster01.php');
             return;
         }
